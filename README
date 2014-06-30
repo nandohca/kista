@@ -1,0 +1,203 @@
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+KisTA : KTH/K-th Infrastructure for SystemC Static and Simulation-based Time Analysis of concurrent applications on distributed and many-core embedded systems
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+  K-th: It is obviously a pun, which plays with the different contexts this infrastructure started to be developped:
+        ... in KTH, in Kista, ... and it containts the k-th implementtion of some Known features, which all together with new features
+        make an unique tool for exploring and validating hard-real time and mixed (K)ritical (K)oncurrent applications on many-(K)ore
+        platforms integrated with networ(K) modelling and simulation ;-D
+
+  All rights reserved by the authors (until further License definition)
+
+  Author: F. Herrera
+  Institution: KTH
+  Deparment:   Electronic Systems
+  Date: 2013 February
+---------------------------------------------------------------------------------------------------------------------------------------------
+
+FEATURES:
+
+  - Light-weighted, SystemC-based (light dependencies)
+  - Interface for exploration
+
+Modelling:
+  - CONCURRENT APPLICATIONS
+  - Orientation FOR HARD REAL TIME analysis (response times, deadlines, utilizations, etc)
+  - Architectural MAPPING and SCHEDULING policies
+		- Partitioned and global scheduling for MULTIPROCESSORS
+  - DEPENDENCIES (synchronizations) among application tasks    
+  - Platform SoC with NoC with Network:
+	specific target: TWO LEVELS NETWORK:
+			 - On chip network: NoC modelling (on chip network)
+			 - Off chip network: Generic
+                                 Domain Specific (Automotive) Flexray, TTEThernent, ... 
+                                                 (avionics) ARINX
+  - Consideration of "Non-Idealities" 
+	- Scheduling times
+		- static or model
+	- Context Change Times
+	- Task Migration:
+		- contention and/or context transfer among PEs
+	
+  - MIXED CRITICALITY:
+	 - Different ARCHITECTURES for...
+	 - Different levels of RESOURCE SEGREGATION
+		- Different WCETS
+
+  - Interface for exploration
+  
+  - Extensibility for letting the user add:
+		- scheduling policies
+		- interconnectivity models
+		- non-ideality models
+		
+  - Simulation control:
+      - features for automate the length of the "interesting" simulation,
+      and for either "abrupt end" or "in scheduling" end.
+  
+KisTA input:
+---------------
+
+  - Work load models:
+		WCET
+		Averages
+		randomization of consumption times from average and std (TBC)
+        memories (TBC)
+
+  - synchronization among tasks can be specified (task graphs, or synchronization waits)	
+
+  - Local schedulers (for partitioned based scheduling)
+		Configurability:
+		  - Scheduler triggering policy:	NON-PREEMPTIVE, COOPERATIVE, PREEMPTIVE
+			(It can be understood as a preemption policy, as stated by David&Burns11)
+		  - Dispatching priorities: 		STATIC_SCHEDULING
+											DYNAMIC_SCHEDULING:
+											 CYCLE_EXECUTIVE, RANDOM, PSEUDO-RANDOM, STATIC PRIORITIES, DYNAMIC PRIORITIES
+			- Static Priority policy:		USER_PRIORITIES, RATE_MONOTONIC, DEADLINE_MONOTONIC, DENSITY_MONOTONIC
+			- Dynamic Priority policy:		EARLIEST_DEADLINE_FIRST, USER
+		  - Time Slicing 
+
+  - Global scheduler
+	- Scheduling policy
+
+  - Platform:
+	- multiple processors (TBC)
+
+  - Architectural mapping
+	
+  - Consideration of impact of Synchronization Communication among tasks accodding
+    to underlying platform: architecture and netowrk connection
+    on the architecture) (TBC)    
+
+  - Network: (TBC)
+     - generic
+     - specific
+		- NoC (many-core SoC) (connection with NoC modelling tools)
+		- Predictable networks (TDMA)
+		- contention bus
+		- wireless (connection with wireless modelling libraries)
+
+
+KisTA output:
+----------------
+
+Static Analysis:
+-----------------
+ - Utilizations, Densities
+ - Schedulability analysis, configuration aware (TBC)
+
+SIMULATION REPORTS:
+-------------------
+  - Measured Utilizations and  (Task and Task Sets)
+  
+  - Response Times
+
+  - Deadline fulfillment
+
+  - Starvation Assesment
+
+  - Detection of lock due to yield() calls in non-preemptive scheduling configurations.
+
+  - PE Utilization
+		Scheduler and Tasks occupation (utilization)
+
+  - Facilities for Capturing (Time) Performance Constraints (TBC)
+
+  - Throughtput (TBC)
+
+  - Task State Traces
+		- Detailed traces
+
+KisTA interface (TBC):
+  - XML interface with exploration tool
+  - Consideration of multi-objective
+
+
+NOTES: 
+
+   KisTA is partly inspired and tighlty related to performance estimations such as SCoPE, SYMTA, and HRT analysis tools like MAST2.
+   
+The initial purpose of this infrastructure has been to enabling some experiments,
+to evaluate the performance of simulation-based vs analytical tools based on
+ constraint programing for the analysis of complex system-level.
+Another goal of this experiments is to study the merging of analysis
+research lines on scheduling and mapping on manycores, which it is
+important in mixed criticality systems.
+
+Two main research lines are at least considered:
+ - scheduling theories (on single core and many core): the goal is fulfill deadlines of individual tasks (Hard real time)
+ - scheduling and mapping algorithms: with the goal of optimizing throughput (QoS)
+ 
+KisTA is oriented to deal with MAPPING AND SCHEDULING OF CONCURRENT APPLICATIONS with
+dependencies on many core platforms, and with multiple goals: e.g., throughput and hard
+real time deadlines fulfilment.
+
+KisTA is seen as a LIGHWEIGHTED FRAMEWORK for fast simultation-based experiments and DSE,
+in comparison to other igher level frameworks, such as SCoPE+
+(a complex simulation infrastructure which integrates actual code,  
+and includes annotation techniques, cache estimations, etc)
+Therefore, KisTA does not introduce such automatic coding, but it focuses on WORKLOAD MODELS
+(so a primary input is the time annotations, mostly of WCETs, or average times)
+and it is FOCUSED ON TIME.
+
+In contrast, KisTA intends to enable a more detailed exploration of the effect
+of different scheduling policies (so to explore SW implementations in many core).
+In this sense, it is a more detailed analysis than SCoPE+. However, it is 
+required, because Hard Real Time applications in a mixed-criticality system
+require strict deadline fulfilment.
+(For instance, kista models precisely times associated to scheduling actions,
+ in order to be capable to analyize the effects of different scheduling policies,
+ e.g. task spliting can in theory improve resource utilization, but the 
+ times associated to task scheduling, as well as task migration has to be
+ taken into account, and kista is a tool useful for modelling such effects)
+
+KisTA relies on the very last process control features enabled by IEEE 1666-2011 standard
+Thus a key advantage of KisTA is that you only need a standard SystemC simulation environment
+to use it!
+
+KisTA is also oriented to let:
+
+ - assess performance in DIFFERENT LEVELS OF DETAIL, adding or removing details
+ - In this sense, kista can consider:
+      - an abstract model (implementation independent) of a communication network
+      - domain specific models of interconnecting networks (e.g.)
+          - NoC (for mixed-criticality on many-core SoC)
+          - TDMA buses (e.g., TTethernet) for automotive, etc
+          - Others? (ARINX, etc...)
+
+USAGE NOTES:
+
+For any example using kista, remember to use the 
+    -DSC_INCLUDE_DYNAMIC_PROCESSES
+    
+preprocessing switch (required to use sc_spawn, and dynamic concurrency features of SystemC)
+
+
+How to model some typical schedulingpolicies:
+----------------------------------------------
+
+-	Round Robin : configure
+			"preemptive"
+			"cycle executive" disptaching policy
+		
