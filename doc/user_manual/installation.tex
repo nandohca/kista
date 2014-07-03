@@ -1,0 +1,33 @@
+\subsection{Binary Release}
+\label{sec:install_bin}
+
+Currently, a binary release is provided for Linux Ubuntu 12.04LT.
+It is provided as a .tar.gz file. The user only needs to untar it
+and install it in the desired folder, name it \texttt{KISTA\_PATH}.
+
+After uncompressing it, the user will see the following libraries:
+
+\begin{itemize}
+\item \textbf{/include} : sources with the kista.hpp header and other header files, for development of KisTA models with its C++ API.
+\item \textbf{/lib} : binary libraries with the static (\texttt{libkista.a}) and dynamic (\texttt{libkista.so}) version of the library. It also contains the lib\texttt{systemlevel\_bypass.a}, to enable a standalone SystemC compilation of the model.
+\item \textbf{/bin} : folder with binary version of the tool, the \texttt{kista-xml} executable. It also provides an executable for checking that the XML Kista model abides the KisTA model schema.
+\item \textbf{/examples} : folder with KisTA examples for both the C++ and for the XML interface
+\end{itemize}
+
+An easy installation producedure, if you only are using the XML front-end is:
+\begin{itemize}
+\item Add \texttt{KISTA\_PATH/bin} to the \texttt{PATH} environment variable
+\item Add \texttt{KISTA\_PATH/lib} to the \texttt{LD\_LIBRARYPATH} environment variable
+\end{itemize}
+
+If you are using the C++ API, so you use KisTA as a SystemC/C++ library, then you should consider as well:
+
+\begin{itemize}
+\item Add \texttt{KISTA\_PATH/include} to your include compilation switch
+\item Add the switch \texttt{-DSC\_INCLUDE\_DYNAMIC\_PROCESSES} at compilation time
+\end{itemize}
+
+\subsection{Sources}
+\label{sec:install_bin}
+
+TBC

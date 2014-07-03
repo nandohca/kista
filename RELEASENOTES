@@ -1,0 +1,324 @@
+
+****************************************************************************************************************
+RELEASE NOTES
+****************************************************************************************************************
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+KisTA : KTH Infrastructure for SystemC Static and Simulation-based Time Analysis of concurrent applications on distributed and many-core embedded systems
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Beyond R336
+------------
+
+	- Add time variant exact P2P transmission delay to the TDMA bus
+	- Add capability to configure (both at KisTA library and at its XML interface) the use of either WCCT or "current" transmission
+          times
+		- Add example to show and measure the trade offs between accuracy and simulation speed on the TDMA
+                  for the different levels of accuracy.
+	- Add possibility to enable common and policy specific static schedulability analysis and that the user adds its own
+          schedulability analysis
+        - Provides two default analysis, a common one for a 100% utilization bound, and a RMS with the L&L bound.
+		- Enhacenments on the description of the schedulability analysis
+		- Add example to illustrate this features
+
+
+R336
+-----------
+	- Fixes of the functional validation functions. These fixes now allow disabling functional validation from XML front-end
+	  and yet run the KisTA executable ignoring the calls to remaining functions which control functional validation,
+	  including enable_functional_validation.
+
+R335
+-----------
+	- XML front-end: support the specification of a hook to init functionality for the environment (as well as sytem global initialization)
+	- Enhancement of validator class to support several failure report and a threshold on the number of failures
+	  to consider a more relaxed error report.
+	- Support of specification of global parameters in the user source code.
+	  A hook function, executed before the XML parsing of the parameters is enabled now, and specified from KisTA-XML system
+	  configuration time. From such function, global parameters can be specified and defined through the XML files,
+	  either in the system description file (in the parameters section) or through the system configuration XML file (params file). 
+	  The former option is exploited in VAD example to parametrize the input testbench, and wet allow parameterization of solutions,
+	  without changing the system description file.
+	
+R331
+-----------
+	- Add hook for global initialization functionality.
+	- Add message_t class for supporting the transfer of complex structures hooked from the XML interface.
+	  Adds an example of use of message_t in the xml_if examples folder.
+	- Add message for functional validation pass.
+	- Fix in the implicit calculation of TDMA bus cycle, when it is not provided by user (now done regardless the configuration of the warning appearance).
+	- Some minor fixes in the XML front-end.
+
+R323
+-----------
+	- Fix on Level 0 and Level 1 calculation of bounds for the communication time of the TDMA bus model given the allocated slots and the message size.
+	  Previous versions provided ridiculous high communication values in some cases, e.g. allocated slots=2 and required slots = 1.
+	  This very high communication times can lead to executions with an apparent deadlock.
+	- Provided a new example which reports the bounds for the calculation of the aformentioned communication bounds  for a given bus
+	  configuration, a given message size and for different allocated slots. The example also serves for estimation of the 
+	  time cost in the host machine for each level of accuracy.
+	- Fix of the buffer channel to enable the accounting of a correct value of the state of the task when the task access either
+	  an input I/O channel, and output I/O channel or both. It requires a mechanisms for detecting if an I/O channel is an input I/O 
+	  or an output I/O which has be settled. Prior to this fix, the state trace of these "border" tasks was wrongly accounted, which
+	  had an impact also in the account of utilization and therefore provoked wrong utilization output metrics for them.
+	- Fix on one of the methods for tracing the activity on a scheduler. In previous versions the trace file was not
+	  generated if the file name was not given
+	- XML interface:
+		- Support of tracing schedulers activity (dumped to .vcd files)
+	
+R316
+-----------
+    - Support of period metric (as the inverse of normalized stationary throughput)
+    - Support of facilities for validation, which can be used by the user with the XML interface too
+    - Add sc_stop after simulation in KisTA-XML. This is required for a more accurate accounting of 
+      utilizations considering the whole simulation time and the assessment of starvation.
+
+R313
+-----------
+    - Extension and improvement in the support of different accuracy levels of TDMA bus:
+		- New Level 0: bit accurate bound for Max p2p delay
+		- Level 1: slot-accurate bound for Max p2p delay. It was the Level 0 in R312. Moreover, this level bound estimation has been fixed, because in
+		           R312 it underestimated the bound since it did not assume the possibility to start the transmission right after
+		           the start of the last slot, but right after.
+		- Level 2: The Level 1 estimation of Max p2p delay in R312.
+
+R312
+-----------
+	- Fixed bug in XML front-end when passing the slot capacity and payload rate
+	- Provided possibility to select the accuracy of the P2P delay bound of the TDMA bus model (slot-level accuracy or level 0 (default), and TDMA cycle accuracy)
+
+R308
+-----------
+	- Improvements in the generic communication resource class
+		- Fix a bug in R299 which involved that some communication penalties where not taken into account
+		- Improved efficiency by supporting the caching of the connection properties taking the "link" and
+		  "message sizes" as indexes. These properties can be stated statically (at elaboration time) to
+		  enable that a time invariant configuation of the communication resource.
+		- TDMA bus implementation improved, and more efficient. 
+		  Maximum p2p delays in the TDMA bus are time invariant for a specific link and message size.
+		  (Note: notice that only the maximum ones).
+		  Therefore, the novel implementation of the generic communication resource can be exploited,
+		  by statically storing all the delays of the TDMA bus associated to a specific link and message size.
+		  This is exactly the case when simulating exactly a communication model like the one analyzed by KTH
+		  A-DSE tool.
+	
+	- Polishing of messages. Default configuration in sources and so the default binary release
+	  of KisTA is silent. KisTA-XML enables control of its own messages via XML configuration options.
+	
+	- Automation of insertion of release number into the KisTA header (only relevant for source package, 
+	  for binary distro generation)
+
+R299
+-----------
+	- Added user macros for simple obtention of references to I/O and system channels
+	- XML interface:
+		- Fixed that global param list was not updated after reading a vector parameter in the system configuration file
+		- Added capability to specify init function associated to a comm_synch channel (for injection of initial tokens)
+	- Minor fixes on metrics report
+
+up to R295:
+------------
+	- Support for throughput and normalized throughput report, plus reporting in different units for each case
+	- Support of vector parameters (with a more multicube like aspect, based on "item" element and "value" property
+	- Support of Multicube namespaces in the input XML files (system configuration file and dse file
+	- Fixes to better support gradual refinement of the model (model is executable for different levels of information provided)
+
+up to R280:
+------------
+
+More improvements, including:
+
+- KisTA library
+	- restructuration for separated compilation, Makefiles generate static and dynamic library
+	- Support of environment vs internal communications buffer channels
+	- Support of network interface in PEs
+	- if not netif means that the PE has to do the communication precessing.
+          Specifically a buffer channel write involves to transfer delay to the writer task, as well as to the reader task
+	- if there is network interface, the writer can be delegated to the network interface
+		- sending task gets immediately released (except for the case that a finite tx buffer capability is declared)
+                  then, sendind task can get blocked
+
+	- Support of static communication scheduling
+
+	- Support of write/read throughputs and stationary throughputs, both in internal communication events and in system channels
+	  normalized, and in data rates
+
+	- Support of graphical report of the KisTA model
+
+	- many more error condition detection
+
+- XML front-end
+	- Support of XML format compatible with Multicube SCoPE, including parameters
+	- Support of hook of functionality, both for system tasks and environment tasks
+	- Support of environment channels and environment functionalities
+	- support of generic communication resources and tdma bus configuration
+	- flags for graphical report and verbosity
+	- added progressive set of examples
+
+Version V0.4
+-------------
+	- Added frequencies and CPI attributes to PEs
+	- Hook for integrating code annotation techniques. Specific hook to SCoPE operator cost annotation.
+	- Example with static brt_ex7 which checks:
+	      - two scheduler instances at the same time (configured for static scheduling)
+	      - the integraton of the hook for automatic annotation
+	- Adding first version of XML front-end
+
+- communications time penalties (at high-level and at low level)
+
+- Modelling of communication resource (generic network)
+
+- Support for XML interface for integration with other tooling (specially, exploration tool()
+
+- Add example with synchronization and static scheduling
+
+- Modelling of context switches
+	
+Version V0.3
+-------------
+	- Reestructuration to make it independent of suspend/resume feature. This implementation alternative
+	  resulted to be more confuse and less flexible, at least at this stage of the development.
+	  Current implementation is only event based, and likely can run on top of previous versions of SystemC
+	 
+	- Added support for cooperative scheduler. Implementation code restructured and edited to clearly reflect the configurability of
+	  the scheduler in terms of (preemptive, cooperative, non-preemptive) (David&Burns) and (time-slicing, no-time slicing)
+	- Added support for yield
+	- Restructuration of scheduler and dispatcher. Based now in a cleaner clasiffication.
+	- Added built in support for Rate Monotonic, Deadline Monotonic and Density Monotonic static policies (as well as user priorities)
+	- Added built in support for Earliest Deadline First dynamic policy
+	- Added built in suppprt for Round Robin	
+	- Added getter for tick timer event
+	- Added getter for "static" utilizations for task-level (task_info_t), with associated checks (that the task is at least periodical)
+	- Added getter for "static" density for task-level (task_info_t) , with associated checks (that there are at least some deadlines)
+	- Added possibility to allow arbitrary deadlines
+	- Fixing and restructuration of setting&getting of periods and deadlines
+	- Added support for reporting task (and scheduler tasks) responses, Maximal (Worst case)
+	- Included system-level bypass code
+	- Added support for the following synchronization mechanisms: memoryless event, registered event, semaphore (registered event queue),
+	  and fifo queue buffer, for suppoting SW modelling and with corresponding bypasses for system-level model
+	- Added 4 examples for synchronizations for each case
+	- Restructuration of data types and scheduler interface for:
+		- a more precise and correct naming of the configuration options, to fit static priority schedulings within 
+		  dynamic schedulers cathegory
+		- support of preemptive/non-preemptive/cooperative under David&Burns definition
+	- Fixes for support of task completion.
+	   Task state FSM fixed for supporting right transitions from Executing to Completing state,
+	   and report of error of unexpected transitions improved.
+	   Debug messages for such FSM transitions also improved.
+	- Detection of lock due to yield() calls in non-preemptive scheduling configurations.
+	- In dispatcher, static class removed (to enable several instantiations of scheduler without side effect
+	  (the static variable would be shared by the instances of the scheduler)
+	- Provided BEGIN_TASK and END_TASK macros, and fixed END_PERIODIC_TASK_MACRO, which required task name without need
+	- Refined features for simulation control:
+      - features for automate the length of the "interesting" simulation, and for either "abrupt end" or "in scheduling" end.
+
+	- Static scheduling (STATIC_SCHEDULING)
+	- Checks related to static scheduling:
+		- error if there is static schedule provided when static scheduling policy configured
+		- error if schedule specified in two ways (names, and pointers) they are coherent (reflect the same)
+		- error if detects that a tasks of the schedule is not in the task set assigned to the scheduler
+		- error if detects that not all the tasks of the task set assigned to the scheduler are in the schedule
+				(KisTA can be configured to report it as a warning)
+            
+Version V0.2
+-------------
+	- Support of Modelling
+		- Functions and macros to simplify the capture of periodic tasks and their attributes
+		
+	- Support of priority-based dispatching
+		- All User priorities take value 255  by default
+		- Creation of priority based vector structure for fast dispatching along simulation
+		- Support of user priorities, Rate monotonic based priorities, and mixture of them
+		- Includes some slight modification on internal dispatcher function (now returns a pointer to task info structure)
+		
+	- Support of attributes:		
+		- Setting of deadline (and attribute flag setting there is a deadline in the task)
+		- Setting of period (and attribute flag setting there is a period in the task)
+			- Period setting forcing a "period deadline", but without overiding a previosly settled deadline
+
+	- Support of tracing:
+		- Added support for state based tracing and configuration of which tracings are enabled
+		  (state based and/or unfolded, and schedulers and/or tasks)
+		  
+	- Support of reports:
+		- Add occupations of tasks
+		- Add starvation assesments
+		- Add and distinguishes between the summation of tasks occupation (new report) and platform occupation
+		- Update on the calculation of occupation calculation (addition of tasks and scheduler occupation)
+		- Report of missed deadlines as flag stating if there are missed deadlines (short report) and
+		  detailed report (with the tasks missing the deadlines).
+		- Report of number of context switches
+
+	- Support of checkings:
+		- Error: no assigned tasks to an scheduler
+		- Warning: tasks with same user priority
+		- Warning: check the assignation of unvalid priority assignation (currently, 0)
+		- Warning: reports read before simulation start and during the simulation
+		- Error:   reports error in reading occupation of a task not assigned to the scheduler
+		- Error: reports an error in accessing starvation assesments in case it is not the end of the simulation
+		- Errors: if setters for configuring scheduler are called once the simulations starts
+		- Errors: if setters for setting tasks properties are called once the simulation start
+		- Warning: reporting missed deadlines with detailed information (tasks and time f missed deadline)
+		- Error: if trying to assign a deadline greater than period for a periodic task
+		- Error: in task attributes setting functions (a null period, deadline, or a zero priority will report error).
+		- Error: if calling wait_period() from the task body of a task non declared as periodic.
+		- Error: detection (in case of time slicing,) that the scheduling times are bigger than the tick_timer period
+		         There is an static check (before simulation start) valid for fixed scheduling times.
+		         A dynamic check can be enabled, which is useful when modelling variable scheduling times, and that can
+		         be disabled otherwise to gain simulation performance.
+
+
+    - Editions for disthinguishin between active (W, R) and inactive (W,R) states
+
+	- Name change: KisTA (K-th for indicating that its development started in KTH, in Kista)
+
+Version V0.1
+-------------
+
+Support of:
+- allocation of (unbounded number) tasks to scheduler
+
+- (Single processor) scheduler model supportingg
+
+	- non-preemptive and preemptive (with time slicing) policy
+
+	- Dispatching Policy:
+		- cycle executive (ring: next scheduling implies selecting the next task in the ring)
+
+	- report of:
+		- scheduler consumption
+		- processor utilization (assuming 1PE by scheduler)
+	  
+	- Busy signals of sheduler and task (1 vcd file per scheduler)
+	 
+
+-----------------------------------------------------------------------------------------
+
+
+Some possible future report To Does:
+--------------
+
+- tasks_info_by_phandle_t : refurnish implementation to pass that structure in task_info_t.hpp as local 
+  (this is likely a prerequisite for partitioned scheduling using several single-processor schedulers
+
+- Multiprocessor scheduler (for global scheduling theories)
+
+- Modelling of scheduling types: with extensibility, depending on scheduling policies...
+
+- Enhancing support for other extensibility features
+
+- Integration with more detailed network models (NoC, Buses: TDMA, Flexray, CAN, etc..., Wireless,)
+	- Connection with NoC simulator
+	- Connection with Wireless simulator
+
+- Random and pseudo random scheduling
+
+- Reporting of Average and Std. Dev. Response times
+
+- support of non-blocking accesses for fifo buffer
+
+- Support for demand function
+
+- Support for Init phase delays for tasks
+
+

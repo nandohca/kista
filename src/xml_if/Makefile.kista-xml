@@ -1,0 +1,119 @@
+#
+# Makefile for kista-xml application
+#
+#
+
+
+# for linking vs and ad-hoc installed libxml2 library, ensure that 
+# xml2-config of the ad-hoc installed libxml2 library is in path
+# Then, xmls2-config will do the rest of the job
+
+EXTRACFLAGS = $(shell xml2-config --cflags)
+EXTRA_LIBS = $(shell xml2-config --libs)
+
+# For more portability with older libraries of libxml2 (see kista_xml_utils.cpp)
+LIBXML_VERSION =  $(shell xml2-config --version)
+LIBXML_VER_MAJOR := $(shell echo $(LIBXML_VERSION) | cut -f1 -d.)
+LIBXML_VER_MINOR := $(shell echo $(LIBXML_VERSION) | cut -f2 -d.)
+
+LIBXML_LT_2_9 := $(shell [ $(LIBXML_VER_MAJOR) -lt 2 -o \( $(LIBXML_VER_MAJOR) -eq 2 -a $(LIBXML_VER_MINOR) -lt 9 \) ] && echo true)
+
+ifeq ($(LIBXML_LT_2_9),true)
+EXTRACFLAGS += -DREQUIRES_XML_COMPLEMENTS
+endif
+
+MODULE = kista-xml
+#SRCS = $(wildcard *.cpp)
+
+SRCS = kista_xml.cpp
+
+OBJS = $(SRCS:.cpp=.o)
+
+EXAMPLE_DIR=$(CURDIR)
+
+ADD_INCLUDE_DIRS= 
+
+
+## Variable that points to SystemC installation path, not needed for debianized package
+#SYSTEMC = $(HOME)/soft/sc/systemc-2.3.0/installdir
+
+## Variable that points to the Kisskode installation library
+#KISTA =  $(HOME)/Documents/Dropbox/trabajo/kista
+#KISTA =  $(HOME)/Documentos/trabajo/kista
+
+## Variable that points to SFF (SystemC ForSyDe) installation path
+# release
+
+## not needed for debianized package
+#TARGET_ARCH = macosx
+TARGET_ARCH = linux64
+
+CC     = g++  
+OPT    = -O0 -std=c++0x
+#OPT    = 
+DEBUG  = -g
+
+## not needed for debianized package
+SYSDIR = -I$(SYSTEMC)/include
+          
+#INCDIR = -I. -I.. -I$(SFF)
+## not needed for debianized package
+INCDIR = -I. -I.. $(SYSDIR) -I$(INSTALLDIR)/src
+##INCDIR = -I. -I.. $(SYSDIR) -I$(KISTA)/src -I$(ADD_INCLUDE_DIRS)
+
+#LIBDIR = -L. -L..
+## not needed for debianized package
+LIBDIR = -L. -L.. -L$(SYSTEMC)/lib-$(TARGET_ARCH) -L$(INSTALLDIR)/lib
+
+## Build with maximum gcc warning level
+CFLAGS = -DSC_INCLUDE_DYNAMIC_PROCESSES -Wall -Wno-deprecated -Wno-return-type -Wno-char-subscripts -pthread $(DEBUG) $(OPT) $(EXTRACFLAGS)
+#CFLAGS = -arch i386 -Wall -Wno-deprecated -Wno-return-type -Wno-char-subscripts $(DEBUG) $(OPT) $(EXTRACFLAGS)
+
+LIBS =  -lstdc++ -lm $(EXTRA_LIBS) -lsystemc -lkista
+
+EXE    	 = $(MODULE)
+STANDALONE  = $(MODULE)-standalone
+
+.PHONY: clean ultraclean install
+
+# next to objectives refer to kista-xml application creation
+# it requires the creation of the binary file
+
+
+all: $(EXE)
+#all: $(EXE) $(STANDALONE)
+
+#$(EXE): $(OBJS) $(SYSTEMC)/lib-$(TARGET_ARCH)/libsystemc.a 
+$(STANDALONE): $(OBJS) $(INSTALLDIR)/lib/libkista.a
+	$(CC) -static $(CFLAGS) $(INCDIR) $(LIBDIR) -o $@ $(OBJS) $(LIBS) 2>&1 | c++filt
+
+$(EXE):$(INSTALLDIR)/lib/libkista.so $(OBJS)
+	$(CC) $(CFLAGS) $(INCDIR) $(LIBDIR) -o $@ $(OBJS) $(LIBS) 2>&1 | c++filt
+	
+#$(EXE)-standalone: $(OBJS)
+#	$(CC) -static $(CFLAGS) $(INCDIR) $(LIBDIR) -o $@ $(OBJS) $(LIBS) 2>&1 | c++filt
+
+%.o : %.cpp
+	$(CC) $(CFLAGS) $(INCDIR) -c -MMD -o $@ $<
+
+install:
+	cp -f $(EXE) $(TOOL_INSTALLDIR)
+#	cp -f $(STANDALONE) $(TOOL_INSTALLDIR)
+
+
+scheduler1_trace.vcd: $(EXE)
+	./$(EXE)
+
+traces: wave_viewer_settings.gtkw scheduler1_trace.vcd
+	gtkwave -a wave_viewer_settings.gtkw scheduler1_trace.vcd
+
+clean:
+	rm -f $(OBJS)
+	
+ultraclean: clean
+	rm -f $(EXE)
+	rm -f $(PLUG_IN)
+	rm -f *.d
+	rm -f *~
+
+-include $(SRCS:.cpp=.P)

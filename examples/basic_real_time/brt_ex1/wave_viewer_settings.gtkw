@@ -1,0 +1,38 @@
+[*]
+[*] GTKWave Analyzer v3.3.34 (w)1999-2012 BSI
+[*] Fri Mar  1 09:23:44 2013
+[*]
+[dumpfile] "/home/fernando/Documentos/trabajo/kista/examples/basic_real_time/brt_ex1/scheduler1_trace.vcd"
+[dumpfile_mtime] "Fri Mar  1 09:23:21 2013"
+[dumpfile_size] 1900
+[savefile] "/home/fernando/Documentos/trabajo/kista/examples/basic_real_time/brt_ex1/wave_viewer_settings.gtkw"
+[timestart] 0
+[size] 1301 640
+[pos] -1 -1
+*-38.132256 8890000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 223
+[signals_width] 150
+[sst_expanded] 1
+[sst_vpaned_height] 152
+@820
+[color] 3
+SystemC.scheduler1[7:0]
+@28
+[color] 3
+SystemC.scheduler1_exec
+@820
+SystemC.task1[7:0]
+SystemC.task2[7:0]
+@28
+SystemC.task1_activ
+SystemC.task1_cons
+SystemC.task1_w_comm
+SystemC.task1_w_per
+@29
+SystemC.task2_activ
+@28
+SystemC.task2_cons
+SystemC.task2_w_comm
+SystemC.task2_w_per
+[pattern_trace] 1
+[pattern_trace] 0

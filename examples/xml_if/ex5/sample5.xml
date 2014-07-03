@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Example sample5.xml for XML front-end of the KisTA library -->
+<!--	Based on FDL'13 Example, as example 4, but with communication resources,  -->
+<!--	specifically, a tdma bus -->
+
+<system>
+	
+  <application name="A1">
+	<task name="T1">
+		<task_properties>
+			<WCET value="1" unit="ns" />
+		</task_properties>
+	</task>
+	
+	<task name="T2"/>
+	<task name="T3"/>
+
+	<task_properties task_name="T2">
+			<WCET value="2" unit="ns" />		
+	</task_properties>
+
+	<task_properties task_name="T3">
+			<WCET value="3" unit="ns" />
+	</task_properties>
+	
+	<!--	For the moment, only fifo_buffer and basic types supported-->
+	<comm_synch name="fifo1" src="T1" dest="T2" comm_type="fifo_buffer" comm_data_type="unsigned"/>
+
+  </application>
+
+  <application_mapping>
+	<map_task source="T1" target="sched1" />
+	<map_task source="T2" target="sched1" />
+	<map_task source="T3" target="sched2" />
+  </application_mapping>
+
+  <platform>
+
+	  <SW_platform>
+		  <rtos name="sched1">
+			  <task_scheduler>
+			  <scheduler_policy>
+				 <static_scheduling>
+					<item value="T1"/>
+					<item value="T2"/>
+				 </static_scheduling>
+			  </scheduler_policy>
+			  </task_scheduler>
+		  </rtos>
+
+		  <rtos name="sched2">
+			  <task_scheduler>			  
+			  <scheduler_policy>
+				 <static_scheduling>
+					<item value="T3"/>
+				 </static_scheduling>
+			  </scheduler_policy>
+			  </task_scheduler>			  
+		  </rtos>	  
+	  </SW_platform>
+		  
+	  <platform_mapping>
+		  <map_rtos source="sched1" target="PE0"/>
+		  <map_rtos source="sched2" target="PE1"/>
+	  </platform_mapping>
+	
+	  
+	  <HW_platform>
+			  
+		  <HW_Architecture name="arch1">
+				
+			<!-- Currently, KisTA supports a predefined set of elements, PE and comm_res, and so
+					 a compact style to describe the architecture -->
+					   
+			<PE name="PE0" type="arm9">		
+				<freq value="50" unit="MHz" />
+			</PE>
+				
+			<PE name="PE1" type="arm9">
+				<freq value="_PE1_FREQ_VAL" unit="MHz" />
+				<CPI value="1"/>
+			</PE>
+					
+			<comm_res name="tdma1" type="generic">
+				<HW_Connection instance="PE0" name="hw_conn_1"/>
+				<HW_Connection instance="PE1" name="hw_conn_2"/>
+			</comm_res>
+			
+			
+							
+		  </HW_Architecture>
+
+	    
+		<!-- This description can be adapted to the SCoPE style -->  
+			
+		<!-- To be supported!! -->
+			
+		<!--		  
+		<HW_Components>
+			<HW_Component category="PE" name="PE1_comp" frequency="50" unit="MHz"/>
+			<HW_Component category="PE" name="PE2_comp" frequency="_PE1_FREQ_VAL" unit="MHz"/>
+			<HW_Component category="comm_res" name="com_res_comp"/>
+			or
+			<HW_Component category="tdma" name="tdma_comp"/>
+			  configuration of not generic attributes...
+			</HW_Component>
+				/>
+		</HW_Components>
+			
+		<HW_Architecture>
+			<HW_Instance component="PE1_comp" name="PE1"/>
+			<HW_Instance component="PE2_comp" name="PE2"/>
+				
+			<HW_Instance component="comm_res_comp" name="comm_res0"/>
+			   <HW_connection instance="PE1" name="hw_conn1"/>
+			   <HW_connection instance="PE2" name="hw_conn1"/>
+			<HW_Instance/>
+
+			or
+
+			<HW_Instance component="tdma_comp" name="tdma1" configuration_attributes ... />
+			   <HW_connection instance="PE1" name="hw_conn1"/>
+			   <HW_connection instance="PE2" name="hw_conn1"/>
+			<HW_Instance/>
+				
+		</HW_Architecture>
+			
+		-->	
+	
+	  </HW_platform> 
+<!--	
+		Excerpt of SCoPE example
+			Note that in KisTA we add the more abstract concept of PE, in order to enable a more
+			abstract capture of the "computation node"
+			
+	  </HW_platform>
+	  
+	  	<HW_Components name="HWComponents_1">
+			<HW_Component category="bus" name="AMBA" frequency="200" />
+			<HW_Component category="network" name="mesh" frequency="200" x_size="2" y_size="1" />
+			<HW_Component category="processor" name="arm926t" frequency="200" />
+			<HW_Component category="memory" name="Memory" mem_size="536870K" frequency="200" mem_type="RAM" />
+			<HW_Component category="net_if" name="network_if" mem_size="100" frequency="200" />
+		</HW_Components>
+		<HW_Architecture name="HWArch_1">
+			<Repeat number="__NUM_NODES" index="a">
+				<HW_Instance component="AMBA" name="bus0" >
+					<HW_Instance component="arm926t" name="Processor%a" />
+					<HW_Instance component="Memory" name="Memory%a" start_addr="__MEM_ADDR" />
+					<HW_Instance component="network_if" name="NoC_if%a" start_addr="__NOC_ADDR" irq="5" />
+				</HW_Instance>
+			</Repeat>
+			<HW_Instance component="mesh" name="NoC" >
+				<HW_Connection instance="//@HW_Platform/@HW_Architecture/@Repeat.0/@HW_Instance.0/@HW_Instance.2" name="conn0"/>
+				<HW_Connection instance="//@HW_Platform/@HW_Architecture/@Repeat.1/@HW_Instance.0/@HW_Instance.2" name="conn1"/>
+			</HW_Instance>
+		</HW_Architecture>
+		...
+	  </HW_Platform>  
+-->
+
+  </platform>
+  
+  <parameters>
+	  <parameter name="PE1_FREQ_VAL" value="100"/>
+  </parameters>
+  
+  <kista_configuration>
+	<simulation_time value="1" unit="s"/>
+	<verbose value="true"/>
+	<xml_front_end_verbose value="true"/>
+	<export_sketch value="true"/>
+	<sketch_file_name value="sample5_sketch"/>
+  </kista_configuration>
+  
+</system>

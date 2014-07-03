@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xsd:schema xmlns:KisTA_metamodel="http://www.example.org/KisTA_metamodel" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ecore:nsPrefix="KisTA_metamodel" ecore:package="KisTA_metamodel" targetNamespace="http://www.example.org/KisTA_metamodel">
+  <xsd:import namespace="http://www.eclipse.org/emf/2002/Ecore" schemaLocation="platform:/plugin/org.eclipse.emf.ecore/model/Ecore.xsd"/>
+  <xsd:element ecore:ignore="true" name="system" type="KisTA_metamodel:system"/>
+  <xsd:element ecore:ignore="true" name="application" type="KisTA_metamodel:application"/>
+  <xsd:element ecore:ignore="true" name="platform" type="KisTA_metamodel:platform"/>
+  <xsd:element ecore:ignore="true" name="task" type="KisTA_metamodel:task"/>
+  <xsd:element ecore:ignore="true" name="HW_platform" type="KisTA_metamodel:HW_platform"/>
+  <xsd:element ecore:ignore="true" name="SW_platform" type="KisTA_metamodel:SW_platform"/>
+  <xsd:element ecore:ignore="true" name="platform_mapping" type="KisTA_metamodel:platform_mapping"/>
+  <xsd:element ecore:ignore="true" name="PE" type="KisTA_metamodel:PE"/>
+  <xsd:element ecore:ignore="true" name="application_mapping" type="KisTA_metamodel:application_mapping"/>
+  <xsd:element ecore:ignore="true" name="Frequency" type="KisTA_metamodel:Frequency"/>
+  <xsd:element ecore:ignore="true" name="map_rtos" type="KisTA_metamodel:map_rtos"/>
+  <xsd:element ecore:ignore="true" name="map_task" type="KisTA_metamodel:map_task"/>
+  <xsd:element ecore:ignore="true" name="RTOS" type="KisTA_metamodel:RTOS"/>
+  <xsd:element ecore:ignore="true" name="scheduler_policy" type="KisTA_metamodel:scheduler_policy"/>
+  <xsd:element ecore:ignore="true" name="static_scheduling" type="KisTA_metamodel:static_scheduling"/>
+  <xsd:complexType ecore:name="system" name="system">
+    <xsd:sequence>
+      <xsd:element ecore:resolveProxies="true" minOccurs="0" name="application" type="KisTA_metamodel:application"/>
+      <xsd:element ecore:name="EReference1" ecore:resolveProxies="true" minOccurs="0" name="EReference1" type="KisTA_metamodel:platform"/>
+      <xsd:element ecore:name="app_mapping" ecore:resolveProxies="true" minOccurs="0" name="app_mapping" type="KisTA_metamodel:application_mapping"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType ecore:name="application" name="application">
+    <xsd:sequence>
+      <xsd:element ecore:resolveProxies="true" minOccurs="0" name="task" type="KisTA_metamodel:task"/>
+    </xsd:sequence>
+    <xsd:attribute name="name" type="ecore:EString"/>
+  </xsd:complexType>
+  <xsd:complexType ecore:name="platform" name="platform">
+    <xsd:sequence>
+      <xsd:element ecore:name="HW_platform" ecore:resolveProxies="true" minOccurs="0" name="HW_platform" type="KisTA_metamodel:HW_platform"/>
+      <xsd:element ecore:name="SW_platform" ecore:resolveProxies="true" minOccurs="0" name="SW_platform" type="KisTA_metamodel:SW_platform"/>
+      <xsd:element ecore:name="platfrom_mapping" ecore:resolveProxies="true" minOccurs="0" name="platfrom_mapping" type="KisTA_metamodel:platform_mapping"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType ecore:name="task" name="task">
+    <xsd:attribute name="name" type="ecore:EString" use="required"/>
+  </xsd:complexType>
+  <xsd:complexType ecore:name="HW_platform" name="HW_platform">
+    <xsd:sequence>
+      <xsd:element ecore:name="PE" ecore:resolveProxies="true" maxOccurs="unbounded" minOccurs="0" name="PE" type="KisTA_metamodel:PE"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType ecore:name="SW_platform" name="SW_platform">
+    <xsd:sequence>
+      <xsd:element ecore:resolveProxies="true" minOccurs="0" name="rtos" type="KisTA_metamodel:RTOS"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType ecore:name="platform_mapping" name="platform_mapping">
+    <xsd:sequence>
+      <xsd:element ecore:name="map_rtos" ecore:resolveProxies="true" maxOccurs="unbounded" minOccurs="0" name="map_rtos" type="KisTA_metamodel:map_rtos"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="PE">
+    <xsd:attribute name="name" type="ecore:EString" use="required"/>
+    <xsd:attribute name="type" type="ecore:EString" use="required"/>
+    <xsd:attribute ecore:reference="KisTA_metamodel:Frequency" name="freq" type="xsd:anyURI" use="required"/>
+  </xsd:complexType>
+  <xsd:complexType ecore:name="application_mapping" name="application_mapping">
+    <xsd:sequence>
+      <xsd:element ecore:name="map_task" ecore:resolveProxies="true" minOccurs="0" name="map_task" type="KisTA_metamodel:map_task"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="Frequency">
+    <xsd:attribute name="value" type="ecore:EString"/>
+    <xsd:attribute name="unit" type="ecore:EString"/>
+  </xsd:complexType>
+  <xsd:complexType ecore:name="map_rtos" name="map_rtos">
+    <xsd:attribute ecore:reference="KisTA_metamodel:RTOS" name="source" type="xsd:anyURI" use="required"/>
+    <xsd:attribute ecore:reference="KisTA_metamodel:PE" name="target" type="xsd:anyURI" use="required"/>
+  </xsd:complexType>
+  <xsd:complexType ecore:name="map_task" name="map_task">
+    <xsd:attribute ecore:name="source_app" ecore:reference="KisTA_metamodel:application" name="source_app" type="xsd:anyURI" use="required"/>
+    <xsd:attribute ecore:name="source_task" ecore:reference="KisTA_metamodel:task" name="source_task" type="xsd:anyURI" use="required"/>
+    <xsd:attribute ecore:reference="KisTA_metamodel:RTOS" name="rtos" type="xsd:anyURI" use="required"/>
+  </xsd:complexType>
+  <xsd:complexType name="RTOS">
+    <xsd:sequence>
+      <xsd:element ecore:name="scheduler_policy" ecore:resolveProxies="true" name="scheduler_policy" type="KisTA_metamodel:scheduler_policy"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType ecore:name="scheduler_policy" name="scheduler_policy">
+    <xsd:sequence>
+      <xsd:element ecore:name="static_scheduling" ecore:resolveProxies="true" minOccurs="0" name="static_scheduling" type="KisTA_metamodel:static_scheduling"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType ecore:name="static_scheduling" name="static_scheduling">
+    <xsd:attribute ecore:reference="KisTA_metamodel:task" name="task">
+      <xsd:simpleType>
+        <xsd:list itemType="xsd:anyURI"/>
+      </xsd:simpleType>
+    </xsd:attribute>
+  </xsd:complexType>
+</xsd:schema>

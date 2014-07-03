@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Example sample6.xml for XML front-end of the KisTA library -->
+
+<!--	Reproduces the gSimple3A model explored via the Analytical DSE tool  -->
+<!--	of KTH/ICT/ES -->
+<!--	In this version, a TDMA bus is instanced as a communication resource of the platform,
+        instead of using a generic resource, as in sample5.xml  -->
+
+<system>
+
+		
+  <application name="A1">
+	
+			<!-- "function" To be supported -->
+	<task name="T1">
+		<task_properties>
+			<WCET value="3" unit="ns" />
+			<!-- To be supported!!: WCMS: worst case memory size -->
+			<WCME value="250" unit="bytes" />
+		</task_properties>
+	</task>
+	
+	<task name="T2"/>
+	<task name="T3"/>
+
+	<task_properties task_name="T2">
+			<WCET value="2" unit="ns" />	
+			<WCME value="218" unit="bytes" />	
+	</task_properties>
+
+	<task_properties task_name="T3">
+			<WCET value="1" unit="ns" />
+			<WCME value="292" unit="bytes" />	
+	</task_properties>
+	
+	<!--	For the moment, only fifo_buffer and basic types supported-->
+	<comm_synch name="fifo1" src="T1" dest="T2" comm_type="fifo_buffer" comm_data_type="unsigned"/>
+			<!-- notice this unsigned is the value 32 in the gSimple3A example for edge 1-->
+	<comm_synch name="fifo2" src="T2" dest="T3" comm_type="fifo_buffer" comm_data_type="char"/>
+			<!-- notice this unsigned is the value 32 in the gSimple3A example for edge 1-->
+  </application>
+
+  <application_mapping>
+	  <!-- No task migration style (a task to 1 processing element -->
+	<map_task source="T1" target="_T1_MAP" />
+	<map_task source="T2" target="_T2_MAP" />
+	<map_task source="T3" target="_T3_MAP" />
+  </application_mapping>
+
+  <platform>
+
+	  <SW_platform>
+		  <rtos name="sched1">
+			  <!--tasks scheduling -->
+			  <task_scheduler>
+				  <scheduler_policy>
+						 <static_scheduling>
+							<!-- This should be a parameter -->
+							<item value="T1"/>
+						 </static_scheduling>
+				  </scheduler_policy>
+			  </task_scheduler>
+			  <!--communication scheduling -->
+			  <!--required only for actors with two or more output edges -->
+			  <!-- TBS 			  
+			  <comm_scheduler>
+				  <static_scheduling>
+					  <comm src="T1" dest="T2"/>
+					  <comm src="T1" dest="T3"/>
+				  <static_scheduling>
+			  </comm_scheduler>
+				-->
+		  </rtos>
+
+		  <rtos name="sched2">
+			  <task_scheduler>
+				  <scheduler_policy>
+					 <static_scheduling>
+						<item value="T2"/>
+						<item value="T3"/>
+					 </static_scheduling>
+				  </scheduler_policy>
+			  </task_scheduler>
+		  </rtos>	  
+	  </SW_platform>
+		  
+	  <platform_mapping>
+		  <map_rtos source="sched1" target="PE0"/>
+		  <map_rtos source="sched2" target="PE1"/>
+	  </platform_mapping>
+		  
+	  <HW_platform>
+			  
+		  <HW_Architecture name="arch1">
+				
+			<!-- Currently, KisTA supports a predefined set of elements, PE and comm_res, and so
+					 a compact style to describe the architecture -->
+					   
+			<PE name="PE0" type="arm9">		
+				<freq value="50" unit="MHz" />
+			</PE>
+				
+			<PE name="PE1" type="arm9">
+				<freq value="_PE1_FREQ" unit="MHz" />
+				<CPI value="1"/>
+			</PE>
+			
+			<comm_res name="tdma1" type="tdma_bus">
+				<HW_Connection instance="PE0" name="hw_conn_1" slots_number="1"/>
+				<HW_Connection instance="PE1" name="hw_conn_2" slots_number="1"/>
+				<!-- TDMA bus specific parameteres -->
+				<!-- mandatory attributes in the KisTA TDMA bus model-->
+				<!--
+				<n_channels		 value="2"/>
+				    -->
+				<slots_number	 value="2"/>
+				
+				<slot_time		 value="0.5" unit="s"/>
+				
+				<!-- the remaining attributes should complete the information required to state an effective bandwidth -->
+				
+				<!--
+				<channel_payload value="32" unit="bit"/>
+				  -->
+				  
+				<payload value="32" unit="bit"/>
+				
+				<!-- cycle time can be omitted, and then KisTA TDMA bus model will calculate an implicit cycle time -->
+				<!-- considering that the TDMA bus has only static channels and the guard time -->
+				<!--
+				<cycle_time      value="1" unit="s"/>
+				-->
+				
+			</comm_res>
+								 							
+		  </HW_Architecture>
+    	
+	  </HW_platform> 
+
+  </platform>
+  
+ <!-- parameters section is ignored (and thus, this parameter setting overriden,
+      if the user provides a parameter file (sc_path_name) -->
+  <parameters>
+	  <parameter name="PE1_FREQ" value="100"/>
+  </parameters>
+  
+  <kista_configuration>
+	<simulation_time value="1" unit="s"/>
+	<verbose value="true"/>
+	<xml_front_end_verbose value="true"/>
+	<export_sketch value="true"/>
+	<sketch_file_name value="sample6_sketch"/>
+  </kista_configuration>
+  
+</system>

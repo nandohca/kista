@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Example of parameters for sample3.xml in a separated file, under Multicube spec. for XML front-end of the KisTA library -->
+<!--	FDL13 Example -->
+ <simulator_input_interface xmlns="http://www.multicube.eu/" version="1.4">
+	  <parameter name="PE1_FREQ_VAL" value="50"/>
+ </simulator_input_interface>
+

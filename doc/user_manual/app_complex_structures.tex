@@ -1,0 +1,165 @@
+KisTA enables the modelling of the transfer of complex data structures in the communication among tasks.
+%
+There are two basic techniques:
+\begin{itemize}
+\item Transfer a reference to the complex user structure
+\item Transfer the whole user structure
+\end{itemize}
+There is a trade-off in them. By using the transfer by reference, the simulation is lighter, but, in order to
+avoid races and deterimisn problems, you should ensure that none of the implementations modelled will be
+posing such a problem, e.g., leading to two or more consecutive writes of the value before a single read.
+%
+The safest, altought heavier in simulation cost, is the transfer of the whole structure method.
+%
+Both techniques can be used from both the C++ API and from the XML front-end of KisTA.
+
+Following, how to model both of them in KisTA is explained:
+
+\textbf{USING THE C++ API}
+
+\textbf{Transfer by reference:}
+
+For instance, lets assume the following user defined structure \texttt{my\_type}:
+
+%\begin{table}[t]
+\begin{lstlisting}[language=c++,caption={Example of complex data structure declared by the user.}]
+struct my_type {
+       unsigned int scal_coeff;
+       float coeffs[9];
+       char filter_type;
+};
+\end{lstlisting}
+%\end{table}
+
+Then, in order to use the transfer of a reference, the user can make the following declaration:
+
+%\begin{table}[t]
+\begin{lstlisting}[style=KistaCodeStyle,caption={Example of fifo buffer declaration to transfer a reference to a complex data structure declared by the user.},label=fif_buf_data_ref]
+fifo_buffer<my_type *>   my_buffer("my_buffer");
+\end{lstlisting}
+%\end{table}
+
+This is a fast way to transfer data among tasks. However, the user must mind that, as it can happen in a real system, this way to transfer data among concurrent tasks is to formal effects equivalent to a shared memory mechanism so the model can suffer races depending on the timing, mapping, scheduling, etc. The user should mind the life times of the objects, and more precisely, of the actual values associated to those object, whose reference is trasferred.
+
+\textbf{Transfer the whole structure}:
+
+A \emph{safe} in the sense of \emph{functionally deterministic}, but also more time costly alternative is to transfer the whole structure. In order to do that, the user can do the following:
+
+%\begin{table}[t]
+\begin{lstlisting}[language=c++,caption={Example of complex data structure declared by the user.},label=user_type_complex_struct_code]
+class my_type {
+public:
+       my_type(unsigned int _scal_coeff_var, float *_coeffs, char _filter_type );
+       my_type(const my_type& other); // copy constructor
+
+       my_type& operator=(const my_type& other); // assignement operator
+
+       unsigned int scal_coeff;
+       float coeffs[9];
+       char filter_type;
+
+};
+
+ostream& operator<<(ostream& os, my_type msg);
+\end{lstlisting}
+%\end{table}
+
+Notice that the user has to write the type as a class, and in a case like this, to describe a copy constructor to describe how the copy of the data is done, The implementation is ommited in this guideline, but notive that it is required to make a copy of the 9 coefficients, and not simply a copy of the array pointer. It is then also convenient to describe the assignement operator. Finally, the user has to provide at least the {\tt <<} operator to enable its usage with the {\tt fifo\_buffer} KisTA communication facility, which relies on the SystemC {\tt sc\_fifo} channel.
+
+Now, the user can make the following declaration:
+
+%\begin{table}[t]
+\begin{lstlisting}[language=c++,caption={Declaration of a  KisTA fifo buffer transferring a user class by value.}]
+fifo_buffer<my_type>   my_buffer("my_buffer");
+\end{lstlisting}
+%\end{table}
+
+As can be seen, this can be cumbersome and very time wasting. KisTA provides the \texttt{message\_t} facility which alleviates this task. It has the following declaration:
+
+%\begin{table}[t]
+\begin{lstlisting}[language=c++,caption={Declaration of the \texttt{message\_t} class provided by KisTA.},label=message_t_declaration]
+class message_t {
+    friend ostream& operator<<(ostream& os, message_t msg);
+public:
+    message_t();
+    message_t(void *datap_var, size_t size_var); // pointer to the data and size
+   
+    // copy constructor
+    message_t(const message_t& other);
+   
+    // Asignation
+    message_t& operator =(const message_t& other);
+   
+    operator void* () {
+        return (void *)this->datap;
+    }
+   
+private:   
+    char *datap;     // pointer to the data
+    size_t host_size; // size of the message used to transfer the data by native host
+};
+\end{lstlisting}
+%\end{table}
+
+
+By relying on this class, the user can just declare the \texttt{my\_type} structure as in the transfer by reference case. The the user can write something lik this:
+
+%\begin{table}[t]
+%\begin{lstlisting}[language=c++,caption={Prototype of extension function.},label=static_anal_ext]
+%\begin{lstlisting}[language=c++]
+\begin{lstlisting}[style=KistaCodeStyle, caption={Declaration of KisTA fifo buffer transporting a complex user structure.}, label=complex_struct_value]
+fifo_buffer<message_t>   comm1("comm1");
+\end{lstlisting}
+%\end{table}
+
+This declaration is independent on the data type. So, to transfer an object data of type \texttt{my\_type}, you can do the following:
+
+%\begin{table}[t]
+\begin{lstlisting}[style=KistaCodeStyle, caption={Declare a complex data structure, fill it and send it through a fifo buffer.}, label=complex_struct_value_use_write]
+my_type      data;
+message_t    msg_data(&data,sizeof(data));
+comm1.write(msg_data);
+\end{lstlisting}
+%\end{table}
+
+For the reading, the user can do the following:
+%\begin{table}[t]
+\begin{lstlisting}[style=KistaCodeStyle,caption={Declare a complex data structure and load it with data received from a fifo buffer.}, label=complex_struct_value_use_read]
+
+my_type      *recv_data;
+message_t    msg_recv_data;
+
+comm1.read(msg_recv_data);
+recv_data = (my_type *)(void *)msg_recv_data;
+\end{lstlisting}
+%\end{table}
+
+Notice that, at the receiving side there will be a local copy of the received data in the \texttt{msg\_recv\_data} object, and that it is sufficient to handle a pointer to the \texttt{my\_type} type to access the data, which will be valid as long as the \texttt{msg\_recv\_data} is not step over by a new access to \texttt{comm1.read}.
+
+There are two more important advantages that this class can offer to the user.
+
+First, the \texttt{message\_t} class enables a transfer by copy where the data type transferred can be dynamically changed. Thats is, it is a kind of dynamically polimorphic channel which can transfer different data types by copy during the simulation.
+
+Second, it allows to hook complex user data structures, defined in the user code to a KisTA-XML description of the system. This enables an enhanced and powerful usage of KisTA as a "black-box" tool. This is illustrated next.
+
+\textbf{USING KisTA-XML:}
+
+If the user uses the \texttt{message\_t} to transfer comples user data structures, then the user code can be hooked to the KisTA-XML description. Specifically, assuming the previous declaration of the \texttt{msg\_data}, instead of declaring the \texttt{fifo\_buffer} through the \texttt{fifo\_buffer<message\_t>} class template,  the following channel declaration in the XML KisTA system description will be done:
+
+%\begin{table}[t]
+\begin{lstlisting}[language=XML, caption={Declaration of KisTA fifo buffer transporting a complex user structure in the XML interface.}, label=complex_struct_value_xml]
+<application name="A1">
+        ...
+    <comm_synch name="comm1" src="Tsrc" dest="Tdest"
+                comm_type="fifo_buffer" comm_data_type="message"
+                token_size="27"/>
+        ...
+</application>
+\end{lstlisting}
+%\end{table}
+
+
+Notice that the value of the \texttt{comm\_data\_type} is now \texttt{message}. Notice also that still the \texttt{token\_size} does not need to be linked to the size that the user struct is taking in memory to perform the \emph{copy-based transfer} (provided through the \texttt{sizeof()} statement). KisTA takes that size only in case the user does not specify the \texttt{token\_size} attribute. Othewise, the value of the \texttt{token\_size} attribute is the one taken for the calculation of the communication penalties associated to the transfer of the token.
+
+Notice also that this do not requires the user to remove calls to the \texttt{set\_functional\_failure()} function within the tasks code. They are simply ignored and the validations makes no effect.
+

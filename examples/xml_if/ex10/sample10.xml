@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Example sample19.xml for XML front-end of the KisTA library -->
+
+<!--	As example 9, Reproduces the gSimple3A model explored via the Analytical DSE tool  -->
+<!--	of KTH/ICT/ES -->
+<!--	With regard example 7, this version changes data type of fifo1 by a void * type to transfer
+        a complex type. The message size is accounted through the token_size attribute  -->
+
+<system>
+
+  <application name="A1">
+	 
+	<!--
+	 The following would be to support a fully separated modelling of functionality, out of 
+	 function structure, from the XML front-end
+	 It would be based on the functionality entry...
+		...which in turn would be based on the function entry
+			name: name of the function
+		     file: name of the object file where to find the function. Object file has to be compiled with annotation
+		     path: path where to find object file
+		function name="f1" file="" path=""
+			parameters description may be not necessary so far
+			<input name="a" type="int"/>
+			<input name="b" type="int"/>
+			<output name="c" type="int"/>
+	-->
+	
+	<!--  
+	<functionality>
+		<function name="f1" file="" path="">
+			parameters description may be not necessary so far
+			<input name="a" type="int"/>
+			<input name="b" type="int"/>
+			<output name="c" type="int"/>
+		</function>
+	</functionality>
+	-->
+			<!-- "function" To be supported -->
+	<task name="T1">
+		<!-- function section within task section serves to specify the 
+				void function containing invocation to task functionality, and communication calls
+			     so it containts the "internal structure" of the task, how communication and computation
+			     is ordered internally.
+			     This is a general way to capture such internal order.
+			     Then
+		-->
+		
+		<function name="t1_fun" file="task_funcs.so">
+			
+		<!--
+		<function name="t1_fun" file="task_funcs.so" path="./">
+		-->
+		
+		</function>
+		<task_properties>
+			<!-- Instead of WCET ... -->
+			<!--
+			<WCET value="3" unit="s" />
+			-->
+			<!-- ... WCEI can be used ... -->
+			<WCEI value="150000000" unit="instr" />
+			<!-- To be supported!!: WCMS: worst case memory size -->
+			<WCME value="250" unit="bytes" />
+		</task_properties>
+	</task>
+	
+	<task name="T2">
+			<function name="t2_fun" file="task_funcs.so"/>
+	</task>
+	
+	<task name="T3">
+			<function name="t3_fun" file="task_funcs.so"/>
+	</task>
+
+	<task_properties task_name="T2">
+			<WCET value="2" unit="s" />	
+			<WCME value="218" unit="bytes" />	
+	</task_properties>
+
+	<task_properties task_name="T3">
+			<WCET value="1" unit="s" />
+			<!--
+			<WCEI value="1000" unit="instr" />
+			-->
+			<WCME value="292" unit="bytes" />	
+	</task_properties>
+	
+	<!--	For the moment, only fifo_buffer and basic types supported-->
+	<!--
+	<comm_synch name="fifo1" src="T1" dest="T2" comm_type="fifo_buffer" comm_data_type="unsigned"/>
+    -->
+    
+    <!-- Use the following to consider the edge as a IO channel (no comm. penalty so far ...-->
+    <!--
+	<comm_synch name="fifo1" src="T1" dest="T2" comm_type="fifo_buffer" comm_data_type="voidp"	token_size="40" io="true"/>
+	-->
+	
+	<!-- ... or as a system channel, suffering communication penalty -->
+	<!--
+	<comm_synch name="fifo1" src="T1" dest="T2" comm_type="fifo_buffer" comm_data_type="voidp"	token_size="40"/>
+	-->
+	<comm_synch name="fifo1" src="T1" dest="T2" comm_type="fifo_buffer" comm_data_type="voidp"	token_size="40"/>
+	
+	<!-- NOTICE that if token_size was not present, then the size accouned would be the one of the void * in the
+	     native platform, e.g., 64bits, isntead of 40 bits in our example (struct composed of an integer plus a char)
+	-->
+
+	<comm_synch name="fifo2" src="T2" dest="T3" comm_type="fifo_buffer" comm_data_type="char"/>
+	<!-- NOTICE that KisTA does not assign any delay (or the default delay for intracommunicaiton) to
+	      this communication, since it is an intracommunication in the mapping specified
+	-->
+			<!-- notice this unsigned is the value 32 in the gSimple3A example for edge 1-->
+  </application>
+
+  <application_mapping>
+	  <!-- No task migration style (a task to 1 processing element -->
+	<map_task source="T1" target="_T1_MAP" />
+	<map_task source="T2" target="_T2_MAP" />
+	<map_task source="T3" target="_T3_MAP" />
+  </application_mapping>
+
+  <platform>
+
+	  <SW_platform>
+		  <rtos name="sched1">
+			  <!--tasks scheduling -->
+			  <task_scheduler>
+				  <scheduler_policy>
+						 <static_scheduling>
+							<!-- This should be a parameter -->
+							<item value="T1"/>
+						 </static_scheduling>
+				  </scheduler_policy>
+			  </task_scheduler>			  
+			  <!--communication scheduling -->
+			  <!--required only for actors with two or more output edges -->		  
+			  <comm_scheduling>
+				  <static_scheduling>
+					  <item value="fifo1"/>
+					  <item value="fifo2"/>
+				  </static_scheduling>
+			  </comm_scheduling>
+		  </rtos>
+
+		  <rtos name="sched2">
+			  <task_scheduler>
+				  <scheduler_policy>
+					 <static_scheduling>
+						<item value="T2"/>
+						<item value="T3"/>
+					 </static_scheduling>
+				  </scheduler_policy>
+			  </task_scheduler>			  
+		  </rtos>	  
+	  </SW_platform>
+		  
+	  <platform_mapping>
+		  <map_rtos source="sched1" target="PE0"/>
+		  <map_rtos source="sched2" target="PE1"/>
+	  </platform_mapping>
+		  
+	  <HW_platform>
+			  
+		  <HW_Architecture name="arch1">
+				
+			<!-- Currently, KisTA supports a predefined set of elements, PE and comm_res, and so
+					 a compact style to describe the architecture -->
+					   
+			<PE name="PE0" type="arm9">		
+				<freq value="50" unit="MHz" />
+				<netif value="true"/>
+				<!--
+				<netif value="true"/>
+				-->
+			</PE>
+				
+			<PE name="PE1" type="arm9">
+				<freq value="_PE1_FREQ" unit="MHz" />
+				<CPI value="1"/>
+				<netif value="true"/>
+				<!--
+				<netif/>
+				-->
+				<!--
+				<netif>
+					<tx_buffer_size value="1000" unit="bits"/>
+				</netif>	
+				-->
+			</PE>
+			
+			<comm_res name="tdma1" type="tdma_bus">
+				<HW_Connection instance="PE0" name="hw_conn_1" slots_number="1"/>
+				<HW_Connection instance="PE1" name="hw_conn_2" slots_number="1"/>
+				<!-- TDMA bus specific parameteres -->
+				<!-- mandatory attributes in the KisTA TDMA bus model-->
+				<!--
+				<n_channels		 value="2"/>
+				    -->
+				<slots_number	 value="2"/>
+				
+				<slot_time		 value="0.5" unit="s"/>
+				
+				<!-- the remaining attributes should complete the information required to state an effective bandwidth -->
+				
+				<!--
+				<channel_payload value="32" unit="bit"/>
+				  -->
+				  
+				<payload value="32" unit="bit"/>
+				
+				<!-- cycle time can be omitted, and then KisTA TDMA bus model will calculate an implicit cycle time -->
+				<!-- considering that the TDMA bus has only static channels and the guard time -->
+				<!--
+				<cycle_time      value="1" unit="s"/>
+				-->
+				
+			</comm_res>
+								 							
+		  </HW_Architecture>
+    	
+	  </HW_platform> 
+
+  </platform>
+  
+ <!-- parameters section is ignored (and thus, this parameter setting overriden,
+      if the user provides a parameter file (sc_path_name) -->
+  <parameters>
+	  <parameter name="PE1_FREQ" value="100"/>
+  </parameters>
+  
+  <kista_configuration>
+	<simulation_time value="20" unit="s"/>
+	<verbose value="true"/>
+	<xml_front_end_verbose value="true"/>
+	<export_sketch value="true"/>
+	<sketch_file_name value="sample10_sketch"/>
+  </kista_configuration>
+  
+</system>

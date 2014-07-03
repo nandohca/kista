@@ -1,0 +1,23 @@
+#
+# Makefile for kista-xml-check application
+#
+#
+
+
+CCFLAGS= $(shell xml2-config --cflags)
+LIBS= $(shell xml2-config --libs)
+
+kista-xml-check:kista_xml_check.cpp
+	mkdir -p $(KISTA)/bin
+	g++ kista_xml_check.cpp -o kista-xml-check $(CCFLAGS) $(LIBS)
+
+install:	
+	cp -f kista-xml-check $(INSTALLDIR)/bin
+
+clean:
+	rm -f kista-xml-check.o
+	
+ultraclean:
+	rm -f kista-xml-check
+	rm -f *~
+	rm -f *.d

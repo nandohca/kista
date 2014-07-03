@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+
+<!--	FDL13 Example -->
+
+<system>
+  <application name="A1">
+	<task name="T1"/>
+	<task name="T2"/>
+	<task name="T3"/>
+  </application>
+
+  <application_mapping>
+	<map_task source="T1" target="sched1" />
+	<map_task source="T2" target="sched1" />
+	<map_task source="T3" target="sched2" />
+  </application_mapping>
+
+  <platform>
+
+	  <SW_platform>
+		  <rtos name="sched1">
+			  <task_scheduler>
+			  <scheduler_policy>
+				 <static_scheduling>
+					<item value="T1"/>
+					<item value="T2"/>
+				 </static_scheduling>
+			  </scheduler_policy>
+			  </task_scheduler>
+		  </rtos>
+
+		  <rtos name="sched2">
+			  <task_scheduler>
+			  <scheduler_policy>
+				 <static_scheduling>
+					<item value="T3"/>
+				 </static_scheduling>
+			  </scheduler_policy>
+			  </task_scheduler>
+		  </rtos>	  
+	  </SW_platform>
+		  
+	  <platform_mapping>
+		  <map_rtos source="sched1" target="PE0"/>
+		  <map_rtos source="sched2" target="PE1"/>
+	  </platform_mapping>
+		  
+	  <HW_platform>
+        <HW_Architecture>
+			<PE name="PE0" type="arm9">		
+				<freq value="50" unit="MHz" />
+			</PE>
+			<PE name="PE1" type="arm9">
+				<freq value="100" unit="MHz" />
+				<CPI value="1"/>
+			</PE>
+		</HW_Architecture>
+	  </HW_platform>
+  </platform>
+  	  
+  <kista_configuration>
+	<!-- No matter if, for this example we state a simulation time or not,
+	     since the tasks have been associated no time advance, and the model
+	     has not communications with timed penalties.
+	     Therefore, there is no time advance (untimed model) and the simulation
+	     is neverending.
+	-->
+	<simulation_time value="1" unit="us"/> 
+	<!-- <verbose value="true"/> -->
+    <xml_front_end_verbose value="true"/>
+	<export_sketch value="true"/>
+	<sketch_file_name value="sample1_sketch"/>
+  </kista_configuration>	  
+
+</system>

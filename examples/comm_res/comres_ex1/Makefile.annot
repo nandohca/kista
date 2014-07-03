@@ -1,0 +1,86 @@
+#
+# Simple Makefile for SystemC compilation
+#
+
+SCOPE_CC = scope-g++ --scope-method=op-cost --scope-noicache
+ANNOTATION_FLAGS=-D_USE_AUTOMATIC_CODE_ANNOTATION
+
+CC = g++ $(SCO)
+
+OPT    = -O2
+#CFLAGS = $(COMPILATION_TYPE_FLAG) $(OPT)
+
+# -srd=C++0x os for using 2011 standard. For instance, to use to_string functions
+CFLAGS = $(COMPILATION_TYPE_FLAGS) -g -std=c++0x -Wall
+
+# This is related to the type of host installation platform
+# For linux 32 bits
+#LIB = lib-linux
+# For linux 64 bits 
+LIB =lib-linux64
+
+DEFINES = $(COMPILATION_TYPE_FLAG)
+
+ADD_INCDIR = -I$(SYSTEMC_PATH)/include -I$(KISTA)/src
+ADD_LIBDIR = -L$(SYSTEMC_PATH)/$(LIB)
+ADD_LIBS = -lsystemc
+
+#ADD_INCDIR = -I$(SYSTEMC_PATH)/include -I/home/nando/soft/ucsoft/hetsc_v1.3/include
+#ADD_LIBDIR = -L$(SYSTEMC_PATH)/$(LIB) -I/home/nando/soft/ucsoft/hetsc_v1.3/lib
+#ADD_LIBS = -lsystemc -lhetsc
+
+# Target prefix: none = native compilation
+TARGET_PREFIX = 
+
+EXEDIR = sys
+
+EXAMPLE = wcet_f1
+INSTR_SRCS = f1.cpp f2.cpp f3.cpp
+SRCS = fdl2013ex.cpp
+
+INSTR_OBJS = $(INSTR_SRCS:.cpp=.o)
+OBJS = $(SRCS:.cpp=.o)
+
+EXE_SUFIX = .x
+EXE = $(EXAMPLE).x
+
+INCDIR = $(BASIC_INCDIR) $(ADD_INCDIR)
+LIBDIR = $(BASIC_LIBDIR) $(ADD_LIBDIR)
+
+LIBS = $(ADD_LIBS)
+
+	
+.SUFFIXES: .cc .cpp .o .x
+
+./$(EXEDIR)/$(EXE):$(OBJS) $(INSTR_OBJS)
+	mkdir -p ./$(EXEDIR)
+	$(CC) $(CFLAGS) $(INCDIR) $(LIBDIR) -o $@ $(OBJS) $(INSTR_OBJS) $(LIBS)
+
+$(INSTR_OBJS): $(INSTR_SRCS)
+	$(SCOPE_CC) $(ANNOTATION_FLAGS) $(CFLAGS) $(INCDIR) -c $(subst .o,.cpp,$@)
+	
+.cpp.o:
+	$(CC) $(CFLAGS) $(ANNOTATION_FLAGS) $(INCDIR) -c $<
+
+.cc.o:
+	$(CC) $(CFLAGS) $(ANNOTATION_FLAGS) $(INCDIR) -c $<
+
+clean:
+	rm -rf $(OBJS)
+	rm -rf $(INSTR_OBJS)
+	
+ultraclean: clean
+	rm -rf $(EXEDIR)
+	rm -rf *~
+	rm -rf sys
+	rm -f *.vcd *.wif *.isdb *.dmp *.P *.log
+
+run:./$(EXEDIR)/$(EXE)
+	time -o time_get_wcet_f1.rpt ./$(EXEDIR)/$(EXE)
+
+traces: wave_viewer_settings.gtkw
+	gtkwave -a wave_viewer_settings.gtkw
+	
+
+#CFLAGS += 
+CFLAGS +=  -DSC_INCLUDE_DYNAMIC_PROCESSES

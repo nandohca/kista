@@ -1,0 +1,71 @@
+## Variable that points to SystemC installation path, not needed for debianized package
+#SYSTEMC = $(HOME)/soft/sc/systemc-2.3.0/installdir
+
+## Variable that points to the Kisskode installation library
+#KISTA =  $(HOME)/Documents/Dropbox/trabajo/kista
+#KISTA =  $(HOME)/Documentos/trabajo/kista
+
+## Variable that points to SFF (SystemC ForSyDe) installation path
+# release
+
+## not needed for debianized package
+#TARGET_ARCH = macosx
+TARGET_ARCH = linux64
+
+CC     = g++  
+OPT    = -O0 -std=c++0x
+#OPT    = 
+DEBUG  = -g
+
+## not needed for debianized package
+SYSDIR = -I$(SYSTEMC)/include
+          
+#INCDIR = -I. -I.. -I$(SFF)
+## not needed for debianized package
+INCDIR = -I. -I.. $(SYSDIR) -I$(KISTA)/src
+##INCDIR = -I. -I.. $(SYSDIR) -I$(KISTA)/src -I$(ADD_INCLUDE_DIRS)
+
+#LIBDIR = -L. -L..
+## not needed for debianized package
+LIBDIR = -L. -L.. -L$(SYSTEMC)/lib-$(TARGET_ARCH) -L$(KISTA)/lib
+
+## Build with maximum gcc warning level
+CFLAGS = -Wall -Wno-deprecated -Wno-return-type -Wno-char-subscripts -pthread $(DEBUG) $(OPT) $(EXTRACFLAGS)
+#CFLAGS = -arch i386 -Wall -Wno-deprecated -Wno-return-type -Wno-char-subscripts $(DEBUG) $(OPT) $(EXTRACFLAGS)
+
+LIBS   =  -lstdc++ -lm $(EXTRA_LIBS) -lsystemc -lkista
+
+EXE    = $(MODULE).x
+
+.PHONY: clean 
+
+#$(EXE): $(OBJS) $(SYSTEMC)/lib-$(TARGET_ARCH)/libsystemc.a 
+$(EXE): $(OBJS)
+	$(CC) $(CFLAGS) $(INCDIR) $(LIBDIR) -o $@ $(OBJS) $(LIBS) 2>&1 | c++filt
+
+## based on http://www.paulandlesley.org/gmake/autodep.html
+%.o : %.cpp
+	$(CC) $(CFLAGS) $(INCDIR) -c -MMD -o $@ $<
+	@cp $*.d $*.P; \
+	sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+	-e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $*.P; \
+	rm -f $*.d
+run:$(EXE)
+	./$(EXE)
+
+traces: wave_viewer_settings.gtkw scheduler1_trace.vcd
+	gtkwave -a wave_viewer_settings.gtkw scheduler1_trace.vcd
+
+pdfs:
+	pdflatex *.tex
+	
+clean:
+	rm -f $(OBJS) *~ $(EXE) *.vcd *.wif *.isdb *.dmp *.P *.log *.aux
+
+ultraclean: clean
+	rm -rf gen
+	rm -f *.tex
+	rm -f *.pdf
+	
+-include $(SRCS:.cpp=.P)
+

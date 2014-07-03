@@ -1,0 +1,72 @@
+\subsubsection{Using the C++ API}
+\label{sec:app_initialization_cpp_api}
+
+KisTA provides an API, shown in Listing~\ref{list:fun_val_api} for enabling and configuring a functional validation facility.
+%
+It is useful to collect any functional error detected across the model.
+By reporting such error through the KisTA functional validation facility, the user delegates on this
+facility the later report of the error.
+Moreover, the facility can be configured to allow a certain number of \emph{failures}, such only after a given
+threshold an error is actually reported. 
+This facilitates to perform validations where some marging to le pass a bounded amoung of errors due to rounding, etc, is possible.
+%
+%\begin{table}[t]
+\begin{lstlisting}[style=KistaCodeStyle,caption={API for enabling and configuring functional validation facility.},label=list:fun_val_api]
+void enable_functional_validation();
+
+bool functional_validation_enabled();
+
+void set_functional_failure_threshold(unsigned int);
+
+void set_functional_failure();
+
+unsigned int get_functional_failures();
+\end{lstlisting}
+%\end{table}
+
+The validation facility can be created by means of the call \texttt{enable\_functional\_validation()} function.
+The \texttt{enable\_functional\_validation()} function has to be called before the simulation start.
+It creates a \emph{functionality validator}.
+
+Once it has been done, then, the KisTA model can call the \texttt{set\_functional\_failure()} function from any system or environment task
+during the simulation, e.g. associated to the detection of a functional issue.
+The code detecting such issue is encoded by, and so responsability of, the user.
+A single call to \texttt{set\_functional\_failure()} will set the functionality validator into a failure state,
+
+At the end of the simulation the functional validator  will report an error, indicating the issue, if, and only if,
+the set of functional failures notified is bigger or equal to a threshold.
+Such a threshold is 1 by default.
+The function \texttt{set\_functional\_failure\_threshold} enables to change the threshold required to raise the error.
+
+The KisTA-XML user can call \texttt{set\_functional\_failure()} from within the task functional code (no matter system or environment), as long as such code is executed during the simulation phase.
+
+\subsubsection{Using the XML front-end}
+\label{sec:app_initialization_xml}
+
+When the XML front-end is used, the user can enable the functional validation from the XML KisTA description.
+For it, the \texttt{functional\_validaton} entry is set in the configuration section,
+as illustrated in Listing~\ref{list:xml_enable_functional_validation},
+which is equivalent to calling the \texttt{enable\_functional\_validation} call.
+
+%\begin{table}[t]
+\begin{lstlisting}[language=XML, caption={Enabling functional validation from the XML description.}, label=list:xml_enable_functional_validation]
+<kista_configuration>
+        ...
+        <functional_validation value="true"/>
+        ...
+</kista_configuration>
+\end{lstlisting}
+%\end{table}
+
+%
+Notice that if the XML front-end if used, the functionality attached will still use the C++ API to notify the failure events (with \texttt{set\_functional\_failure})
+from within the task code, or by calling \texttt{get\_functional\_failures} for report from the functional hook for wrap up actions.
+%
+Currently, there is no XML entry to set the threshold of functional failures for raising an error.
+A workaround is to employ an environment the initialization function (see Section~\ref{sec:app_initialization}) to call \texttt{set\_functional\_failure\_threshold} function.
+
+If functional the validation option is not settled, then the default value is false and the functionality validator is not created by the KisTA-XML front-end.
+This does not requires the user to remove calls to the \texttt{set\_functional\_failure()} function within the tasks code. They are simply ignored and the validations makes no effect.
+
+If the validation is activated, then the error message is reported also in the XML output metrics file.
+It is reported with non-fatal severity to, eventually enable tools like Multicube Explorer or MOST to continue an exploration and let later detect which solutions did not pass the functional validation.

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Example sample10.xml for XML front-end of the KisTA library -->
+
+<!--	Reproduces the gSimple3A model explored via the Analytical DSE tool  -->
+<!--	of KTH/ICT/ES -->
+<design_space xmlns="http://www.multicube.eu/" version="1.4">
+	<simulator> 
+		<simulator_executable path="/path/my_simulator_executable/kista-xml" />
+	</simulator>
+	
+	<parameters>
+		<!-- Processing resources -->
+		<parameter name="PE_NODES" description ="" type="string" min="1" max="2"/>
+				
+			<!-- Mapping -->
+		<parameter name="T1_MAP" description ="Mapping of the first task" type="integer" min="1" max="2"/>
+
+		<parameter name="T2_MAP" description ="Mapping of the second task" type="string">
+			<item value="PE1" />
+			<item value="PE2" />
+		</parameter>
+		
+		<parameter name="PE_FREQ_1" description ="Frequency of the first processor" type="string">
+			<item value="50" />
+			<item value="100" />			
+		</parameter>
+
+				<!-- Communication resources -->
+		<parameter name="SLOTS_PE0" description ="Number of TX slots assigned to PE0" type="unsigned" min="0" max="2"/>
+		<parameter name="SLOTS_PE1" description ="Number of TX slots assigned to PE1" type="unsigned" min="0" max="2"/>
+
+	</parameters>
+	
+	<system_metrics> 
+	
+	    <!-- Feasible metric names in KisTA -->
+	  <!-- name="rtos/sched_name/plat_utilization"-->
+	  <!-- name="rtos/sched_name/number_of_schedulings"-->
+	  <!-- name="rtos/sched_name/starvation" -->
+	  <!-- name="rtos/sched_name/miss_deadlines"-->
+	  <!-- name="rtos/sched_name/sched_utilization"-->
+	  <!-- name="task/task_name/utilization"-->
+	  <!-- name="task/task_name/miss_deadline" -->
+	  <system_metric name="comm_synch/fifo1/write_throughput" type="float" unit="bps" />
+	  <system_metric name="comm_synch/fifo1/write_stationary_throughput" type="float" unit="bps" />	  
+
+	  <system_metric name="rtos/sched1/sched_utilization" type="float" unit="" />
+  	  <system_metric name="rtos/sched2/plat_utilization" type="float" unit="" />
+  	      
+  	  <!-- TBS
+  	  <system_metric name="PE1/mem usage" type="unsigned" unit="byte" />
+  	  <system_metric name="PE2/mem usage" type="unsigned" unit="byte" />
+	  <system_metric name="throughput" type="float" unit="bps" />
+ -->	  
+	</system_metrics>
+	
+	<!-- This section should comprise those input given to the A-DSE tool which are actually constraints -->
+	
+	
+</design_space>

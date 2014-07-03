@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="KisTA_metamodel" nsURI="http://www.example.org/KisTA_metamodel"
+    nsPrefix="KisTA_metamodel">
+  <eClassifiers xsi:type="ecore:EClass" name="system">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="application" eType="#//application"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="EReference1" eType="#//platform"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="app_mapping" eType="#//application_mapping"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="application">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="task" eType="#//task" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="platform">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="HW_platform" eType="#//HW_platform"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="SW_platform" eType="#//SW_platform"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="platfrom_mapping" eType="#//platform_mapping"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="task">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HW_platform">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="PE" upperBound="-1" eType="#//PE"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SW_platform">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rtos" eType="#//RTOS" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="platform_mapping">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="map_rtos" upperBound="-1"
+        eType="#//map_rtos" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PE">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="freq" lowerBound="1" eType="#//Frequency"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="application_mapping">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="map_task" eType="#//map_task"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Frequency">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="unit" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="map_rtos">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source" lowerBound="1"
+        eType="#//RTOS"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="target" lowerBound="1"
+        eType="#//PE"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="map_task">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source_app" lowerBound="1"
+        eType="#//application"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="source_task" lowerBound="1"
+        eType="#//task"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="rtos" lowerBound="1" eType="#//RTOS"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RTOS">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="scheduler_policy" lowerBound="1"
+        eType="#//scheduler_policy" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="scheduler_policy">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="static_scheduling" eType="#//static_scheduling"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="static_scheduling">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="task" upperBound="-1" eType="#//task"/>
+  </eClassifiers>
+</ecore:EPackage>

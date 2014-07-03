@@ -1,0 +1,81 @@
+#
+# Simple Makefile for SystemC compilation
+#
+SCOPE_CC = scope-g++ --scope-method=op-cost --scope-noicache
+CC = g++ $(SCO)
+#CFLAGS = $(COMPILATION_TYPE_FLAG) -O2
+CFLAGS = $(COMPILATION_TYPE_FLAGS) -g -Wall
+
+# This is related to the type of host installation platform
+# For linux 32 bits
+#LIB = lib-linux
+# For linux 64 bits 
+LIB =lib-linux64
+
+DEFINES = $(COMPILATION_TYPE_FLAG)
+
+ADD_INCDIR = -I$(SYSTEMC_PATH)/include
+ADD_LIBDIR = -L$(SYSTEMC_PATH)/$(LIB)
+ADD_LIBS = -lsystemc
+
+#ADD_INCDIR = -I$(SYSTEMC_PATH)/include -I/home/nando/soft/ucsoft/hetsc_v1.3/include
+#ADD_LIBDIR = -L$(SYSTEMC_PATH)/$(LIB) -I/home/nando/soft/ucsoft/hetsc_v1.3/lib
+#ADD_LIBS = -lsystemc -lhetsc
+
+# Target prefix: none = native compilation
+TARGET_PREFIX = 
+
+EXEDIR = sys
+
+EXAMPLE = wcet_f1
+INSTR_SRCS = f1.cpp
+SRCS = basic_scope.cpp sc_f1.cpp testvec_gen_f1.cpp wcet_f1.cpp 
+
+INSTR_OBJS = $(INSTR_SRCS:.cpp=.o)
+OBJS = $(SRCS:.cpp=.o)
+
+EXE_SUFIX = .x
+EXE = $(EXAMPLE).x
+
+INCDIR = $(BASIC_INCDIR) $(ADD_INCDIR)
+LIBDIR = $(BASIC_LIBDIR) $(ADD_LIBDIR)
+
+LIBS = $(ADD_LIBS)
+
+	
+.SUFFIXES: .cc .cpp .o .x
+
+./$(EXEDIR)/$(EXE):$(OBJS) $(INSTR_OBJS)
+	mkdir -p ./$(EXEDIR)
+	$(CC) $(CFLAGS) $(INCDIR) $(LIBDIR) -o $@ $(OBJS) $(INSTR_OBJS) $(LIBS)
+
+$(INSTR_OBJS): $(INSTR_SRCS)
+	$(SCOPE_CC) $(CFLAGS) $(INCDIR) -c $(INSTR_SRCS)
+	
+.cpp.o:
+	$(CC) $(CFLAGS) $(INCDIR) -c $<
+
+.cc.o:
+	$(CC) $(CFLAGS) $(INCDIR) -c $<
+
+clean:
+	rm -rf $(OBJS)
+	rm -rf $(INSTR_OBJS)
+	
+ultraclean: clean
+	rm -rf $(EXEDIR)
+	rm -rf *~
+	rm -rf sys
+
+clean_results: clean
+	rm -f *.gif
+	rm -f *.dat
+
+run:./$(EXEDIR)/$(EXE)
+	time -o time_get_wcet_f1.rpt ./$(EXEDIR)/$(EXE)
+	
+all: run
+	gnuplot draw_hist_f1.gnu
+
+
+

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Example sample4.xml for XML front-end of the KisTA library -->
+
+<!--	Based on FDL'13 Example, as example 3, but with explicit description of system-level communication -->
+<!--	For the moment, only fifo_buffer and basic types supported-->
+
+<system>
+	
+  <application name="A1">
+	<task name="T1">
+		<task_properties>
+			<WCET value="1" unit="ns" />
+		</task_properties>
+	</task>
+	
+	<task name="T2"/>
+	<task name="T3"/>
+
+	<task_properties task_name="T2">
+			<WCET value="2" unit="ns" />		
+	</task_properties>
+
+	<task_properties task_name="T3">
+			<WCET value="3" unit="ns" />
+	</task_properties>
+
+	<comm_synch name="fifo1" src="T1" dest="T2" comm_type="fifo_buffer" comm_data_type="unsigned"/>
+
+  </application>
+
+  <application_mapping>
+	<map_task source="T1" target="sched1" />
+	<map_task source="T2" target="sched1" />
+	<map_task source="T3" target="sched2" />
+  </application_mapping>
+
+  <platform>
+
+	  <SW_platform>
+		  <rtos name="sched1">
+			  <task_scheduler>
+			  <scheduler_policy>
+				 <static_scheduling>
+					<item value="T1"/>
+					<item value="T2"/>
+				 </static_scheduling>
+			  </scheduler_policy>
+			  </task_scheduler>
+		  </rtos>
+
+		  <rtos name="sched2">
+			  <task_scheduler>
+			  <scheduler_policy>
+				 <static_scheduling>
+					<item value="T3"/>
+				 </static_scheduling>
+			  </scheduler_policy>
+			  </task_scheduler>
+		  </rtos>	  
+	  </SW_platform>
+		  
+	  <platform_mapping>
+		  <map_rtos source="sched1" target="PE0"/>
+		  <map_rtos source="sched2" target="PE1"/>
+	  </platform_mapping>
+		  
+	  <HW_platform>
+		<HW_Architecture>
+			<!-- Currently, KisTA supports a predefined set of elements, PE and comm_res,
+			     and so a compact style to describe the architecture -->			
+			<PE name="PE0" type="arm9">		
+				<freq value="50" unit="MHz" />
+			</PE>
+			<PE name="PE1" type="arm9">
+				<freq value="_PE1_FREQ_VAL" unit="MHz" />
+				<CPI value="1"/>
+			</PE>
+		</HW_Architecture>		
+	  </HW_platform>
+	  
+  </platform>
+  
+  <parameters>
+	  <parameter name="PE1_FREQ_VAL" value="100"/>
+  </parameters>
+  
+  <kista_configuration>
+	<simulation_time value="1" unit="us"/>
+	<verbose value="true"/>
+	<xml_front_end_verbose value="true"/>
+	<export_sketch value="true"/>
+	<sketch_file_name value="sample4_sketch"/>
+  </kista_configuration>
+  
+</system>

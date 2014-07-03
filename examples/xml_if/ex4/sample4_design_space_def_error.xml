@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Example of XML front-end of the KisTA library -->
+<!-- File for design space definition -->
+<!--	FDL13 Example -->
+<design_space xmlns="http://www.multicube.eu/" version="1.4">
+	<simulator> 
+		<simulator_executable path="/path/my_simulator_executable/kista-xml" />
+	</simulator>
+	<parameters>
+		<parameter name="PE1_FREQ_VAL" description ="Frequency of first PE" type="integer" min="50" max="100"/>
+	</parameters>
+	<system_metrics> 
+	    <!-- Feasible metric names in KisTA -->
+	  <!-- name="rtos/sched_name/plat_utilization"-->
+	  <!-- name="rtos/sched_name/number_of_schedulings"-->
+	  <!-- name="rtos/sched_name/starvation" -->
+	  <!-- name="rtos/sched_name/miss_deadlines"-->
+	  <!-- name="rtos/sched_name/sched_utilization"-->
+	  <!-- name="task/task_name/utilization"-->
+	  <!-- name="task/task_name/miss_deadline" -->
+	  <!-- Following two for periodic tasks -->
+	  <!-- name="task/task_name/max_response_time" -->
+	  <!-- name="task/task_name/avg_response_time" -->
+	  <!-- name="task/task_name/std_dev_response_time" -->
+	  <!-- name="task/task_name/location_of_worst_case_response_time" -->
+	      <system_metric name="rtos/sched1/sched_utilization" type="float" unit="" />
+  	      <system_metric name="rtos/sched2/plat_utilization" type="float" unit="M" />
+		  <system_metric name="task/T1/max_response_time" type="float" unit="" />
+	</system_metrics>
+	<rules>
+	</rules>
+</design_space>

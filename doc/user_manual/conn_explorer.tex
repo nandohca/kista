@@ -1,0 +1,75 @@
+
+
+\subsection{Connection with the Explorer tool from the C++-API}
+\label{sec:conn_from_cpp_api}
+
+TBC
+
+\subsection{Connection with the Explorer tool from the XML-API}
+\label{sec:conn_from_cpp_api}
+
+TBC
+
+\subsection{Fatality of Errors for Exploration}
+\label{sec:error_fatality_for_exploration}
+
+The user can configure the fatality of an error during the simulation.
+Such fatality is an attribute exported to the output XML file whenever 
+an error condition has been reported.
+
+By default, KisTA states that a simulation error will produce a \texttt{non-fatal} error.
+%
+This enables the exploration tool to discard the results of the current configuration, 
+and continue the exploration looking for other configurations.
+
+However, the user might want to immediately stop the exploration in case
+an error is reported. 
+%
+A use case is one where a functional validation of each
+implementation alternatives explored (explained in Section~\ref{sec:functional_validation})
+is performed at the same time the exploration is performed.
+%
+
+\subsubsection{C++ API}
+\label{sec:error_fatality_for_exploration}
+
+For controling the fatality for the the exploration of an error,
+KisTA provides the API shown in Listing~\ref{list:fatality_error_4explor}.
+
+%\begin{table}[t]
+\begin{lstlisting}[style=KistaCodeStyle,caption={API for controling the fatality for the exploration of an error.},label=list:fatality_error_4explor]
+void set_error_stop_exploration();
+void set_error_does_not_stop_exploration(); // set by default
+bool &error_stop_exploration();
+\end{lstlisting}
+%\end{table}
+
+An error can be settled as fatal for the exploration through the \texttt{set\_error\_stop\_exploration} function.
+This function can be called at any time (even after simulation start).
+%
+Therefore, the \texttt{set\_error\_does\_not\_stop\_exploration} function enables a full control of the simulation gaps
+where an error should be considered fatal or not.
+
+The \texttt{error\_stop\_exploration} function enables to read the current state of the fatality flag.
+
+\subsubsection{XML API}
+\label{sec:error_fatality_for_exploration}
+
+The KisTA XML API enables also setting the fatality of an error for the exploration.
+%
+However, it must be considered that it will be settled only at elaboration time, before the simulation start.
+%
+
+Listing~\ref{list:fatality_error_4explor} reports how it can be settled with the \texttt{error\_fatality\_for\_exploration} option
+within the configuration settings section.
+
+%\begin{table}[t]
+\begin{lstlisting}[language=XML, caption={Setting the fatality for the exploration from the XML interface.}, label=list:xml_fatality_setting]
+<kista_configuration>
+        ...
+    <error_fatality_for_exploration value="true">
+        ...
+</kista_configuration>
+\end{lstlisting}
+%\end{table}
+

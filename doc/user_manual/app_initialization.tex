@@ -1,0 +1,64 @@
+
+
+\subsubsection{Using the C++ API}
+\label{sec:app_initialization_cpp_api}
+
+    The user can perform any global initialization as a SystemC user would do, from the \texttt{sc\_main} function, before calling \texttt{sc\_start}.
+Similarly, is it also possible to perform any action after the end of the simulation by inserting code acter the \texttt{sc\_start}.
+
+\subsubsection{Using the XML front-end}
+\label{sec:app_initialization_xml}
+
+KisTA makes possible to specify global initializations or any functionality which the user wants to be executed before the beginning of the simulation
+from the XML front-end.
+%
+For it, the user will use the \texttt{global\_init} entry in the KisTA XML application description, as shown in Listing~\ref{list:xml_initialization}.
+
+%\begin{table}[t]
+\begin{lstlisting}[language=XML, caption={Setting a global init functionality from the XML frontend.}, label=list:xml_initialization]
+<application name="A1">
+        ...
+        <global_init name="global_init_fun" file="obj_lib.so"
+                                            path="path_to_obj_lib" />
+        ...
+</application>
+\end{lstlisting}
+%\end{table}
+
+
+The \texttt{name} attribute specifies the name of the user provided function which will contain the code to be executed before the simulation start.
+The \texttt{file} attribute is mandatory and specifies the dynamic library containing the implementation of the user defined initialization function, \texttt{global\_init\_fun} in this case.
+The \texttt{path} attribute is optional. If it is not provided, the \emph{obj\_lib.so} library will be searched in the local folder where \texttt{kista-xml} is launched.
+
+Following, and example of how the user will write the initialization functionality:
+
+%\begin{table}[t]
+\begin{lstlisting}[language=c++,caption={Example of initial functionality, specified from the XML front-end to be executed before simulation start.}]
+extern "C"
+void global_init_fun() {
+    // user global initialization code
+}
+\end{lstlisting}
+%\end{table}
+
+The aforementioned mechanisms refers to system initialization.
+%
+KisTA provides hooks for initial and wrap-up functionality associated to the system model environment.
+%
+For that, the XML front-end supports the \texttt{global\_init} and \texttt{global\_end} entries within the environment section.
+Listing~\ref{list:xml_env_init_end} shows an example of both.
+
+%\begin{table}[t]
+\begin{lstlisting}[language=XML, caption={Setting a global init functionality from the XML frontend.}, label=list:xml_env_init_end]
+<environment name="Environment">
+        ...
+       	<global_init name="env_init_fun" file="libenv_tasks_func.so"/>
+		
+	<global_end  name="env_end_fun" file="libenv_tasks_func.so"/>
+        ...
+</environment>
+\end{lstlisting}
+%\end{table}
+
+
+

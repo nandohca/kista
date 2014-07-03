@@ -1,0 +1,330 @@
+% %
+% LAYOUT_E.TEX - Short description of REFMAN.CLS
+%                                       99-03-20
+%
+%  Updated for REFMAN.CLS (LaTeX2e)
+%
+
+% \documentclass[twoside,a4paper]{refart}
+% \usepackage{makeidx}
+% \usepackage{ifthen}
+% % ifthen wird vom Bild von N.Beebe gebraucht!
+
+% \def\bs{\char'134 } % backslash in \tt font.
+% \newcommand{\ie}{i.\,e.,}
+% \newcommand{\eg}{e.\,g..}
+% \DeclareRobustCommand\cs[1]{\texttt{\char`\\#1}}
+
+% \title{KisTA User Manual}
+% \author{KTH Royal Institute of Technology \\
+% Fernando Herrera \\
+% 2014-08-28   \\
+% Version 1}
+
+% \date{}
+% \emergencystretch1em  %
+
+% \pagestyle{myfootings}
+% \markboth{KisTA User Manual}%
+%          {KisTA User Manual}
+
+%-------------------------------
+
+\documentclass{article}
+
+\newif\ifpdf
+
+% To generate pdf
+\pdftrue
+
+% To generate html
+%\pdffalse
+
+\usepackage{fullpage}
+\usepackage{graphicx}
+%\usepackage{graphics}
+\usepackage{longtable}
+\usepackage{verbatim}
+\usepackage{multirow}
+
+\usepackage{makeidx}
+\makeindex
+\title{KisTA user manual}
+\author{Fernando Herrera}
+\date{May 28th, 2014}
+
+% ------------------------------
+
+\makeindex 
+
+\setcounter{tocdepth}{2}
+
+% ------------------------------------------
+% packages and definitions for KisTA dialect
+
+\usepackage{listings}
+\usepackage{color}
+
+\lstdefinelanguage{KisTA}[ISO]{C++}{
+  morekeywords={
+% KisTA macros
+                BEGIN_TASK,
+                END_TASK_AFTER_T,
+% KisTA classes and types
+%               app
+                task_info_t,
+                fifo_buffer,
+                message_t,
+%
+                taskset_t,
+                scheduler,
+%some KisTA methods/functions (this maybe could have a different style
+                attach_static_analysis,
+                consume,
+                consume_WCET,
+                get_clock_period_ns,
+                set_policy,
+                set_static_schedule,
+                set_sufficient_global_simulation_time,
+% scheduler methods
+% tracing activity
+                trace_utilizations,
+% Functional validation
+                enable_functional_validation,
+                functional_validation_enabled,
+                set_functional_failure_threshold,
+                set_functional_failure,
+                get_functional_failures,
+% control error fatality for exploration
+                set_error_stop_exploration,
+                set_error_does_not_stop_exploration,
+                error_stop_exploration,
+% scheduling time functions
+                enable_scheduling_times,
+                disable_scheduling_times,
+                are_scheduling_times_enabled,
+                set_scheduling_time,
+                set_scheduling_time_calculator,
+                get_scheduling_time_calculator,
+                set_default_scheduling_time_calculators,
+% scheduling time calculators provided by KisTA
+                sched_time_constant,
+                sched_time_proportional_to_assigned_tasks,
+                sched_time_proportional_to_ready_tasks
+  }
+}
+
+\definecolor{kista-comment-color}{RGB}{100,100,100}
+\definecolor{kista-code-background}{RGB}{255,240,225}
+
+
+\lstdefinestyle{KistaCodeStyle}{
+ basicstyle=\small,
+ language=KisTA,
+ numbers=left,
+ breaklines=true,
+ breakatwhitespace=true,
+ showstringspaces=true,
+ frame=single,
+ frameround=tttt,
+ backgroundcolor=\color{kista-code-background},
+ captionpos=b,
+ xleftmargin=2em,
+% xleftmargin=\parindent,
+ commentstyle=\color{kista-comment-color},
+% showstringspaces=true,
+% showtabs=true,
+ frame=single,
+ frame=trBL,
+ frameround=tttt,
+% Color for identifiers
+% emph={set_...},
+% keywordstyle=\color{blue},
+ emphstyle=\color{blue},
+% stringstyle=\ttfamily\color{black}\normalfont,
+ captionpos=b,
+% escapeinside={(*}{*)}
+ escapeinside={!*}{*!}
+}
+
+%---------------------------------------------
+
+%\Preamble{xhtml}
+%\Configure{emph}{\ifvmode\ShowPar\fi\HCode{<em>}}{\HCode{</em>}}
+%\Configure{textbf}{\ifvmode\ShowPar\fi\HCode{<b>}}{\HCode{</b>}}
+%\EndPreamble
+
+\begin{document}
+
+\ifpdf
+
+\input{./KisTA_um_cover.tex}
+
+\pagebreak
+
+\fi
+
+\section{Version and Contributors Tables}
+
+\input{./version_table.tex}
+
+\ifpdf
+\pagebreak
+\fi
+
+% \maketitle
+
+% \begin{abstract}
+%         This document describes the capabilities of the KisTA modelling and Time analysis library, 
+%         it provides a user guide about how to capture the system and each useful feature of KisTA,
+%         and provides documentation related to the examples provided together with the library.
+% \end{abstract}
+
+
+% Nothing so far here
+
+\tableofcontents
+
+\newpage
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+\label{sec:introduction}
+
+\input{introduction.tex}
+
+\subsection{Contributors}
+\label{sec:contributors}
+
+\input{contributors.tex}
+
+
+\subsection{License}
+\label{sec:license}
+
+\input{license.tex}
+
+\section{Installation}
+\label{sec:installation}
+
+\input{installation.tex}
+
+\section{Modelling Predictable Systems}
+\label{sec:mod_pred}
+
+\subsection{Application}
+\label{sec:application}
+TBC
+
+\subsubsection{Aplication Architecture}
+\label{sec:app_arch}
+TBC
+
+\subsubsection{Task Desription}
+\label{sec:app_arch}
+TBC
+
+\subsubsection{Functionality}
+\label{sec:func}
+TBC
+
+\subsubsection{Task Communication}
+\label{sec:app_comm}
+TBC
+
+\subsubsection{Transfer of Complex Structures}
+\label{sec:app_complex_structures}
+
+\input{app_complex_structures.tex}
+
+\subsection{I/O}
+\label{sec:io}
+
+\subsection{Initial and Final functionality}
+\label{sec:app_initialization}
+
+\input{app_initialization.tex}
+
+\subsection{SW Platform}
+\label{sec:sw_platform}
+TBC
+
+\subsection{HW Application}
+\label{sec:hw_platform}
+TBC
+
+\subsubsection{Processing Elements}
+\label{sec:PEs}
+TBC
+
+\subsubsection{Network Interfaces}
+\label{sec:netif}
+TBC
+
+\subsubsection{Physical Communication Resources}
+\label{sec:phycommres}
+TBC
+
+\subsubsection{TDMA bus model}
+\label{sec:tdma}
+TBC
+
+\section{Modelling the Environment}
+\label{sec:mod_pred}
+
+TBC
+
+\section{Metric Report}
+\label{sec:metric_report}
+
+%\input{metric_report.tex}
+
+\section{Connection to Exploration Tool}
+\label{sec:conn_explorer}
+
+\input{conn_explorer.tex}
+
+\section{Functional Validation}
+\label{sec:functional_validation}
+
+\input{functional_validation.tex}
+
+\section{Tracing and Graphical Reports}
+\label{sec:tracing}
+
+\subsection{Tracing tasks and scheduler activity}
+\label{sec:tracing}
+\input{trace_rtos_activity.tex}
+
+\subsection{Export task and scheduler activity to Tikz}
+\label{sec:activity2tikz}
+
+TBC
+%\input{activity2tikz.tex}
+
+\subsection{System Sketch Report}
+\label{sec:sketch_report}
+
+\input{system_sketch.tex}
+
+\section{Configuring the Simulation and Analysis}
+\label{sec:conf}
+
+\input{confanalysis.tex}
+
+\section{Extending the tool}
+\label{sec:extending}
+
+\input{extending.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\input lay_e2
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\printindex
+
+\end{document}

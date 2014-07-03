@@ -1,0 +1,95 @@
+
+KisTA is a tool specifically suitable for its own extension.
+KisTA is C++ and SystemC-based, which facilitates the extension from the sources.
+KisTA code style (variable naming, comments, etc) has aimed an easier code understanding.
+
+Moreover, KisTA provides specific facilities for the extension of the following features:
+
+\begin{itemize}
+\item Scheduling Policies
+\item Penalty Model: Scheduling Times
+\item Static Analysis
+\item Communication Model and related penalties
+\end{itemize}
+
+\subsection{Extending the Scheduling Policies}
+\label{sec:ext_sched_pol}
+TBC
+
+\subsection{Extending the Scheduling Time Calculation}
+\label{sec:ext_sched_time}
+
+As mentioned in Section~\ref{sec:scheduling_time_penalties}, the user can provide 
+specific scheduling time calculators and associate them to all scheduler policies,
+or to specific ones.
+
+KisTA ensures the following priority in the application of a scheduling time calculator
+for a specific scheduler instance:
+\begin{enumerate}
+\item A \emph{scheduler instance specific} scheduling time calculator, or 
+\item a \emph{policy specific} scheduling time calculator, applied to every scheduler instance configured under such policy, or 
+\item a \emph{generic} scheduling time calculator applicable to every scheduler instances for which either a policy specific or an instance specific scheduling time calculator is not available, or 
+\item a scheduler instance specific constant scheduling time (set with \texttt{set\_scheduling\_time(sc\_time, scheduler*)}), or 
+\item a global constant scheduling time stated by the user (set with \texttt{set\_scheduling\_time(sc\_time)}), or 
+\item a global constant scheduling time stated from the default scheduling time (set with \texttt{DEFAULT\_SCHED\_TIME\_NS} in \texttt{defaults.hpp}).
+\end{enumerate}
+
+The latter three ways to state scheduling times where already introduced in Section~\ref{sec:scheduling_time_penalties}.
+Here, the first three, which provide an extensible and flexible mechanism to integrate scheduling time penalty models in KisTA
+are explained.
+
+A scheduling time calculator function has to have the following interface:
+
+\begin{lstlisting}[style=KistaCodeStyle,caption={Prototype of a scheduling time calculator function.},label=list:sched_time_calculator_if]
+typedef sc_time (* SCHTIME_FPTR )(scheduler *sch_ptr);
+\end{lstlisting}
+
+The scheduling time calculator function takes as a parameter a pointer to the scheduler instance,
+which provides access to state of the scheduler, and also to the task set assigned and all its related information.
+
+KisTA provides the \texttt{set\_scheduling\_time\_calculator} for adding a user provided scheduler calculation function.
+Actually, as shown in Listing~\ref{list:add_sched_time_calculators} it is an overloaded function.
+
+\begin{lstlisting}[style=KistaCodeStyle,caption={API to provide scheduling time calculators.},label=list:add_sched_time_calculators]
+void set_scheduling_time_calculator(SCHTIME_FPTR fun, scheduler *sched);
+void set_scheduling_time_calculator(SCHTIME_FPTR fun, scheduler_t *sched_t);
+void set_scheduling_time_calculator(SCHTIME_FPTR fun);
+\end{lstlisting}
+
+The three versions require a function pointer to the scheduling time calculator function \texttt{SCHTIME\_FPTR}.
+The former version is used for stating instance specific scheduling time calculators.
+The a pointer to the scheduler instance (type \texttt{scheduler *}) is passed as a second parameter.
+%
+The second version is used for stating a policy specific scheduling time calculator
+as a second parameter of \texttt{scheduler\_t} type, which describes the type of scheduler
+the scheduling time calculator function has to be associated to.
+%
+The latter version is used for stating a generic scheduling time calculator and does not require any further parameter.
+
+Listing~\ref{list:sched_time_proportional_to_ready_tasks} shows a KisTA provided scheduling time calculator
+which calculates the scheduling time proportional to the amount of active and ready to execute tasks
+(this calculator is invoked from the \texttt{set\_default\_scheduling\_time\_calculators}, introduced in Section~\ref{sec:scheduling_time_penalties}.
+
+\begin{lstlisting}[style=KistaCodeStyle,caption={API to provide scheduling time calculators.},label=list:sched_time_proportional_to_ready_tasks]
+  sc_time scheduling_time;
+  unsigned int n_active_tasks;
+  taskset_by_name_t *assigned_tasks;
+  assigned_tasks = sched->gets_tasks_assigned();
+  n_active_tasks = 0;
+  for(auto it=assigned_tasks->begin();it!=assigned_tasks->end();it++) {
+    if( (it->second->active_signal.read()==true) || 
+        (it->second->state_signal.read()=='R') ||
+        (it->second->state_signal.read()=='E') )
+  	   n_active_tasks++;
+	}
+	scheduling_time = global_scheduling_time * n_active_tasks;
+	return scheduling_time;
+\end{lstlisting}
+
+\subsection{Extending the Static Analysis}
+\label{sec:ext_stat_anal}
+TBC
+
+\subsection{Extending the Communication Infrastructure}
+\label{sec:ext_comm}
+TBC

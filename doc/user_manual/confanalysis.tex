@@ -1,0 +1,62 @@
+
+\subsection{Scheduling Time Penalties}
+\label{sec:scheduling_time_penalties}
+
+The user can enable or disable scheduling time penalties.
+%
+The following functions are available for enabling/disabling scheduling time penalties:
+
+%\begin{table}[t]
+\begin{lstlisting}[style=KistaCodeStyle,caption={API for enabling/disabling scheduling time penalties.},label=fig::sched_time_penal]
+void enable_scheduling_times();  
+void disable_scheduling_times();
+\end{lstlisting}
+%\end{table}
+These functions have to be called at elaboration time, i.e. before \texttt{sc\_start}.
+
+By default, current release diables scheduling time penalties.
+%
+However, in order to ensure that your KisTA model is release independent, the user can explicitly disable them. 
+
+When the user enables scheduling times, the default constant scheduling penalty is applied
+every time a task scheduling is performed by an scheduler instance.
+%
+The value stated for the variable \texttt{DEFAULT\_SCHED\_TIME\_NS} in \texttt{defaults.hpp} is used for
+every scheduler instance of the model.
+
+It is possible to configure the constant scheduling penalties through the \texttt{set\_scheduling\_time} function
+(to be called at elaboration time).
+%
+This function is overloaded, as shown in Listing~\ref{fig::set_sched_time_penal}.
+If only the scheduling time is passes as an argument, a global scheduling time is settled (overriding the default scheduling time)
+which is considered for all the scheduler instances of any type, but any instance which an instance specific scheduling time has
+been configured for.
+%
+In case, a scheduler instance is passed as a second argument, then such scheduling time will be applied only for such an 
+scheduling instance.
+
+\begin{lstlisting}[style=KistaCodeStyle,caption={API for setting user specific constant scheduling times.},label=fig::set_sched_time_penal]
+void set_scheduling_time(sc_time time, scheduler *sched);
+void set_scheduling_time(sc_time time);
+\end{lstlisting}
+
+In order to enable a more accurate model of scheduling penalties,
+KisTA enables the use of \emph{scheduling time calculators}.
+%
+A scheduling time calculator is a function in charge of calculating
+the scheduling time of a given scheduler instance, given its current
+state.
+
+KisTA enables the association of a default set of scheduling time calculators.
+Listing~\ref{fig::set_sched_time_default_cal} shows the function use to state such an association.
+\begin{lstlisting}[style=KistaCodeStyle,caption={API for setting user specific constant scheduling times.},label=fig::set_sched_time_default_cal]
+void set_default_scheduling_time_calculators();
+\end{lstlisting}
+Specifically, what this function does is to associate a scheduling time penalty proportional to the number of tasks ready
+for execution for all scheduler instances but for scheduler instance with a static scheduling policy.
+For the latter, the global constant scheduling time configured is applied.
+
+The user might want to have a more detailed and scheduler policy specific scheduling time penalty model.
+KisTA allows the association of user-provided  scheduling time calculators.
+This is a specific KisTA extension mechanism, explained in Section~\ref{sec:ext_sched_time}.
+

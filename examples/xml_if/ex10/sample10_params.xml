@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Example sample10.xml for XML front-end of the KisTA library -->
+
+<!--	Reproduces the gSimple3A model explored via the Analytical DSE tool  -->
+<!--	of KTH/ICT/ES -->
+ <simulator_input_interface xmlns="http://www.multicube.eu/" version="1.4">
+	  <!-- Allocated resouces -->
+	  <parameter name="N_PES" value="2"/>
+	  <!-- application maping -->
+	  <parameter name="T1_MAP" value="sched1"/>
+	  <parameter name="T2_MAP" value="sched2"/>
+	  <parameter name="T3_MAP" value="sched2"/>
+	  <!-- scheduling 
+	  <parameter name="PE1_SCHED" value="[1]"/>
+	  <parameter name="PE2_SCHED" value="[2,3]"/>
+-->
+
+	  <!-- frequency assignment -->	  
+	  <parameter name="PE1_FREQ" value="50"/>
+	  
+	  <!-- slot assignment -->
+	  <parameter name="SLOTS_PE1" value="1"/>
+	  <parameter name="SLOTS_PE2" value="1"/>
+ </simulator_input_interface>
+

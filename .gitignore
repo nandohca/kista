@@ -4,6 +4,5 @@
 *.x
 *.exe
 *~
-*.tex
 *.pdf
 *-aux

@@ -1,0 +1,8 @@
+
+kista-xml-check: Program which simply traverses the XML input file and perform checks on the file
+
+
+kista-xml:
+	KisTA tool admiting XML-based description of the system,
+	plus C sources of the application and description of the synchronization
+
