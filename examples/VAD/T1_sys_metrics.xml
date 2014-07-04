@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulator_output_interface xmlns="http://www.multicube.eu/" version="1.4">
+  <system_metric name="comm_synch/E19/normalized_write_stationary_throughput" value="0.000000" unit="GHz"/>
+  <system_metric name="comm_synch/E19/normalized_write_throughput" value="0.000000" unit="GHz"/>
+  <system_metric name="rtos/sched1/tasks_utilization" value="4.354000e-06"/>
+  <system_metric name="rtos/sched2/tasks_utilization" value="1.362040e-04"/>
+  <system_metric name="rtos/sched3/tasks_utilization" value="0.001169"/>
+  <system_metric name="rtos/sched4/tasks_utilization" value="0.014728"/>
+  <system_metric name="rtos/sched5/tasks_utilization" value="0.000000"/>
+  <system_metric name="rtos/sched6/tasks_utilization" value="0.000000"/>
+</simulator_output_interface>

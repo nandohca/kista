@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<system>
+
+	<environment name="EFRVocoder">
+		<!-- Environment actors -->
+		<!-- Input actor -->
+		<!-- A-DSE Task name = (rh, rl, scalACF, pitch, rc) -->
+		<task name="T9">
+			<function name="VADsource_fun" file="libenv_tasks_func.so"/>
+		</task>
+
+		<!-- Output actor -->
+
+		<!-- A-DSE Task name = VADflag -->
+		<task name="T10">
+			<function name="VADsink_fun" file="libenv_tasks_func.so"/>
+		</task>
+	</environment>
+
+	<application name="A1">
+		<!-- Hook for global initialization -->
+		<global_init name="global_init_fun" file="tasks_func.so"/>
+	
+		<!-- Internal actors -->
+		<!-- A-DSE Task name = ToneDetec -->
+		<task name="T1">
+			<function name="ToneDetection_fun" file="tasks_func.so"/>
+			<task_properties>
+				<WCET value="42180" unit="ns"/>
+				<!-- To be supported!! -->
+				<WCEI value="2109" unit="instr" />
+				<WCME value="250" unit="bytes"/>
+			</task_properties>
+		</task>
+
+		<!-- A-DSE Task name = EnergComp -->
+		<task name="T2">
+			<function name="EnergyComputation_fun" file="tasks_func.so"/>
+			<task_properties>
+				<WCET value="43540" unit="ns"/>
+				<!-- To be supported!! -->
+				<WCEI value="2177" unit="instr" />
+				<WCME value="250" unit="bytes"/>
+			</task_properties>
+		</task>
+
+		<!-- A-DSE Task name = ACFavg -->
+		<task name="T3">
+			<function name="ACFAveraging_fun" file="tasks_func.so"/>
+			<task_properties>
+				<WCET value="80120" unit="ns"/>
+				<!-- To be supported!! -->
+				<WCEI value="4006" unit="instr" />
+				<WCME value="250" unit="bytes"/>
+			</task_properties>
+		</task>
+
+		<!-- A-DSE Task name = PredictVal -->
+		<task name="T4">
+			<function name="PredictorValues_fun" file="tasks_func.so"/>
+			<task_properties>
+				<WCET value="687700" unit="ns"/>
+				<!-- To be supported!! -->
+				<WCEI value="34385" unit="instr" />
+				<WCME value="250" unit="bytes"/>
+			</task_properties>
+		</task>
+
+		<!-- A-DSE Task name = SpectrComp -->
+		<task name="T5">
+			<function name="SpectralComparison_fun" file="tasks_func.so"/>
+			<task_properties>
+				<WCET value="8624080" unit="ns"/>
+				<!-- To be supported!! -->
+				<WCEI value="431204" unit="instr" />
+				<WCME value="250" unit="bytes"/>
+			</task_properties>
+		</task>
+
+		<!-- A-DSE Task name = ThreshAdapt -->
+		<task name="T6">
+			<function name="ThresholdAdaptation_fun" file="tasks_func.so"/>
+			<task_properties>
+				<WCET value="46840" unit="ns"/>
+				<!-- To be supported!! -->
+				<WCEI value="2342" unit="instr" />
+				<WCME value="250" unit="bytes"/>
+			</task_properties>
+		</task>
+
+		<!-- A-DSE Task name = VADdec -->
+		<task name="T7">
+			<function name="VADdecision_fun" file="tasks_func.so"/>
+			<task_properties>
+				<WCET value="4020" unit="ns"/>
+				<!-- To be supported!! -->
+				<WCEI value="201" unit="instr" />
+				<WCME value="250" unit="bytes"/>
+			</task_properties>
+		</task>
+
+		<!-- A-DSE Task name = VADhang -->
+		<task name="T8">
+			<function name="VADhangover_fun" file="tasks_func.so"/>
+			<task_properties>
+				<WCET value="4000" unit="ns"/>
+				<!-- To be supported!! -->
+				<WCEI value="200" unit="instr" />
+				<WCME value="250" unit="bytes"/>
+			</task_properties>
+		</task>
+
+
+		<!-- Internal edges -->
+
+		<!-- A-DSE Edge ID = 1 (L_av0) -->
+		<!-- Src T3: ACFavg -->
+		<!-- Dst T5: SpectrComp -->
+		<comm_synch name="E1" src="T3" dest="T5" comm_type="fifo_buffer" comm_data_type="message" token_size="288"/>
+
+		<!-- A-DSE Edge ID = 2 (L_av1) -->
+		<!-- Src T3: ACFavg -->
+		<!-- Dst T4: PredictVal -->
+		<comm_synch name="E2" src="T3" dest="T4" comm_type="fifo_buffer" comm_data_type="message" token_size="288"/>
+
+		<!-- A-DSE Edge ID = 3 (rav1_0 + scal_rav1_0) -->
+		<!-- rav1_0 : short int (x9) -->
+		<!-- scal_rav1_0 : short int (x1) -->
+		<!-- Src T4: PredictVal -->
+		<!-- Dst T5: SpectrComp -->
+		<comm_synch name="E3" src="T4" dest="T5" comm_type="fifo_buffer" comm_data_type="message" token_size="160"/>
+
+		<!-- A-DSE Edge ID = 4 (rav1_1 + scal_rav1_1) -->
+		<!-- rav1_1 : short int (x9) -->
+		<!-- scal_rav1_1 : short int (x1) -->
+		<!-- Src T4: PredictVal -->
+		<!-- Dst T6: ThreshAdapt -->
+		<comm_synch name="E4" src="T4" dest="T6" comm_type="fifo_buffer" comm_data_type="message" token_size="160"/>
+
+		<!-- A-DSE Edge ID = 5 (stat) -->
+		<!-- Src T5: SpectrComp -->
+		<!-- Dst T6: ThreshAdapt -->
+		<comm_synch name="E5" src="T5" dest="T6" comm_type="fifo_buffer" comm_data_type="short"/>
+
+		<!-- A-DSE Edge ID = 6 (acf0 + pvad_1) -->
+		<!-- acf0 : struct {short int, short int} (x1) -->
+		<!-- pvad_1 : struct {short int, short int} (x1) -->
+		<!-- Src T2: EnergComp -->
+		<!-- Dst T6: ThreshAdapt -->
+		<comm_synch name="E6" src="T2" dest="T6" comm_type="fifo_buffer" comm_data_type="message" token_size="64"/>
+
+		<!-- A-DSE Edge ID = 7 (rvad + scal_rvad) -->
+		<!-- rvad : short int (x9) -->
+		<!-- scal_rvad : short int (x1) -->
+		<!-- Src T6: ThreshAdapt -->
+		<!-- Dst T2: EnergComp -->
+		<comm_synch name="E7" src="T6" dest="T2" comm_type="fifo_buffer" comm_data_type="message" token_size="160">
+			<init_function name="init_rvad_fun" file="tasks_func.so"/>
+		</comm_synch>
+
+		<!-- A-DSE Edge ID = 8 (pvad_0) -->
+		<!-- Src T2: EnergComp -->
+		<!-- Dst T7: VADdec -->
+		<comm_synch name="E8" src="T2" dest="T7" comm_type="fifo_buffer" comm_data_type="message" token_size="32"/>
+
+		<!-- A-DSE Edge ID = 9 (tone) -->
+		<!-- Src T1: ToneDetec -->
+		<!-- Dst T6: ThreshAdapt -->
+		<comm_synch name="E9" src="T1" dest="T6" comm_type="fifo_buffer" comm_data_type="short"/>
+
+		<!-- A-DSE Edge ID = 10 (thvad) -->
+		<!-- Src T6: ThreshAdapt -->
+		<!-- Dst T7: VADdec -->
+		<comm_synch name="E10" src="T6" dest="T7" comm_type="fifo_buffer" comm_data_type="message" token_size="32"/>
+
+		<!-- A-DSE Edge ID = 11 (vvad) -->
+		<!-- Src T7: VADdec -->
+		<!-- Dst T8: VADhang -->
+		<comm_synch name="E11" src="T7" dest="T8" comm_type="fifo_buffer" comm_data_type="short"/>
+
+
+		<!-- Input edges -->
+
+		<!-- A-DSE Edge ID = 12 (r_h_1 x9) -->
+		<!-- Src T9: VADsource -->
+		<!-- Dst T3: ACFavg -->		
+		<comm_synch name="E12" src="T9" dest="T3" comm_type="fifo_buffer" comm_data_type="message" token_size="144" io="yes"/>
+
+		<!-- A-DSE Edge ID = 13 (r_h_2 x9) -->
+		<!-- Src T9: VADsource -->
+		<!-- Dst T2: EnergComp -->
+		<comm_synch name="E13" src="T9" dest="T2" comm_type="fifo_buffer" comm_data_type="message" token_size="144" io="yes"/>
+		
+		<!-- A-DSE Edge ID = 14 (r_l x9) -->
+		<!-- Src T9: VADsource -->
+		<!-- Dst T3: ACFavg -->
+		<comm_synch name="E14" src="T9" dest="T3" comm_type="fifo_buffer" comm_data_type="message" token_size="144" io="yes"/>
+
+		<!-- A-DSE Edge ID = 15 (scal_acf_1) -->
+		<!-- Src T9: VADsource -->
+		<!-- Dst T2: EnergComp -->
+		<comm_synch name="E16" src="T9" dest="T2" comm_type="fifo_buffer" comm_data_type="short" io="yes"/>
+
+		<!-- A-DSE Edge ID = 16 (scal_acf_2) -->
+		<!-- Src T9: VADsource -->
+		<!-- Dst T3: ACFavg -->
+		<comm_synch name="E15" src="T9" dest="T3" comm_type="fifo_buffer" comm_data_type="short" io="yes"/>
+
+		<!-- A-DSE Edge ID = 17 (rc_1 x4) -->
+		<!-- Src T9: VADsource -->
+		<!-- Dst T1: ToneDetec -->
+		<comm_synch name="E17" src="T9" dest="T1" comm_type="fifo_buffer" comm_data_type="message" token_size="64" io="yes"/>
+
+		<!-- A-DSE Edge ID = 18 (pitch) -->
+		<!-- Src T9: VADsource -->
+		<!-- Dst T6: ThreshAdapt -->
+		<comm_synch name="E18" src="T9" dest="T6" comm_type="fifo_buffer" comm_data_type="short" io="yes"/>
+
+
+		<!-- Output edges -->
+
+		<!-- A-DSE Edge ID = 19 (vad) -->
+		<!-- Src T8: VADhang -->
+		<!-- Dst T10: VADflag -->
+		<comm_synch name="E19" src="T8" dest="T10" comm_type="fifo_buffer" comm_data_type="short" io="yes"/>
+
+	</application>
+
+
+	<application_mapping>
+		<map_task source="T1" target="_T1_MAP" />
+		<map_task source="T2" target="_T2_MAP" />
+		<map_task source="T3" target="_T3_MAP" />
+		<map_task source="T4" target="_T4_MAP" />
+		<map_task source="T5" target="_T5_MAP" />
+		<map_task source="T6" target="_T6_MAP" />
+		<map_task source="T7" target="_T7_MAP" />
+		<map_task source="T8" target="_T8_MAP" />	
+	</application_mapping>
+
+
+	<platform>
+
+		<platform_mapping>
+			<map_rtos source="sched1" target="PE1"/>
+			<map_rtos source="sched2" target="PE2"/>
+			<map_rtos source="sched3" target="PE3"/>
+			<map_rtos source="sched4" target="PE4"/>
+			<map_rtos source="sched5" target="PE5"/>
+			<map_rtos source="sched6" target="PE6"/>
+		</platform_mapping>
+
+
+		<SW_platform>
+
+			<rtos name="sched1">
+				<task_scheduler>
+					<scheduler_policy>
+						<!-- without parameterization -->
+						
+						<!-- Deprecated style: NOT-LONGER SUPPORTED 
+						<static_scheduling>
+							<task name="T1"/>
+							<task name="T2"/>
+						</static_scheduling>
+						-->
+						
+						<!-- New style: Not using parameters at all 
+						<static_scheduling>
+							<item value="T1"/>
+							<item value="T2"/>
+						</static_scheduling>
+						--> 
+								
+						<!-- with parameterization, wihout default scheduling value 
+						<static_scheduling value="_STATIC_SCHED1"/>
+						-->
+						
+						<!-- with parameterization, with default scheduling value -->
+						<static_scheduling value="_STATIC_SCHED1">
+							<item value="T1"/>
+							<item value="T2"/>
+						</static_scheduling>
+						
+						<!-- Alternative styles WHICH COULD BE SUPPORTED 
+						<static_scheduling>
+							<item index="1" value="T1"/>
+							<item index="2" value="T2"/>
+						</static_scheduling>						
+						-->	
+						<!-- ... plus the parameterized versions of the previous one -->
+						
+					</scheduler_policy>
+				</task_scheduler>
+				
+			    <comm_scheduler>
+					<scheduler_policy>
+				      <static_scheduling value="_STATIC_COMM_SCHED1">
+					    <item value="E6"/>						  
+<!--												    
+					    <comm_synch name="E9"/>
+					    -->
+					    <item value="E8"/>					  
+				      </static_scheduling>
+				   </scheduler_policy>
+			    </comm_scheduler>
+
+			</rtos>
+
+			<rtos name="sched2">
+				<task_scheduler>
+					<scheduler_policy>
+						<static_scheduling value="_STATIC_SCHED2">
+							<item value="T3"/>
+							<item value="T4"/>
+						</static_scheduling>
+					</scheduler_policy>
+				</task_scheduler>
+
+			    <comm_scheduler>
+					<scheduler_policy>
+						<static_scheduling value="_STATIC_COMM_SCHED2">
+<!--							
+							<comm_synch name="E1"/>
+							<comm_synch name="E2"/>
+							-->
+							<item value="E3"/>
+							<item value="E4"/>							
+						</static_scheduling>
+					</scheduler_policy>
+			    </comm_scheduler>				
+			</rtos>
+
+			<rtos name="sched3">
+				<task_scheduler>
+					<scheduler_policy>
+						<static_scheduling value="_STATIC_SCHED3">
+							<item value="T5"/>
+							<item value="T6"/>
+						</static_scheduling>
+					</scheduler_policy>
+				</task_scheduler>
+
+			    <comm_scheduler>
+					<scheduler_policy>
+						<static_scheduling value="_STATIC_COMM_SCHED3">
+							<item value="E7"/>
+							<item value="E10"/>
+						</static_scheduling>
+					</scheduler_policy>
+			    </comm_scheduler>
+			</rtos>
+
+			<rtos name="sched4">
+				<task_scheduler>
+					<scheduler_policy>
+						<static_scheduling value="_STATIC_SCHED4"/>
+<!--							<item value="T7"/>
+							<item value="T8"/>
+ 
+						</static_scheduling>
+-->						
+					</scheduler_policy>
+				</task_scheduler>
+			    <comm_scheduler>
+			    	<scheduler_policy>
+						<static_scheduling  value="_STATIC_COMM_SCHED4"/>
+				  	</scheduler_policy>
+			    </comm_scheduler>
+			</rtos>
+
+			<rtos name="sched5">
+				<task_scheduler>
+					<scheduler_policy>
+						<static_scheduling value="_STATIC_SCHED5"/>
+					</scheduler_policy>
+				</task_scheduler>
+				
+			</rtos>
+
+			<rtos name="sched6">
+				<task_scheduler>
+					<scheduler_policy>
+						<static_scheduling value="_STATIC_SCHED6"/>
+					</scheduler_policy>
+				</task_scheduler>			
+			</rtos>
+	
+		</SW_platform>
+
+
+		<HW_platform>
+
+			<HW_Architecture name="arch1">
+
+				<PE name="PE1" type="arm9">
+<!--					
+					<freq value="_PE1_FREQ" unit="MHz" />
+-->
+					<netif value="true"/>
+				</PE>
+
+				<PE name="PE2" type="arm9">
+<!--
+					<freq value="_PE2_FREQ" unit="MHz" />
+-->
+					<netif value="true"/>
+				</PE>
+
+				<PE name="PE3" type="arm9">
+<!--
+					<freq value="_PE3_FREQ" unit="MHz" />
+-->
+					<netif value="true"/>
+				</PE>
+
+				<PE name="PE4" type="arm9">
+<!--
+					<freq value="_PE4_FREQ" unit="MHz" />
+-->
+					<netif value="true"/>
+				</PE>
+
+				<PE name="PE5" type="arm9">
+<!--
+					<freq value="_PE5_FREQ" unit="MHz" />
+-->
+					<netif value="true"/>
+				</PE>
+
+				<PE name="PE6" type="arm9">
+<!--
+					<freq value="_PE6_FREQ" unit="MHz" />
+-->
+					<netif value="true"/>
+				</PE>
+
+				<comm_res name="tdma1" type="tdma_bus">
+					<!-- Filled by KisTA simulator wrapper -->
+					<HW_Connection instance="PE1" name="hw_conn_1" slots_number="_PE1_SLOTS"/>
+					<HW_Connection instance="PE2" name="hw_conn_2" slots_number="_PE2_SLOTS"/>
+					<HW_Connection instance="PE3" name="hw_conn_3" slots_number="_PE3_SLOTS"/>
+					<HW_Connection instance="PE4" name="hw_conn_4" slots_number="_PE4_SLOTS"/>
+					<HW_Connection instance="PE5" name="hw_conn_5" slots_number="_PE5_SLOTS"/>
+					<HW_Connection instance="PE6" name="hw_conn_6" slots_number="_PE6_SLOTS"/>
+
+					<!-- TDMA bus specific parameteres -->
+					<slots_number value="8"/>
+					<slot_time value="1250" unit="ns"/>
+					<!-- Used to state an effective bandwidth -->
+					 
+					<slot_payload value="512" unit="bit"/>
+					<!--
+					or equivalently
+					
+					<slot_capacity     value="131" unit="bit"/>
+					<slot_payload_rate value="0.333333"/>
+					-->
+					<!-- also valid
+					<payload value="" unit=""/>
+					-->
+					
+					<!-- cycle time can be omitted -->
+					<!--
+					<cycle_time value="1" unit="s"/>
+					-->
+					<cycle_time value="10" unit="us"/>
+				</comm_res>
+
+			</HW_Architecture>
+
+		</HW_platform>
+
+	</platform>
+
+
+	<kista_configuration>
+		<!-- acceptable convergence for utilizations -->
+		<simulation_time value="1" unit="s"/>
+
+		<!-- low verbosity -->
+		<verbose value="false"/>
+		<xml_front_end_verbose value="false"/>
+		<export_sketch value="false"/>
+		<sketch_file_name value="vad_sketch"/>
+
+		<!-- In order to enable functional validation -->
+		<functional_validation value="true"/>
+
+	</kista_configuration>
+
+</system>
