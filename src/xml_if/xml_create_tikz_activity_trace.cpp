@@ -24,9 +24,65 @@
 #define CHILD_START_TIME_XPATH 			"//start_time"
 #define CHILD_MAX_NUMBER_OF_TIME_STAMPS "//max_number_of_time_stamps"
 
+#define CHILD_CLUSTER_XPATH 			"//cluster"
+
+
 //
 // Helper functions to parse TiKZ trace configuration attributes
 //
+
+
+// detects if the current element has a frequency element
+bool has_cluster(xmlDocPtr doc, xmlNodePtr cur) {
+	xmlNodePtr curChildNodePtr;
+	curChildNodePtr = cur->xmlChildrenNode;
+	while (curChildNodePtr != NULL) {
+		if ((!xmlStrcmp(curChildNodePtr->name, (const xmlChar *)"cluster"))){
+			return true;
+		}
+		curChildNodePtr = curChildNodePtr->next;
+	}	
+	return false;
+}
+
+// gets the start time of the first node whose child is of type start_time
+bool get_cluster_value(xmlNodePtr cur) {
+	xmlNodePtr curChildNodePtr;
+	xmlChar *valueStr;
+	curChildNodePtr = cur->xmlChildrenNode;
+	while (curChildNodePtr != NULL) {
+		if ((!xmlStrcmp(curChildNodePtr->name, (const xmlChar *)"cluster"))){
+			valueStr = xmlGetProp(curChildNodePtr, (const xmlChar *)"value");
+			if (!xmlStrcmp(valueStr, (const xmlChar *)"true")) {
+				return true;
+			} else {
+				return false;
+			}			
+		}
+		curChildNodePtr = curChildNodePtr->next;
+	}
+	// this point should never be reached
+	SC_REPORT_ERROR("KisTA-XML","Unexpected error. No cluster found.");
+}
+
+bool get_cluster_compact(xmlNodePtr cur) {
+	xmlNodePtr curChildNodePtr;
+	xmlChar *valueStr;
+	curChildNodePtr = cur->xmlChildrenNode;
+	while (curChildNodePtr != NULL) {
+		if ((!xmlStrcmp(curChildNodePtr->name, (const xmlChar *)"cluster"))){
+			valueStr = xmlGetProp(curChildNodePtr,(const xmlChar *) "compact");
+			if (!xmlStrcmp(valueStr, (const xmlChar *)"true")) {
+				return true;
+			} else {
+				return false;
+			}			
+		}
+		curChildNodePtr = curChildNodePtr->next;
+	}
+	// this point should never be reached
+	SC_REPORT_ERROR("KisTA-XML","Unexpected error. No cluster found.");
+}
 
 // detects if the current element has a frequency element
 bool has_max_number_of_time_stamps(xmlDocPtr doc, xmlNodePtr cur) {
@@ -121,6 +177,7 @@ bool xml_create_tikz_activity_trace(xmlDocPtr doc) {
 	// variables for TiKZ traces nodes
 	xmlNodeSetPtr setIiKZ_trace_nodes;
 	xmlChar 	  *xmlCharValue, *tikz_trace_name;
+	bool		  cluster_flag, compact_flag;
 	tikz_activity_trace_handler tikz_handler;
 	sc_time 		start_time;
 	unsigned int 	max_number_of_time_stamps;
@@ -217,8 +274,47 @@ bool xml_create_tikz_activity_trace(xmlDocPtr doc) {
 					}
 #endif
 				}
-		   }		
+				
+				// cluster (if specified) and compact (if specified)
+				
+				if(has_cluster(doc,setIiKZ_trace_nodes->nodeTab[j])) {
+					cluster_flag = get_cluster_value(setIiKZ_trace_nodes->nodeTab[j]);
+
+					if(cluster_flag) {
+						// command the effective clustering
+						cluster(tikz_handler);
+						
+						// checks if, as well, the compacting is commanded
+						compact_flag = get_cluster_compact(setIiKZ_trace_nodes->nodeTab[j]);
+						
+						if(compact_flag) {
+							compact(tikz_handler);							
+						}
+					}
+					
+				}			
+				
+#ifdef _VERBOSE_KISTA_XML
+				if(global_kista_xml_verbosity) {					
+					rpt_msg = "TiKZ trace ";
+					rpt_msg += (const char *)tikz_trace_name;
+					if(cluster_flag) {
+						rpt_msg += ": clustered";
+						if(compact_flag) {
+							rpt_msg += " and compact.";
+						} else {
+							rpt_msg += ".";
+						}
+					} else {
+						rpt_msg += ": undolded.";
+					}
+					SC_REPORT_INFO("KisTA-XML",rpt_msg.c_str());
+				}						
+#endif
+		   } // end create tikz trace
+		   		
 		}
+		
 		return true;
 	} else 
 	{
