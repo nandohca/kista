@@ -148,13 +148,12 @@ bool xml_create_tikz_activity_trace(xmlDocPtr doc) {
 			   if(tikz_trace_name==NULL) {
 				   tikz_handler = create_tikz_activity_trace();
 #ifdef _VERBOSE_KISTA_XML
-				if(global_kista_xml_verbosity) {
-					rpt_msg = "Creating TiKZ activity trace.";
-					rpt_msg += "No name found in XML file, KisTA will assign an unique name for the TiKZ trace (";
-					rpt_msg += tikz_handler->name();
-					rpt_msg += ")";
-					SC_REPORT_INFO("KisTA-XML",rpt_msg.c_str());
-				}
+					if(global_kista_xml_verbosity) {
+						rpt_msg = "Creating TiKZ activity trace.";
+						rpt_msg += "No name found in XML file, KisTA assigns the unique name:";
+						rpt_msg += tikz_handler->name();
+						SC_REPORT_INFO("KisTA-XML",rpt_msg.c_str());
+					}
 #endif
 				} else {
 #ifdef _VERBOSE_KISTA_XML

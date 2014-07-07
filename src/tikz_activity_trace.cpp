@@ -226,6 +226,23 @@ void tikz_activity_trace::end_of_simulation() {
 	sc_time max_gap, cur_gap;
 	double normalized_distance;
 	unsigned int span_value;
+	std::string	msg;
+	
+	if(ttikz_start_trace_time>sc_time_stamp()) {
+		msg = "Start time of activity trace (";
+		msg += ttikz_start_trace_time.to_string();
+		msg += ") bigger than the last simulation time (";
+		msg += sc_time_stamp().to_string();
+		msg += "). Either, extend simulation time or start the sample before.";
+		SC_REPORT_ERROR("KisTA",msg.c_str());		
+	}
+	cout << "Last time stamp: " << sc_time_stamp() << endl; 
+	if(time_stamps.size()<2) {
+		msg = "Unexpected error in the TiKZ activity trace. ";
+		msg += std::to_string(time_stamps.size());
+		msg += " time stamps stored, while at least 2 time stamps should be recorded.";
+		SC_REPORT_ERROR("KisTA",msg.c_str());
+	}
 	
 	// look for the max time span and fills the time span vector
 	max_gap = time_stamps[1]-time_stamps[0];
@@ -1412,10 +1429,19 @@ void tikz_activity_trace::tikz_trace_activity_process() {
 	bool sched_executing_found;
 	unsigned int tasks_executing;
 	
-	current_time = sc_time_stamp();
+	//  the data collection start after the start configured ime
+	wait(ttikz_start_trace_time);
 	
-	// guard to avoid the execution of the process 
-	while(current_time<ttikz_start_trace_time) wait();
+	current_time = sc_time_stamp();
+
+	// an alternative is to start the capture right after the first event
+	// in the sensitivity list equal or after the threshold time
+/*
+ * 	while(current_time < ttikz_start_trace_time) {
+		 wait();
+		 current_time = sc_time_stamp();
+	}
+*/
 
 	msg = "Data collection for TiKZ activity report start at ";
 	msg += current_time.to_string();
@@ -1465,7 +1491,9 @@ void tikz_activity_trace::tikz_trace_activity_process() {
 				tasks_executing++;
 			}
 		}
-		
+/*		
+ // For the moment not to apply this checks because they are globally applied, not for each scheduler.
+ // What has to be added here is that for each PE/scheduler not more than one task (included the scheduler is applied)
 		if(sched_executing_found && (tasks_executing>0)) {
 			SC_REPORT_ERROR("KisTA","When start to record data for TiKZ trace. The scheduler and at least one task are active at the same time (not possible in local schedulers).");
 		}
@@ -1473,7 +1501,7 @@ void tikz_activity_trace::tikz_trace_activity_process() {
 		if(tasks_executing>1) {
 			SC_REPORT_ERROR("KisTA","When start to record data for TiKZ trace. More than one task are active at the same time (not possible in local schedulers).");
 		}
-					
+*/					
 		if(!sched_executing_found && (tasks_executing==0)) {
 			(*compact_states_table_p)[current_time] = 'X';	// assign 'X' indicating neither the scheduler nor a task executing
 		}
