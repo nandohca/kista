@@ -139,13 +139,13 @@ sketch:
 clean:
 	rm -f *.o
 	rm -f *.a
-	rm -f $(EX_NAME)_sketch.tex
-	rm -f $(EX_NAME)_sketch.log
-	rm -f $(EX_NAME)_sketch.aux
+	rm -f *.aux
+	rm -f *.log
+	rm -f *.tex
 
 ultraclean:clean
 	make -C $(FUN_DIR) ultraclean
 	make -C $(ENV_DIR) ultraclean
 	rm -f *.so
 	rm -f $(EX_NAME)_output.xml
-	rm -f $(EX_NAME)_sketch.pdf
+	rm -f *.pdf
