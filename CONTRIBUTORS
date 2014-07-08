@@ -1,0 +1,30 @@
+
+Fernando Herrera:
+	So far, the only author contributing code to KisTA library
+	fernanhc@kth.se
+        nandohca@yahoo.es
+
+However, there are other people which I consider directly or indirectly involved:
+
+Ingo Sander (KTH):
+	Co-author of first publication associated to KisTA library.
+	Some ideas on the library, such as adding the throughput measurements
+        and detection of the stationary phase.
+
+Katrhin Rosvall (KTH):
+	Because the discussions with her let me understand in depth 
+	the predictable model supported by her analytical DSE tool,
+	and so enable an accurate support of it (only with rounding
+        deviations) by KisTA.
+
+Edoardo Paone (PoliMi):
+	Co-author of the KisTA version of the VAD example
+	Many comments which helped to debug the library during the development
+        of a JAS-DSE methodology where KisTA has been employed.
+	
+Hector Posadas, Daniel Calvo,  Eugenio Villar, and other people of University of Cantabria:
+	Because several features of KisTA are based on features from
+	SCoPE tool, which either i adapted to reproduce for the KisTA purposes
+	(e.g. the XML interface supporting HSDF, or a dialect with PEs, 
+        or implemented in a different way (e.g. XML interface based on libxml2)
+        and had the chance to discuss and learn from them.

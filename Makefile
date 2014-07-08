@@ -144,4 +144,6 @@ ex_lines:
 	wc $(BRT_EX)1/*.cpp $(BRT_EX)2/*.cpp $(BRT_EX)3/*.cpp $(BRT_EX)4/*.cpp $(BRT_EX)5/*.cpp $(BRT_EX)6/*.cpp\
 	 $(SYN_EX)1/*.cpp $(SYN_EX)2/*.cpp $(SYN_EX)3/*.cpp $(SYN_EX)4/*.cpp $(SYN_EX)5/*.cpp $(SYN_EX)6/*.cpp\
 	 $(COMRES_EX)1/*.cpp\
-	 $(EX)/fdl2013_ex/*.cpp $(EX)/fdl2013_ex/*.h
+	 $(EX)/fdl2013_ex/*.cpp $(EX)/fdl2013_ex/*.h\
+	 $(EX)/VAD/*.cpp $(EX)/VAD/*.h $(EX)/VAD/*.hpp $(EX)/VAD/env_fun/*.cpp
+#	 $(EX)/VAD/*.cpp $(EX)/VAD/*.h $(EX)/VAD/*.hpp $(EX)/VAD/fun/*.h $(EX)/VAD/fun/*.cpp $(EX)/VAD/env_fun/*.cpp
