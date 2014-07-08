@@ -521,19 +521,30 @@ void tikz_activity_trace::draw_y_axis_clustered_unfolded(scheduler *sched, unsig
 
 
 void tikz_activity_trace::draw_y_axis_clustered_compact(scheduler *sched, unsigned int cluster_number) {
+
+	*tikz_trace_file << "\\draw [dashed,thick] ";
 	
-	// In case scheduler activity is drawn, it is placed at the bottom of the group/cluster
-	// so "before" (lower Y axis) than the tasks
-	if(show_schedulers_activity) {
-		if(cluster_number==0) {
-			*tikz_trace_file << " (ORIG) -- (0,1)";
-		} else {
-			*tikz_trace_file << "-- ++(0,1) ";
-		}
-		*tikz_trace_file << "coordinate(";
-		*tikz_trace_file << sched->name(); //scheduler name
-		*tikz_trace_file << "e0) ";
+	// Starts from the bottom of the group/cluster
+	// Grouped from scheduler assignation (regardless if scheduler activity is shown)
+	if(cluster_number==0) {
+		*tikz_trace_file << " (ORIG) -- (0,1)";
+	} else {
+		*tikz_trace_file << " (CLUSTER_";
+		*tikz_trace_file << std::to_string(cluster_number-1);
+		*tikz_trace_file << "_YTOP) ";
+		*tikz_trace_file << "-- ++(0,1) ";
 	}
+	*tikz_trace_file << "coordinate(";
+	*tikz_trace_file << sched->name(); //scheduler name
+	*tikz_trace_file << "e0) ";
+	
+	// adds cluster separation and assigns a name to the coordinate of the end of cluster
+	//*tikz_trace_file << " -- ++(0,1) coordinate(CLUSTER_";
+	// lesser cluster separation because using compact format
+	*tikz_trace_file << " -- ++(0,0.5) coordinate(CLUSTER_";
+	*tikz_trace_file << std::to_string(cluster_number);
+	*tikz_trace_file << "_YTOP);" << endl;
+	*tikz_trace_file <<  endl;
 }
 
 void tikz_activity_trace::draw_y_axis_clustered() {
@@ -1440,6 +1451,8 @@ void tikz_activity_trace::tikz_trace_activity_process() {
 	
 	compact_states_table_t	*compact_states_table_p;
 	
+	taskset_by_name_t::iterator task_by_name_it;
+			
 	bool sched_executing_found;
 	unsigned int tasks_executing;
 	
@@ -1497,8 +1510,8 @@ void tikz_activity_trace::tikz_trace_activity_process() {
 			(*compact_states_table_p)[current_time] = cur_sched_state;	// assign "S"	
 			sched_executing_found = true;
 		}
-		for(auto it_task = task_activity.begin(); it_task != task_activity.end(); ++it_task ) {
-			cur_task_info = it_task->first;
+		for(task_by_name_it = cur_sched->gets_tasks_assigned()->begin(); task_by_name_it != cur_sched->gets_tasks_assigned()->end(); ++task_by_name_it ) {
+			cur_task_info = task_by_name_it->second;
 			cur_task_state = cur_task_info->state_signal.read();
 			if(cur_task_state==EXECUTING) {			
 				(*compact_states_table_p)[current_time] = std::to_string(cur_task_info->kista_id).c_str()[0];	// assign task id string
@@ -1584,7 +1597,7 @@ void tikz_activity_trace::tikz_trace_activity_process() {
 			}	
 //			}
 			
-			// initial state for the compact activity format
+			// compact activity
 			for(auto it_sched = compact_activity.begin(); it_sched != compact_activity.end(); ++it_sched ) {
 				sched_executing_found = false;
 				tasks_executing = 0;
@@ -1599,8 +1612,8 @@ void tikz_activity_trace::tikz_trace_activity_process() {
 					sched_executing_found = true;
 				}
 												
-				for(auto it_task = task_activity.begin(); it_task != task_activity.end(); ++it_task ) {
-					cur_task_info = it_task->first;
+				for(task_by_name_it = cur_sched->gets_tasks_assigned()->begin(); task_by_name_it != cur_sched->gets_tasks_assigned()->end(); ++task_by_name_it ) {
+					cur_task_info = task_by_name_it->second;
 					cur_task_state = cur_task_info->state_signal.read();
 					if(cur_task_state==EXECUTING) {
 						(*compact_states_table_p)[current_time] = std::to_string(cur_task_info->kista_id).c_str()[0];	// assign task id string
