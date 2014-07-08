@@ -470,12 +470,17 @@ void tikz_activity_trace::draw_y_axis_clustered_unfolded(scheduler *sched, unsig
 	
 	taskset_by_name_t *assigned_tasks;
 	
+	*tikz_trace_file << "\\draw [dashed,thick] ";
+	
 	// In case scheduler activity is drawn, it is placed at the bottom of the group/cluster
 	// so "before" (lower Y axis) than the tasks
 	if(show_schedulers_activity) {
 		if(cluster_number==0) {
 			*tikz_trace_file << " (ORIG) -- (0,1)";
 		} else {
+			*tikz_trace_file << " (CLUSTER_";
+			*tikz_trace_file << std::to_string(cluster_number-1);
+			*tikz_trace_file << "_YTOP) ";
 			*tikz_trace_file << "-- ++(0,1) ";
 		}
 		*tikz_trace_file << "coordinate(";
@@ -488,11 +493,18 @@ void tikz_activity_trace::draw_y_axis_clustered_unfolded(scheduler *sched, unsig
 	taskset_by_name_t::iterator it;
 
 	for(it = assigned_tasks->begin(); it != assigned_tasks->end(); ++it ) {	
-		if( ( cluster_number==0 ) && (it == assigned_tasks->begin()) && !show_schedulers_activity)  {
-				// first cluster, and scheduler not shown, first baseline
+		if( it == assigned_tasks->begin() && !show_schedulers_activity )  {
+			if( (cluster_number==0) ) {
+				// first cluster, and scheduler not shown -> first baseline
 				*tikz_trace_file << " (ORIG) -- (0,1)";
+			} else {
+				// no first cluster, and scheduler not shown -> start n-th cluster
+				*tikz_trace_file << " (CLUSTER_";
+				*tikz_trace_file << std::to_string(cluster_number-1);
+				*tikz_trace_file << "_YTOP) -- ++(0,1)" << endl;
+			}
 		} else {
-			// no first cluster and not shown scheduler activity, which requires cluster separation
+			// no first cluster, normal separation
 			*tikz_trace_file << " -- ++(0,1)";
 		}
 		// assign coordinate name
@@ -500,7 +512,7 @@ void tikz_activity_trace::draw_y_axis_clustered_unfolded(scheduler *sched, unsig
 		*tikz_trace_file << it->first;
 		*tikz_trace_file << "e0) ";
 	}
-	// adds cluster separation and assigns it a name
+	// adds cluster separation and assigns a name to the coordinate of the end of cluster
 	*tikz_trace_file << " -- ++(0,1) coordinate(CLUSTER_";
 	*tikz_trace_file << std::to_string(cluster_number);
 	*tikz_trace_file << "_YTOP);" << endl;
@@ -526,8 +538,7 @@ void tikz_activity_trace::draw_y_axis_clustered_compact(scheduler *sched, unsign
 
 void tikz_activity_trace::draw_y_axis_clustered() {
 	unsigned int cluster_idx;   
-	//*tikz_trace_file << "\\draw [dashed,thick] (O1) -- (0,1) coordinate(T1) -- (0,3) coordinate(S2) -- (0,5) coordinate(e3) -- ++(0,1)coordinate(ff2);" << endl;
-	*tikz_trace_file << "\\draw [dashed,thick] ";
+
 	cluster_idx = 0;
 	for(auto it_sched = sched_activity.begin(); it_sched != sched_activity.end(); ++it_sched ) {
 		if(compact_style) {
@@ -535,10 +546,13 @@ void tikz_activity_trace::draw_y_axis_clustered() {
 		} else {
 			draw_y_axis_clustered_unfolded(it_sched->first, cluster_idx);
 		}
+		cluster_idx++;
 	}
 
-	// adds cluster separation and assigns it a name
-	*tikz_trace_file << " -- ++(0,1) coordinate(YTOP);" << endl;
+	// adds final YTOP coordinate and assigns it a name
+	*tikz_trace_file << "\\draw [dashed,thick] (CLUSTER_";
+	*tikz_trace_file << std::to_string(cluster_idx-1);
+	*tikz_trace_file << "_YTOP) -- ++(0,1) coordinate(YTOP);" << endl;
 	*tikz_trace_file <<  endl;
 }
 
