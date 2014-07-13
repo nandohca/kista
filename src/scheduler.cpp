@@ -70,8 +70,10 @@ namespace kista {
 		//spawn_options.dont_initialize(); // Otherwise tasks will start to run at the beginning
 										// they will leave the scheduler starved
 
-		consumption_signal.write(true); // by default, the scheduler starts computing
-		state_signal.write(EXECUTING); // by default, the scheduler starts computing
+		consumption_signal.write(false); // by default, the scheduler starts computing
+		state_signal.write(INNACTIVE); // by default, the scheduler starts computing, that is, scheduling
+										// note: currently, only if there are assigned tasks
+										//       the local scheduler will start scheduling
 
 		// init sched. occupation
 		sched_comp_time = SC_ZERO_TIME;
@@ -146,8 +148,10 @@ namespace kista {
 		//spawn_options.dont_initialize(); // Otherwise tasks will start to run at the beginning
 										// they will leave the scheduler starved
 
-		consumption_signal.write(true); // by default, the scheduler starts computing
-		state_signal.write(EXECUTING); // by default, the scheduler starts computing
+		consumption_signal.write(false); // by default, the scheduler starts computing
+		state_signal.write(INNACTIVE); // by default, the scheduler starts computing, that is, scheduling
+										// note: currently, only if there are assigned tasks
+										//       the local scheduler will start scheduling
 
 		// init sched. occupation
 		sched_comp_time = SC_ZERO_TIME;
@@ -495,7 +499,7 @@ cout << " ***********************************" << endl;
 		while(true) {
 
 			state_signal.write(SCHEDULING); // scheduler passes to executing state
-
+			consumption_signal.write(true);
 			
 #ifdef _PRINT_SCHEDULERS_ACTIVITY
 			cout << name() << " resume at time = " << sc_time_stamp() << " (global sim. time = " << global_sim_time << ")" << endl;
@@ -566,7 +570,8 @@ cout << "SCHEDULING TIME: " << scheduling_time << endl;
 
 // somewhere here, evaluation of context switch and consideration of that additional delay
 
-			state_signal.write(INNACTIVE); // scheduler passes to ready state
+			state_signal.write(INNACTIVE); // scheduler passes to inactive (ready) state
+			consumption_signal.write(false);
 			
 					// the if is included in order to avoid adding more deltas when
 					// no actual time delay is associated to the scheduler
@@ -1255,7 +1260,7 @@ cout << "Checking task " << it->first << " with user priority " << it->second->g
 		if(tasks_assigned==NULL) {
 			msg = "Scheduler ";
 			msg += name();
-			msg += " has not task set assigned.";
+			msg += ": Unexpected error. Tasks assigned pointer is NULL.";
 			SC_REPORT_ERROR("KisTA",msg.c_str() );			
 		}
 			
