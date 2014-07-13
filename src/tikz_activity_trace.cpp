@@ -1438,6 +1438,14 @@ void tikz_activity_trace::draw_end() {
 }
 
 void tikz_activity_trace::tikz_trace_activity_process() {
+	if(clustered_style && compact_style) {
+		tikz_trace_activity_process_clustered_compact();
+	} else {
+		tikz_trace_activity_process_unfolded();
+	}
+}
+
+void tikz_activity_trace::tikz_trace_activity_process_unfolded() {
 	std::string msg;
 	unsigned int i;
 	sc_time current_time;
@@ -1448,13 +1456,6 @@ void tikz_activity_trace::tikz_trace_activity_process() {
 	scheduler*				cur_sched;
 	sched_state_t  		cur_sched_state;
 	task_states_table_t	*sched_state_table_p;
-	
-	compact_states_table_t	*compact_states_table_p;
-	
-	taskset_by_name_t::iterator task_by_name_it;
-			
-	bool sched_executing_found;
-	unsigned int tasks_executing;
 	
 	//  the data collection start after the start configured ime
 	wait(ttikz_start_trace_time);
@@ -1496,43 +1497,7 @@ void tikz_activity_trace::tikz_trace_activity_process() {
 		cur_sched = it_sched->first;
 		cur_sched_state = cur_sched->state_signal.read();
 		sched_state_table_p = it_sched->second;
-		(*sched_state_table_p)[current_time] = cur_sched_state;		
-	}
-	
-	// initial state for the compact activity format
-	for(auto it_sched = compact_activity.begin(); it_sched != compact_activity.end(); ++it_sched ) {
-		sched_executing_found = false;
-		tasks_executing = 0;
-		cur_sched = it_sched->first;
-		cur_sched_state = cur_sched->state_signal.read();
-		compact_states_table_p=it_sched->second;
-		if(cur_sched_state==SCHEDULING) {
-			(*compact_states_table_p)[current_time] = cur_sched_state;	// assign "S"	
-			sched_executing_found = true;
-		}
-		for(task_by_name_it = cur_sched->gets_tasks_assigned()->begin(); task_by_name_it != cur_sched->gets_tasks_assigned()->end(); ++task_by_name_it ) {
-			cur_task_info = task_by_name_it->second;
-			cur_task_state = cur_task_info->state_signal.read();
-			if(cur_task_state==EXECUTING) {			
-				(*compact_states_table_p)[current_time] = std::to_string(cur_task_info->kista_id).c_str()[0];	// assign task id string
-				tasks_executing++;
-			}
-		}
-/*		
- // For the moment not to apply this checks because they are globally applied, not for each scheduler.
- // What has to be added here is that for each PE/scheduler not more than one task (included the scheduler is applied)
-		if(sched_executing_found && (tasks_executing>0)) {
-			SC_REPORT_ERROR("KisTA","When start to record data for TiKZ trace. The scheduler and at least one task are active at the same time (not possible in local schedulers).");
-		}
-
-		if(tasks_executing>1) {
-			SC_REPORT_ERROR("KisTA","When start to record data for TiKZ trace. More than one task are active at the same time (not possible in local schedulers).");
-		}
-*/					
-		if(!sched_executing_found && (tasks_executing==0)) {
-			(*compact_states_table_p)[current_time] = 'X';	// assign 'X' indicating neither the scheduler nor a task executing
-		}
-				
+		(*sched_state_table_p)[current_time] = cur_sched_state;
 	}
 	
 	while(true) {
@@ -1594,30 +1559,149 @@ void tikz_activity_trace::tikz_trace_activity_process() {
 					// Note: a map structure used, so in case of state change in the same time stamp
 					//       the last state value steps over the previous one
 				}
-			}	
-//			}
+			}		
+
+		}
+		
+	}
+}	
+
+
+void tikz_activity_trace::tikz_trace_activity_process_clustered_compact() {
+	std::string msg;
+	unsigned int i;
+	sc_time current_time;
+	task_info_t			*cur_task_info;
+	task_state_t		cur_task_state;
+	
+	scheduler*			cur_sched;
+	sched_state_t  		cur_sched_state;
+	
+	compact_states_table_t	*compact_states_table_p;
+	
+	taskset_by_name_t::iterator task_by_name_it;
 			
-			// compact activity
+	bool sched_executing_found;
+	unsigned int tasks_executing;
+	bool cluster_event; // flag to record if there was an event associated to the tasks-sched cluster
+	
+	//  the data collection start after the start configured ime
+	wait(ttikz_start_trace_time);
+	
+	current_time = sc_time_stamp();
+
+	// an alternative is to start the capture right after the first event
+	// in the sensitivity list equal or after the threshold time
+/*
+ * 	while(current_time < ttikz_start_trace_time) {
+		 wait();
+		 current_time = sc_time_stamp();
+	}
+*/
+
+	msg = "Data collection for TiKZ activity report start at ";
+	msg += current_time.to_string();
+	SC_REPORT_INFO("KisTA",msg.c_str());
+
+	// stores the first time stamp and its corresponding index
+	time_stamps.push_back(current_time);
+	i = 0;
+	time_stamps_index[current_time] = i;
+	i++;
+	
+	// initial state for the compact activity format
+	for(auto it_sched = compact_activity.begin(); it_sched != compact_activity.end(); ++it_sched ) {
+		sched_executing_found = false;
+		tasks_executing = 0;
+		cur_sched = it_sched->first;
+		
+		cur_sched_state = cur_sched->state_signal.read();
+		compact_states_table_p=it_sched->second;
+		if(cur_sched_state==SCHEDULING) {
+			(*compact_states_table_p)[current_time] = cur_sched_state;	// assign "S"	
+			sched_executing_found = true;
+		}
+			
+		for(task_by_name_it = cur_sched->gets_tasks_assigned()->begin(); task_by_name_it != cur_sched->gets_tasks_assigned()->end(); ++task_by_name_it ) {
+			cur_task_info = task_by_name_it->second;			
+			cur_task_state = cur_task_info->state_signal.read();
+			if(cur_task_state==EXECUTING) {			
+				(*compact_states_table_p)[current_time] = std::to_string(cur_task_info->kista_id).c_str()[0];	// assign task id string
+				tasks_executing++;
+			}
+		}
+/*		
+ // For the moment not to apply this checks because they are globally applied, not for each scheduler.
+ // What has to be added here is that for each PE/scheduler not more than one task (included the scheduler is applied)
+		if(sched_executing_found && (tasks_executing>0)) {
+			SC_REPORT_ERROR("KisTA","When start to record data for TiKZ trace. The scheduler and at least one task are active at the same time (not possible in local schedulers).");
+		}
+
+		if(tasks_executing>1) {
+			SC_REPORT_ERROR("KisTA","When start to record data for TiKZ trace. More than one task are active at the same time (not possible in local schedulers).");
+		}
+*/					
+		if(!sched_executing_found && (tasks_executing==0)) {
+			(*compact_states_table_p)[current_time] = 'X';	// assign 'X' indicating neither the scheduler nor a task executing
+		}
+				
+	}
+	
+	while(true) {
+		wait();
+//		cout << "TiKZ activity report event at " << sc_time_stamp() << endl;
+		
+		// adds a new time stamp only if the time stamp is bigger
+		// and the max. amount of time stamps is respected
+		current_time = sc_time_stamp();
+
+		if(current_time>=time_stamps.back()) {
+			if(current_time>time_stamps.back()) { // if there is time advance
+			                                       // either the time stamps vector has
+			                                       // to be grown, or the collection finished
+				if(time_stamps.size()<ttikz_max_n_time_stamps) {
+					// this update takes into account that several events
+					// can appear at the same time stamp
+					// still more time stamps can be added...
+					time_stamps.push_back(current_time);
+					// ... and its corresponding index
+					time_stamps_index[current_time] = i;
+					i++;
+				} else { // the limit of time stamps has been reached
+						 // and the next event exceedes the limit
+						 // so we end the collection of data
+					break;
+				}
+			}
+			
+			// collect activity in compact format
 			for(auto it_sched = compact_activity.begin(); it_sched != compact_activity.end(); ++it_sched ) {
 				sched_executing_found = false;
 				tasks_executing = 0;
+				cluster_event = false;
 			
 				cur_sched = it_sched->first;
 				
 				compact_states_table_p=it_sched->second;
 				
-				cur_sched_state = cur_sched->state_signal.read();
-				if(cur_sched_state==SCHEDULING) {
-					(*compact_states_table_p)[current_time] = cur_sched_state;	// assign "S"	
-					sched_executing_found = true;
+				if(cur_sched->state_signal.event()) {
+					cluster_event = true;
+					cur_sched_state = cur_sched->state_signal.read();
+					if(cur_sched_state==SCHEDULING) {
+						(*compact_states_table_p)[current_time] = cur_sched_state;	// assign "S"	
+						sched_executing_found = true;
+					}
 				}
 												
 				for(task_by_name_it = cur_sched->gets_tasks_assigned()->begin(); task_by_name_it != cur_sched->gets_tasks_assigned()->end(); ++task_by_name_it ) {
 					cur_task_info = task_by_name_it->second;
-					cur_task_state = cur_task_info->state_signal.read();
-					if(cur_task_state==EXECUTING) {
-						(*compact_states_table_p)[current_time] = std::to_string(cur_task_info->kista_id).c_str()[0];	// assign task id string
-						tasks_executing++;					
+					if(cur_task_info->state_signal.event()) {
+						cluster_event = true;
+						cur_task_state = cur_task_info->state_signal.read();
+						if(cur_task_state==EXECUTING) {
+							(*compact_states_table_p)[current_time] = std::to_string(cur_task_info->kista_id).c_str()[0];	// assign task id string
+							tasks_executing++;					
+						}
 					}
 				}
 				
@@ -1629,8 +1713,9 @@ void tikz_activity_trace::tikz_trace_activity_process() {
 				if(tasks_executing>1) {
 						SC_REPORT_ERROR("KisTA","While recording data for TiKZ trace. More than one task are active at the same time (not possible in local schedulers).");
 				}
-	*/				
-				if(!sched_executing_found && (tasks_executing==0)) {
+	*/			
+
+				if(cluster_event && (!sched_executing_found) && (tasks_executing==0)) {
 					(*compact_states_table_p)[current_time] = 'X';	// assign 'X' indicating neither the scheduler nor a task executing
 				}
 				

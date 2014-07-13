@@ -166,6 +166,8 @@ private:
 	void end_of_simulation();
 		
 	void tikz_trace_activity_process();
+	void tikz_trace_activity_process_unfolded();
+	void tikz_trace_activity_process_clustered_compact();
 
 	// auxiliar methods for exporting the tikz file
 	void draw_start();
