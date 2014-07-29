@@ -50,7 +50,7 @@ void compact(tikz_activity_trace_handler handler);
 	// By default, an unfolded style, using a trace for each task and scheduler
 	// ONLY APPLICABLE TO THE CLUSTERED STYLE
 
-void set_base_line_separation(tikz_activity_trace_handler handler, unsigned int separation);
+void set_base_lines_separation(tikz_activity_trace_handler handler, unsigned int separation);
     // default baselines separation: 2
 
 void set_time_stamps_max_separation(tikz_activity_trace_handler handler, unsigned int max_separation);

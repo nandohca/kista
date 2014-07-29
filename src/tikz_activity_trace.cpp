@@ -74,7 +74,7 @@ void do_not_show_schedulers(tikz_activity_trace_handler handler) {
 	handler->set_landscape();
 }
 
-void set_base_line_separation(tikz_activity_trace_handler handler, unsigned int separation) {
+void set_base_lines_separation(tikz_activity_trace_handler handler, unsigned int separation) {
 	check_call_at_elaboration("set_base_line_separation");
 	handler->set_base_lines_separation(separation);
 }
@@ -279,17 +279,16 @@ void tikz_activity_trace::end_of_simulation() {
 	for(unsigned int i=0; i < x_location.size(); i++) {
 		cout << i << ":" << x_location[i] << endl;
 	}
-
 	
 	// Now, it does the actual export to the TiKZ file
 	this->draw_start();
-	if(clustered_style) {
-		if(compact_style) {
+	if(clustered_style) {		
+		if(compact_style) {			
 			this->draw_clustered_compact();
-		} else {
+		} else {		
 			this->draw_clustered_unfolded();
 		}
-	} else {
+	} else {		
 		this->draw_flat_all();
 	}
 	this->draw_end();
@@ -428,38 +427,24 @@ void tikz_activity_trace::draw_time_axis() {
 }
 
 void tikz_activity_trace::draw_y_axis_flat() {
-	unsigned int j;
-	j=1;
 	if(show_schedulers_activity) {
 		// In case scheduler activity is drawn, it is placed at the bottom of the sketch
 		for(auto it_sched = sched_activity.begin(); it_sched != sched_activity.end(); ++it_sched ) {
-			*tikz_trace_file << "-- (0,";
-			*tikz_trace_file << std::to_string(j);
+			*tikz_trace_file << "-- ++(0,";
+			*tikz_trace_file << std::to_string(base_lines_separation);
 			*tikz_trace_file << ") coordinate(";
 			*tikz_trace_file << it_sched->first->name(); //scheduler name
 			*tikz_trace_file << "e0) ";
-			j+= base_lines_separation;
 		}
 	}
 
+	// y references for tasks
 	for(auto it = task_activity.begin(); it != task_activity.end(); ++it ) {
-
-		if(show_schedulers_activity) {
-			// schedulers already placed, so the task placing is relative
-			*tikz_trace_file << " -- ++(0,1) " << endl;
-			*tikz_trace_file <<  endl;
-		} else {
-			// schedulers not shown, so the first coordinate for task placing
-			// "is absolute", actually relative to ORIG
-			*tikz_trace_file << "-- (0,";
-			*tikz_trace_file << std::to_string(j);
-			*tikz_trace_file << ")" ;
-		}
-		*tikz_trace_file << " coordinate(";
+		*tikz_trace_file << "-- ++(0,";
+		*tikz_trace_file << std::to_string(base_lines_separation);
+		*tikz_trace_file << ") coordinate(";
 		*tikz_trace_file << it->first->name();
 		*tikz_trace_file << "e0) ";
-		
-		j+= base_lines_separation;
 	}
 	*tikz_trace_file << " -- ++(0,1) coordinate(YTOP);" << endl;
 	*tikz_trace_file <<  endl;
@@ -481,7 +466,9 @@ void tikz_activity_trace::draw_y_axis_clustered_unfolded(scheduler *sched, unsig
 			*tikz_trace_file << " (CLUSTER_";
 			*tikz_trace_file << std::to_string(cluster_number-1);
 			*tikz_trace_file << "_YTOP) ";
-			*tikz_trace_file << "-- ++(0,1) ";
+			*tikz_trace_file << "-- ++(0,";
+			*tikz_trace_file << std::to_string(base_lines_separation);
+			*tikz_trace_file << ") " << endl;
 		}
 		*tikz_trace_file << "coordinate(";
 		*tikz_trace_file << sched->name(); //scheduler name
@@ -501,11 +488,15 @@ void tikz_activity_trace::draw_y_axis_clustered_unfolded(scheduler *sched, unsig
 				// no first cluster, and scheduler not shown -> start n-th cluster
 				*tikz_trace_file << " (CLUSTER_";
 				*tikz_trace_file << std::to_string(cluster_number-1);
-				*tikz_trace_file << "_YTOP) -- ++(0,1)" << endl;
+				*tikz_trace_file << "_YTOP) -- ++(0,";
+				*tikz_trace_file << std::to_string(base_lines_separation);
+				*tikz_trace_file << ") " << endl;
 			}
 		} else {
-			// no first cluster, normal separation
-			*tikz_trace_file << " -- ++(0,1)";
+			// no first cluster, "normal" separation stated by base_lines_separation
+			*tikz_trace_file << " -- ++(0,";
+			*tikz_trace_file << std::to_string(base_lines_separation);
+			*tikz_trace_file << ")" << endl;
 		}
 		// assign coordinate name
 		*tikz_trace_file << " coordinate(";
@@ -550,11 +541,11 @@ void tikz_activity_trace::draw_y_axis_clustered_compact(scheduler *sched, unsign
 void tikz_activity_trace::draw_y_axis_clustered() {
 	unsigned int cluster_idx;   
 
-	cluster_idx = 0;
+	cluster_idx = 0;	
 	for(auto it_sched = sched_activity.begin(); it_sched != sched_activity.end(); ++it_sched ) {
-		if(compact_style) {
+		if(compact_style) {						
 			draw_y_axis_clustered_compact(it_sched->first, cluster_idx);
-		} else {
+		} else {		
 			draw_y_axis_clustered_unfolded(it_sched->first, cluster_idx);
 		}
 		cluster_idx++;
