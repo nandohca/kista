@@ -509,7 +509,7 @@ sc_time readTime(xmlNodePtr cur) {
 }
 
 
-// Read a time when it is specified as two properties hanging from a node	
+// Read an integer number
 template<class T>
 T readNumber(xmlNodePtr cur) {
 
@@ -527,6 +527,26 @@ T readNumber(xmlNodePtr cur) {
 	return number;
 
 }
+
+// Read an integer number
+template<class T>
+T readRealNumber(xmlNodePtr cur) {
+
+	xmlChar *valueStr;	
+	T real_number;
+
+	valueStr = xmlGetValueGen(cur,(xmlChar *)"value");
+		
+	if(valueStr==NULL) {
+		SC_REPORT_ERROR("Kista-XML","Error reading real value");
+	}
+	
+	real_number = atof((const char *)valueStr);
+	
+	return real_number;
+
+}
+
 
 // reads the configured boolean option, described by boolean_option_description,
 // in the doc XML document, in pathExpression, and returns its value.
