@@ -507,7 +507,9 @@
 		 	-->	 
 		<verbose value="true"/>
 		<xml_front_end_verbose value="true"/>
-		<export_sketch value="true"/>
+		<export_sketch value="true">
+			<draw_sys_level_conn_names value="true"/>
+		</export_sketch>export_sketch>	
 		<sketch_file_name value="vad_sketch"/>
 
 		<!-- In order to enable functional validation -->
@@ -531,18 +533,25 @@
 				<!-- all the next configuration parameters of the tikz trace are optional and have default values -->
 				<!-- control of time axis information -->
 				<start_time value="9" unit="ms" />
-				<max_number_of_time_stamps value="20"/>
+				<max_number_of_time_stamps value="16"/>
 				<time_stamps_max_separation value="3"/>
 				<!-- control of time axis information -->
-				<clustered value="true" compact="true"/>
-				<base_line_separation value="2"/>
+				<cluster value="true" compact="false"/>
+				<base_lines_separation value="1"/>
+						<!-- base lines separation, 1 (default),2,... no effect for compact format -->
+						
 				<!-- control of information in the draw -->
+				<!-- -->
 				<no_text_in_traces value="true"/>
+				
 				<do_not_show_unactive_boxes value="true"/>	
-				<do_not_show_schedulers value="true"/>	
+				<!-- -->
+				<do_not_show_schedulers value="false"/>	
+				
 				<!-- control of picture format -->
-				<set_scale value="1"/>
+				<set_scale value="0.75"/>
 				<set_landscape value="true"/>
+				
 			</tikz_trace>
 
 		</analysis>
