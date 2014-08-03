@@ -111,6 +111,15 @@ const char *get_configured_sketch_file_name(xmlDocPtr doc) {
 								);
 }
 
+bool get_configured_sketch_draw_sys_level_conn_names(xmlDocPtr doc) {
+	
+	get_configured_boolean_option(doc,
+								"/system/kista_configuration/export_sketch/draw_sys_level_conn_names", // where to find boolean property
+								"draw system-level connection names when exporting a sketch of the KisTA model", // description of the boolean property
+								false // default value if not found in XML system description
+								);
+}
+
 bool get_configured_functional_validation(xmlDocPtr doc) {
 
 	get_configured_boolean_option(doc,

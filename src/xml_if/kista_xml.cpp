@@ -402,6 +402,9 @@ int sc_main(int argc, char **argv) {
 				sketch_report.set_file_name(sketch_report_file);
 			}
 			sketch_report.enable();
+			if(get_configured_sketch_draw_sys_level_conn_names(doc)) {
+				sketch_report.draw_sys_level_conn();
+			}
 		}
 
 		if ( get_configured_functional_validation(doc) ) {
