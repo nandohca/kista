@@ -28,6 +28,8 @@ void sketch_report_t::init() {
 	
 	// to allow different routings for the task connection whenever the KisTA executable is executed
 	srand (time(NULL));
+	
+	with_sys_level_conn_names = false;
 }
 
 void sketch_report_t::set_file_name(std::string name_par) {
@@ -39,7 +41,6 @@ void sketch_report_t::enable() {
 	sketch_file = new ofstream(sketch_file_name);
 	sketch_enabled = true;
 //cout << "Sketch report file name: " << sketch_file_name << endl;
-	write_header();
 }
 
 bool& sketch_report_t::is_enabled() {
@@ -48,6 +49,13 @@ bool& sketch_report_t::is_enabled() {
 
 void sketch_report_t::end_of_elaboration() {
 	if(is_enabled()) {
+		// init to 0 inputs and outputs in inps and outs vector
+		for(unsigned int i=0; i < sys_conn_types.size();i++) {
+			inps.push_back(0);
+			outs.push_back(0);
+		}
+		// draw
+		write_header();
 		actual_draw();
 		write_tail();
 	}
@@ -74,6 +82,11 @@ void sketch_report_t::write_header() {
    *sketch_file << "\\usepackage[margin=15mm]{geometry}" << endl;
    *sketch_file << "\\usetikzlibrary{shapes,arrows,fit,calc,positioning}" << endl;
    
+   if(with_sys_level_conn_names) {
+		*sketch_file << "\\usetikzlibrary{decorations.text}" << endl;
+		*sketch_file << "\\usetikzlibrary{decorations.pathmorphing}" << endl;
+   }
+	
    insert_TO_tikz_macro();
    
    *sketch_file << "\\begin{document}" << endl;
@@ -139,6 +152,11 @@ void sketch_report_t::write_tail() {
    *sketch_file << endl;
 }
 
+void sketch_report_t::draw_sys_level_conn() {
+	check_call_before_sim_start("draw_sys_level_conn");
+	with_sys_level_conn_names = true;
+}
+	
 void sketch_report_t::add_content(std::string content) {
    *sketch_file << content;
 }
@@ -195,9 +213,6 @@ void sketch_report_t::actual_draw() {
 	std::string pe_id_name, pe_prev_id_name;
 	std::string commres_id_name, commres_prev_id_name;
 	
-	// to iterate system-level channels
-	std::map<logic_link_t, std::string>::iterator sys_conn_types_it;
-	
 	// to iterate assigned taskets
 	taskset_by_name_t::iterator taskset_it; // iterator for taskset
 	taskset_by_name_t *current_tasks_assigned;
@@ -212,11 +227,13 @@ void sketch_report_t::actual_draw() {
 	if(tasks.size()>0) {
 		// (2) for node identifieres, "." are substituted by "/", to avoid drawing issues
 		task_id_name = tasks[0]->name();
+		task_position[task_id_name] = 0;
 		dot_by_slash(task_id_name);
 		
 		*sketch_file << "\\node (" << task_id_name << ") [task_style] {$" << tasks[0]->name() << "$};" << endl;	
 		for(i=1; i<tasks.size(); i++) {
 			task_id_name = tasks[i]->name();
+			task_position[task_id_name] = i;
 			dot_by_slash(task_id_name);
 			task_prev_id_name = tasks[i-1]->name();
 			dot_by_slash(task_prev_id_name);
@@ -347,45 +364,10 @@ void sketch_report_t::actual_draw() {
 	}
 	
 	// draw system-level (PIM/application) connections
-	// ------------------------------------------------
-	for(sys_conn_types_it=sys_conn_types.begin(); sys_conn_types_it != sys_conn_types.end();sys_conn_types_it++) {
-		
-		*sketch_file << "\\draw (";
-		
-		// get src task name
-		task_id_name = sys_conn_types_it->first.src->name();
-		dot_by_slash(task_id_name);
-		
-		*sketch_file << task_id_name;
-		*sketch_file << ") [";
-		
-		// style of arrow for representing the system-level connection
-		if(sys_conn_types_it->second=="fifo_buffer") {
-		    *sketch_file << "fifo_buffer_style";
-		} else {
-			*sketch_file << "logic_link_style";
-			rpt_msg = "Drawing of system-level channel of type";
-			rpt_msg += sys_conn_types_it->second; 
-			rpt_msg += "not supported. Default logic link representation will be used for them.";
-			SC_REPORT_WARNING("KisTA",rpt_msg.c_str());
-		}
-		
-		//*sketch_file << "] -- (";
-		*sketch_file << "] ";
-		*sketch_file << "to[out=";
-		*sketch_file << calculate_out_angle();
-		*sketch_file << ",in=";
-		*sketch_file << calculate_in_angle();
-		*sketch_file << "] (";
-		
-		// get dest task name
-		task_id_name = sys_conn_types_it->first.dest->name();
-		dot_by_slash(task_id_name);
-		
-		*sketch_file << task_id_name;
-		*sketch_file << ");";
-		*sketch_file << endl;
-	}
+	// ------------------------------------------------	
+	draw_system_level_connections();
+
+	// draw_system_level_connections_random();
 
 	// draw task to scheduler mappings
 	// ---------------------------------
@@ -462,6 +444,108 @@ void sketch_report_t::actual_draw() {
 	}
 }
 
+void sketch_report_t::draw_system_level_connections() {
+	
+	std::string rpt_msg;
+	std::string src_task_id_name, dest_task_id_name;
+	// to iterate system-level channels
+	std::map<logic_link_t, std::string>::iterator sys_conn_types_it;
+	
+	for(sys_conn_types_it=sys_conn_types.begin(); sys_conn_types_it != sys_conn_types.end();sys_conn_types_it++) {
+		
+		// get src task name
+		src_task_id_name = sys_conn_types_it->first.src->name();
+		dot_by_slash(src_task_id_name);
+
+		// get dest task name
+		dest_task_id_name = sys_conn_types_it->first.dest->name();
+		dot_by_slash(dest_task_id_name);
+		
+		*sketch_file << "\\draw (";		
+		*sketch_file << src_task_id_name;
+		*sketch_file << ") [";
+		
+		// style of arrow for representing the system-level connection
+		if(sys_conn_types_it->second=="fifo_buffer") {
+		    *sketch_file << "fifo_buffer_style";
+		} else {
+			*sketch_file << "logic_link_style";
+			rpt_msg = "Drawing of system-level channel of type";
+			rpt_msg += sys_conn_types_it->second; 
+			rpt_msg += "not supported. Default logic link representation will be used for them.";
+			SC_REPORT_WARNING("KisTA",rpt_msg.c_str());
+		}
+		if(with_sys_level_conn_names) {
+			*sketch_file << ", ";
+			// template
+			// postaction={decorate,decoration={text along path,text align=center,text={$USER_TEXT{\;}$}}}
+			*sketch_file << "postaction={decorate,decoration={text along path,text align=center,text={$";
+			logic_link_t cur_llink = sys_conn_types_it->first;
+			*sketch_file << cur_llink.get_link_name();
+			//*sketch_file << sys_conn_types_it->first.get_link_name();
+			//sketch_file << "pepe";
+			*sketch_file << "{\\;}$}}}";
+		}
+		*sketch_file << "] ";
+				
+		calculate_angles(src_task_id_name,dest_task_id_name);
+		
+		*sketch_file << " (";
+		*sketch_file << dest_task_id_name;
+		*sketch_file << ");";
+		*sketch_file << endl;
+	}
+
+}
+
+
+void sketch_report_t::draw_system_level_connections_random() {
+	
+	std::string rpt_msg;
+	std::string task_id_name;
+	// to iterate system-level channels
+	std::map<logic_link_t, std::string>::iterator sys_conn_types_it;
+	
+	for(sys_conn_types_it=sys_conn_types.begin(); sys_conn_types_it != sys_conn_types.end();sys_conn_types_it++) {
+		
+		*sketch_file << "\\draw (";
+		
+		// get src task name
+		task_id_name = sys_conn_types_it->first.src->name();
+		dot_by_slash(task_id_name);
+		
+		*sketch_file << task_id_name;
+		*sketch_file << ") [";
+		
+		// style of arrow for representing the system-level connection
+		if(sys_conn_types_it->second=="fifo_buffer") {
+		    *sketch_file << "fifo_buffer_style";
+		} else {
+			*sketch_file << "logic_link_style";
+			rpt_msg = "Drawing of system-level channel of type";
+			rpt_msg += sys_conn_types_it->second; 
+			rpt_msg += "not supported. Default logic link representation will be used for them.";
+			SC_REPORT_WARNING("KisTA",rpt_msg.c_str());
+		}
+		
+		//*sketch_file << "] -- (";
+		*sketch_file << "] ";
+		*sketch_file << "to[out=";
+		*sketch_file << calculate_out_angle();
+		*sketch_file << ",in=";
+		*sketch_file << calculate_in_angle();
+		*sketch_file << "] (";
+		
+		// get dest task name
+		task_id_name = sys_conn_types_it->first.dest->name();
+		dot_by_slash(task_id_name);
+		
+		*sketch_file << task_id_name;
+		*sketch_file << ");";
+		*sketch_file << endl;
+	}
+
+}
 
 // In order to facilitate the drawing of task links without overlapping,
 // the following marcro is used: http://tex.stackexchange.com/questions/27899/automatically-connect-nodes-without-overlapping-other-nodes-or-connections
@@ -500,8 +584,6 @@ void sketch_report_t::actual_draw() {
 
 void sketch_report_t::insert_TO_tikz_macro() {
 
-	*sketch_file << "\\usetikzlibrary{calc}" << endl;
-
 	*sketch_file << "\\makeatletter" << endl;
 	*sketch_file << "\\tikzset{" << endl;
 	*sketch_file << "  through point/.style={" << endl;
@@ -531,14 +613,51 @@ void sketch_report_t::insert_TO_tikz_macro() {
 
 }
 
-unsigned int sketch_report_t::calculate_out_angle() {
-	return rand()%360;
-}
+
 
 unsigned int sketch_report_t::calculate_in_angle() {
 	return rand()%360;
 }
 
+unsigned int sketch_report_t::calculate_out_angle() {
+	return rand()%360;
+}
+
+#define DEGREES_OUTPUTS_SEPARATION 2
+#define DEGREES_INPUTS_SEPARATION 2
+
+void sketch_report_t::calculate_angles(std::string src_task_id, std::string dest_task_id) {
+		unsigned int src_pos, dest_pos;
+		unsigned int src_angle,dest_angle;
+		//unsigned int distance;
+		
+		// retrieve tasks indexes
+		src_pos = task_position[src_task_id];
+		dest_pos = task_position[dest_task_id];
+		
+		if(src_pos<dest_pos) { // from left to right
+			//distance = dest_pos - src_pos;
+			src_angle = 30 + outs[src_pos]*DEGREES_OUTPUTS_SEPARATION; 			// adds 10 degrees per output
+			dest_angle = 150 - inps[dest_pos]*DEGREES_INPUTS_SEPARATION;	// subst 10 degrees per input
+		} else if(src_pos>dest_pos) {  // from right to left
+			//distance = src_pos - dest_pos;
+			src_angle = 210 - outs[src_pos]*DEGREES_OUTPUTS_SEPARATION; 		// adds 10 degrees per output
+			dest_angle = 330 + inps[dest_pos]*DEGREES_INPUTS_SEPARATION;	// subst 10 degrees per input			
+		} else { // (src_pos==dest_pos) right auto arrow
+			src_angle = 95; 	// from right to left comming to the same buble
+			dest_angle = 85;	//
+		}
+		// updates inps and outs vector
+		outs[src_pos]++;
+		inps[dest_pos]++;
+		
+		//*sketch_file << "] -- (";
+		*sketch_file << "to[out=";
+		*sketch_file << src_angle;
+		*sketch_file << ",in=";
+		*sketch_file << dest_angle;
+		*sketch_file << "]";
+}
 
 } // end kista namespace
 

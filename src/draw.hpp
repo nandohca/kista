@@ -57,6 +57,8 @@ public:
 	void enable(); // enable sketch report and creates report header
 	                // (has to be called at construction time and after set_name, otherwise, settled name is overriden and the default one taken)
 	
+	void draw_sys_level_conn();
+	
 	// add content to the sketch report file
 	void add_content(std::string content);
 	
@@ -87,14 +89,29 @@ private:
 	// method for actual dumping of the tikz content
 	void actual_draw(); 
 
+	// auxiliar methods
     void write_header();
     void write_tail();
-    
+
+	void draw_system_level_connections();
+	void calculate_angles(std::string src_task_id, std::string dest_task_id);
+ 
+	bool with_sys_level_conn_names;
+ 
+ 	void draw_system_level_connections_random(); // a simpler version
+   
 	ofstream		*sketch_file;
 	std::string		sketch_file_name;
 	
 	bool sketch_enabled;
 	
+	// structure to store task position (index from left to right)
+	// (used for improving system-level connection draw)
+	std::map<std::string, unsigned int> task_position;
+	
+	// vectors storing number of inputs and outputs
+	std::vector<unsigned int> outs;
+	std::vector<unsigned int> inps;
 };
 
 }  // end kista namespace

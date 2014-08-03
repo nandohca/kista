@@ -38,6 +38,8 @@ public:
 	
 	//sc_signal<bool> ll_transfer; // rising edge: start transfer falling edge: end transfer
 
+	using link_t::get_link_name;
+	
 };
 
 // Specialized function to get logic address by elem name
