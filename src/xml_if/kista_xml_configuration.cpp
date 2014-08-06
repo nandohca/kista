@@ -120,6 +120,44 @@ bool get_configured_sketch_draw_sys_level_conn_names(xmlDocPtr doc) {
 								);
 }
 
+bool get_configured_sketch_highlight_environment(xmlDocPtr doc) {
+	
+	get_configured_boolean_option(doc,
+								"/system/kista_configuration/export_sketch/highlight_environment", // where to find boolean property
+								"draw box around environment tasks when exporting a sketch of the KisTA model", // description of the boolean property
+								false // default value if not found in XML system description
+								);
+}
+
+bool get_configured_sketch_highlight_system(xmlDocPtr doc) {
+	
+	get_configured_boolean_option(doc,
+								"/system/kista_configuration/export_sketch/highlight_system", // where to find boolean property
+								"draw box around system elements when exporting a sketch of the KisTA model", // description of the boolean property
+								false // default value if not found in XML system description
+								);
+}
+
+
+bool get_configured_sketch_highlight_application(xmlDocPtr doc) {
+	
+	get_configured_boolean_option(doc,
+								"/system/kista_configuration/export_sketch/highlight_application", // where to find boolean property
+								"draw box around application tasks when exporting a sketch of the KisTA model", // description of the boolean property
+								false // default value if not found in XML system description
+								);
+}
+
+
+bool get_configured_sketch_highlight_platform(xmlDocPtr doc) {
+	
+	get_configured_boolean_option(doc,
+								"/system/kista_configuration/export_sketch/highlight_platform", // where to find boolean property
+								"draw box around platform elements when exporting a sketch of the KisTA model", // description of the boolean property
+								false // default value if not found in XML system description
+								);
+}
+
 bool get_configured_functional_validation(xmlDocPtr doc) {
 
 	get_configured_boolean_option(doc,

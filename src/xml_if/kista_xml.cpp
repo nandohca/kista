@@ -405,6 +405,19 @@ int sc_main(int argc, char **argv) {
 			if(get_configured_sketch_draw_sys_level_conn_names(doc)) {
 				sketch_report.draw_sys_level_conn();
 			}
+			if(get_configured_sketch_highlight_environment(doc)) {
+				sketch_report.highlight_environment();
+			}
+			if(get_configured_sketch_highlight_system(doc)) {
+				sketch_report.highlight_system();
+			} else {
+				if(get_configured_sketch_highlight_application(doc)) {
+					sketch_report.highlight_application();
+				}
+				if(get_configured_sketch_highlight_platform(doc)) {
+					sketch_report.highlight_platform();
+				}
+			}
 		}
 
 		if ( get_configured_functional_validation(doc) ) {
