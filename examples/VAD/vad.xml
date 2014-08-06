@@ -509,6 +509,10 @@
 		<xml_front_end_verbose value="true"/>
 		<export_sketch value="true">
 			<draw_sys_level_conn_names value="true"/>
+			<highlight_environment value="false"/>
+			<highlight_system value="false"/>
+			<highlight_application value="false"/>
+			<highlight_platform value="false"/>
 		</export_sketch>export_sketch>	
 		<sketch_file_name value="vad_sketch"/>
 
