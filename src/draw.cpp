@@ -6,6 +6,8 @@
 
 #include "time.h"
 
+#include "defaults.hpp"
+
 #include "global_elements.hpp"
 
 #include "draw.hpp"
@@ -30,6 +32,11 @@ void sketch_report_t::init() {
 	srand (time(NULL));
 	
 	with_sys_level_conn_names = false;
+	
+	environment_box = false;
+	system_box = false;
+	application_box = false;
+	platform_box = false;
 }
 
 void sketch_report_t::set_file_name(std::string name_par) {
@@ -50,9 +57,13 @@ bool& sketch_report_t::is_enabled() {
 void sketch_report_t::end_of_elaboration() {
 	if(is_enabled()) {
 		// init to 0 inputs and outputs in inps and outs vector
-		for(unsigned int i=0; i < sys_conn_types.size();i++) {
+		for(unsigned int i=0; i < task_info_by_name.size();i++) {
 			inps.push_back(0);
 			outs.push_back(0);
+		}
+		for(unsigned int i=0; i < env_tasks_by_name.size();i++) {
+			env_inps.push_back(0);
+			env_outs.push_back(0);
 		}
 		// draw
 		write_header();
@@ -86,7 +97,11 @@ void sketch_report_t::write_header() {
 		*sketch_file << "\\usetikzlibrary{decorations.text}" << endl;
 		*sketch_file << "\\usetikzlibrary{decorations.pathmorphing}" << endl;
    }
-	
+
+   if(environment_box || system_box || application_box || platform_box) {
+	   *sketch_file << "\\usetikzlibrary{backgrounds}" << endl;
+   }
+   
    insert_TO_tikz_macro();
    
    *sketch_file << "\\begin{document}" << endl;
@@ -140,6 +155,23 @@ void sketch_report_t::write_header() {
      // generic communication resource
    *sketch_file << "\\tikzstyle{platform_conn_style} = [blue!50, >=latex', shorten >=1pt]" << endl;
 
+   // Styles for highlighting boxes
+   // ----------------------------------
+   if(environment_box){
+	   *sketch_file << "\\tikzstyle{env_box_st} = [draw=green, fill=green!10, very thick, rectangle, rounded corners, inner sep=10pt, inner ysep=10pt]" << endl;
+   }
+   
+   if(system_box) {
+      *sketch_file << "\\tikzstyle{sys_box_st} = [draw=black, fill=black!10, very thick, rectangle, rounded corners, inner sep=10pt, inner ysep=10pt]" << endl;
+   } else {
+      if(application_box) {
+         *sketch_file << "\\tikzstyle{app_box_st} = [draw=red, fill=red!10, very thick, rectangle, rounded corners, inner sep=10pt, inner ysep=10pt]" << endl;	
+      }
+      if(platform_box) {
+         *sketch_file << "\\tikzstyle{plat_box_st} = [draw=blue, fill=blue!10, very thick, rectangle, rounded corners, inner sep=10pt, inner ysep=10pt]" << endl;		
+      }		
+   }
+
    // begin tikz picture environment
    *sketch_file << "\\begin{tikzpicture}" << endl;
 }
@@ -156,7 +188,29 @@ void sketch_report_t::draw_sys_level_conn() {
 	check_call_before_sim_start("draw_sys_level_conn");
 	with_sys_level_conn_names = true;
 }
+
+
+void sketch_report_t::highlight_environment() {
+	check_call_before_sim_start("hilight_environment");
+	environment_box = true;
+}
+
+void sketch_report_t::highlight_system() {      // overrides the hilighting of application and platform
+	check_call_before_sim_start("hilight_system");
+	system_box = true;
+}
+
+void sketch_report_t::highlight_application() {
+	check_call_before_sim_start("hilight_application");
+	application_box = true;
+}
+
+void sketch_report_t::highlight_platform() {
+	check_call_before_sim_start("hilight_platform");
+	platform_box = true;
+}
 	
+		
 void sketch_report_t::add_content(std::string content) {
    *sketch_file << content;
 }
@@ -208,7 +262,8 @@ void sketch_report_t::dot_by_slash(std::string &str_par) {
 void sketch_report_t::actual_draw() {
 	unsigned int i;
 	std::string rpt_msg;
-	std::string task_id_name, task_prev_id_name;
+	std::string task_id_name, task_prev_id_name,
+				env_task_id_name, env_task_prev_id_name;
 	std::string sched_id_name, sched_prev_id_name;
 	std::string pe_id_name, pe_prev_id_name;
 	std::string commres_id_name, commres_prev_id_name;
@@ -217,6 +272,9 @@ void sketch_report_t::actual_draw() {
 	taskset_by_name_t::iterator taskset_it; // iterator for taskset
 	taskset_by_name_t *current_tasks_assigned;
 	
+	tasks_info_by_name_t::iterator task_it;
+	tasks_info_by_name_t::iterator task_env_it;
+		
 	// to iterate processing elements
 	//PEset_t::iterator PEset_it; // iterator for PEset 
 	//PEset_t *current_PEs_assigned;
@@ -224,7 +282,7 @@ void sketch_report_t::actual_draw() {
 	
 	// draw tasks
 	// ---------------------------------
-	if(tasks.size()>0) {
+/*	if(tasks.size()>0) {
 		// (2) for node identifieres, "." are substituted by "/", to avoid drawing issues
 		task_id_name = tasks[0]->name();
 		task_position[task_id_name] = 0;
@@ -242,8 +300,81 @@ void sketch_report_t::actual_draw() {
 			*sketch_file << "] {$" << tasks[i]->name() << "$};" << endl;	
 		}
 	}
+*/
+
+	// draw environment tasks
+	// ---------------------------------
 	
-	task_id_name = tasks[0]->name();
+	task_env_it = env_tasks_by_name.begin();
+	env_task_id_name = task_env_it->first;
+
+	env_task_position[env_task_id_name] = 0;
+	dot_by_slash(env_task_id_name); // (2) for node identifiers, "." are substituted by "/", to avoid drawing issues in tikz	
+	
+	*sketch_file << "\\node (" << env_task_id_name << ") [task_style] {$" << env_task_id_name << "$};" << endl;	
+	
+	env_task_prev_id_name = env_task_id_name;
+	dot_by_slash(env_task_prev_id_name);
+		
+	task_env_it++;
+	i=1;
+	
+	while(task_env_it != env_tasks_by_name.end()) {	
+		env_task_id_name = task_env_it->first;
+		env_task_position[env_task_id_name] = i;
+		dot_by_slash(env_task_id_name);
+		
+		*sketch_file << "\\node (" << env_task_id_name  << ") [task_style, right=of ";
+		*sketch_file <<  env_task_prev_id_name;
+		*sketch_file << "] {$" << env_task_id_name << "$};" << endl;
+
+		env_task_prev_id_name = env_task_id_name;
+		dot_by_slash(env_task_prev_id_name);
+						
+		task_env_it++;
+		i++;
+	}
+		
+	env_task_id_name = env_tasks_by_name.begin()->first; // reference for lower layer
+	
+	// draw system tasks
+	// ---------------------------------
+	
+	task_it = task_info_by_name.begin();
+	task_id_name = task_it->first;
+
+	task_position[task_id_name] = 0;
+	dot_by_slash(task_id_name); // (2) for node identifiers, "." are substituted by "/", to avoid drawing issues in tikz	
+	
+	if(env_tasks_by_name.size()>0) {
+		*sketch_file << "\\node (" << task_id_name << ") [task_style, below=of " << env_task_id_name<< "] {$" << task_id_name << "$};" << endl;		
+	} else {
+		*sketch_file << "\\node (" << task_id_name << ") [task_style] {$" << task_id_name << "$};" << endl;	
+	}
+	
+	task_prev_id_name = task_id_name;
+	dot_by_slash(task_prev_id_name);
+		
+	task_it++;
+	i=1;
+	
+	while(task_it != task_info_by_name.end()) {	
+		task_id_name = task_it->first;
+		task_position[task_id_name] = i;
+		dot_by_slash(task_id_name);
+		
+		*sketch_file << "\\node (" << task_id_name  << ") [task_style, right=of ";
+		*sketch_file <<  task_prev_id_name;
+		*sketch_file << "] {$" << task_id_name << "$};" << endl;
+
+		task_prev_id_name = task_id_name;
+		dot_by_slash(task_prev_id_name);
+						
+		task_it++;
+		i++;
+	}
+		
+	task_id_name = task_info_by_name.begin()->first; // reference for lower layer
 	
 	// draw schedulers
 	// ---------------------------------
@@ -270,7 +401,7 @@ void sketch_report_t::actual_draw() {
 	
 	*sketch_file << endl;
 	
-	sched_id_name = scheds[0]->name();
+	sched_id_name = scheds[0]->name(); // reference for lower layer
 	
 	// draw processing elements
 	// ---------------------------------
@@ -299,7 +430,7 @@ void sketch_report_t::actual_draw() {
 	
 	*sketch_file << endl;
 	
-	pe_id_name = pes[0]->name();
+	pe_id_name = pes[0]->name(); // reference for lower layer
 	
 	// draw communication resources
 	// ---------------------------------
@@ -442,6 +573,104 @@ void sketch_report_t::actual_draw() {
 			*sketch_file << ".north);" << endl;
 		}
 	}
+	
+	// draw hilighting boxes
+	// ---------------------------------
+	if(environment_box) {
+		*sketch_file << "\\begin{scope}[on background layer]" << endl;
+		*sketch_file << "\\node[env_box_st,fit = ";
+		for(task_env_it=env_tasks_by_name.begin(); task_env_it != env_tasks_by_name.end(); task_env_it++) {
+			*sketch_file << "(";
+			*sketch_file << task_env_it->first;
+			*sketch_file << ")";
+		}
+		*sketch_file << "] (env_box) {};" << endl;
+		*sketch_file << "\\end{scope}" << endl;
+		*sketch_file << "\\node [right=of env_box] {$Environment$};" << endl;
+	}
+	
+	if(system_box) {
+		*sketch_file << "\\begin{scope}[on background layer]" << endl;
+		*sketch_file << "\\node[sys_box_st,fit = ";
+		for(task_it=task_info_by_name.begin(); task_it != task_info_by_name.end(); task_it++) {
+			*sketch_file << "(";
+			*sketch_file << task_it->first;
+			*sketch_file << ")";
+		}
+		for(i=0; i<scheds.size(); i++) {
+			sched_id_name = scheds[i]->name();
+			*sketch_file << "(";
+			*sketch_file << sched_id_name;
+			*sketch_file << ")";				
+		}
+		for(i=0; i<pes.size(); i++) {
+			pe_id_name = pes[i]->name();
+			*sketch_file << "(";
+			*sketch_file << pe_id_name;
+			*sketch_file << ")";					
+		}
+		for(i=0;i<phy_commres_set.size();i++) {
+			commres_id_name = phy_commres_set[i]->name();
+			*sketch_file << "(";
+			*sketch_file << commres_id_name;
+			*sketch_file << ")";
+		}
+		for(i=0;i<tdma_buses.size();i++) {
+			commres_id_name = tdma_buses[i]->name();
+			*sketch_file << "(";
+			*sketch_file << commres_id_name;
+			*sketch_file << ")";				
+		}		
+		*sketch_file << "] (sys_box) {};" << endl;
+		*sketch_file << "\\end{scope}" << endl;
+		*sketch_file << "\\node [right=of sys_box] {$System$};" << endl;
+	} else {
+		if(application_box) {
+			*sketch_file << "\\begin{scope}[on background layer]" << endl;
+			*sketch_file << "\\node[app_box_st,fit = ";
+			for(task_it=task_info_by_name.begin(); task_it != task_info_by_name.end(); task_it++) {
+				*sketch_file << "(";
+				*sketch_file << task_it->first;
+				*sketch_file << ")";
+			}
+			*sketch_file << "] (app_box) {};" << endl;
+			*sketch_file << "\\end{scope}" << endl;
+			*sketch_file << "\\node [right=of app_box] {$Application$};" << endl;			
+		}
+		
+		if(platform_box) {
+			*sketch_file << "\\begin{scope}[on background layer]" << endl;
+			*sketch_file << "\\node[plat_box_st,fit = ";
+			for(i=0; i<scheds.size(); i++) {
+				sched_id_name = scheds[i]->name();
+				*sketch_file << "(";
+				*sketch_file << sched_id_name;
+				*sketch_file << ")";				
+			}
+			for(i=0; i<pes.size(); i++) {
+				pe_id_name = pes[i]->name();
+				*sketch_file << "(";
+				*sketch_file << pe_id_name;
+				*sketch_file << ")";					
+			}
+			for(i=0;i<phy_commres_set.size();i++) {
+				commres_id_name = phy_commres_set[i]->name();
+				*sketch_file << "(";
+				*sketch_file << commres_id_name;
+				*sketch_file << ")";
+			}
+			for(i=0;i<tdma_buses.size();i++) {
+				commres_id_name = tdma_buses[i]->name();
+				*sketch_file << "(";
+				*sketch_file << commres_id_name;
+				*sketch_file << ")";				
+			}			
+			*sketch_file << "] (plat_box) {};" << endl;
+			*sketch_file << "\\end{scope}" << endl;
+			*sketch_file << "\\node [right=of plat_box] {$Platform$};" << endl;			
+		}		
+	}
+	
 }
 
 void sketch_report_t::draw_system_level_connections() {
@@ -483,7 +712,6 @@ void sketch_report_t::draw_system_level_connections() {
 			logic_link_t cur_llink = sys_conn_types_it->first;
 			*sketch_file << cur_llink.get_link_name();
 			//*sketch_file << sys_conn_types_it->first.get_link_name();
-			//sketch_file << "pepe";
 			*sketch_file << "{\\;}$}}}";
 		}
 		*sketch_file << "] ";
@@ -623,33 +851,93 @@ unsigned int sketch_report_t::calculate_out_angle() {
 	return rand()%360;
 }
 
-#define DEGREES_OUTPUTS_SEPARATION 2
-#define DEGREES_INPUTS_SEPARATION 2
 
 void sketch_report_t::calculate_angles(std::string src_task_id, std::string dest_task_id) {
+		bool src_in_sys, src_in_env;
+		bool dest_in_sys, dest_in_env;
 		unsigned int src_pos, dest_pos;
 		unsigned int src_angle,dest_angle;
 		//unsigned int distance;
+	
+		src_in_env = env_tasks_by_name.find(src_task_id)!=env_tasks_by_name.end();
+		src_in_sys = task_info_by_name.find(src_task_id)!=task_info_by_name.end();
 		
-		// retrieve tasks indexes
-		src_pos = task_position[src_task_id];
-		dest_pos = task_position[dest_task_id];
+		dest_in_env = env_tasks_by_name.find(dest_task_id)!=env_tasks_by_name.end();
+		dest_in_sys = task_info_by_name.find(dest_task_id)!=task_info_by_name.end();
 		
-		if(src_pos<dest_pos) { // from left to right
-			//distance = dest_pos - src_pos;
-			src_angle = 30 + outs[src_pos]*DEGREES_OUTPUTS_SEPARATION; 			// adds 10 degrees per output
-			dest_angle = 150 - inps[dest_pos]*DEGREES_INPUTS_SEPARATION;	// subst 10 degrees per input
-		} else if(src_pos>dest_pos) {  // from right to left
-			//distance = src_pos - dest_pos;
-			src_angle = 210 - outs[src_pos]*DEGREES_OUTPUTS_SEPARATION; 		// adds 10 degrees per output
-			dest_angle = 330 + inps[dest_pos]*DEGREES_INPUTS_SEPARATION;	// subst 10 degrees per input			
-		} else { // (src_pos==dest_pos) right auto arrow
-			src_angle = 95; 	// from right to left comming to the same buble
-			dest_angle = 85;	//
+		if(src_in_sys && dest_in_sys) {
+			
+			// retrieve tasks indexes
+			src_pos = task_position[src_task_id];
+			dest_pos = task_position[dest_task_id];
+			
+			if(src_pos<dest_pos) { // from left to right
+				//distance = dest_pos - src_pos;
+				src_angle = 30 + outs[src_pos]*DEGREES_OUTPUTS_SEPARATION; 			// adds 10 degrees per output
+				dest_angle = 150 - inps[dest_pos]*DEGREES_INPUTS_SEPARATION;	// subst 10 degrees per input
+			} else if(src_pos>dest_pos) {  // from right to left
+				//distance = src_pos - dest_pos;
+				src_angle = 210 + outs[src_pos]*DEGREES_OUTPUTS_SEPARATION; 		// adds 10 degrees per output
+				dest_angle = 330 - inps[dest_pos]*DEGREES_INPUTS_SEPARATION;	// subst 10 degrees per input			
+			} else { // (src_pos==dest_pos) right auto arrow
+				src_angle = 95; 	// from right to left comming to the same buble
+				dest_angle = 85;	//
+			}
+			
+			// updates inps and outs vector for system
+			outs[src_pos]++;
+			inps[dest_pos]++;
+			
+		} else if(src_in_sys && dest_in_env) {
+			
+			// retrieve tasks indexes
+			src_pos = task_position[src_task_id];
+			dest_pos = env_task_position[dest_task_id];
+						
+			// form sys to env: SYSTEM OUTPUS
+			src_angle = 80 - env_inps[src_pos]*DEGREES_OUTPUTS_SEPARATION; 			// adds 10 degrees per output
+			dest_angle = 280 + outs[dest_pos]*DEGREES_INPUTS_SEPARATION;	// subst 10 degrees per input
+			
+			// updates inps and outs vector for system and environment
+			outs[src_pos]++;
+			env_inps[dest_pos]++;
+			
+		} else if(src_in_env && dest_in_sys) {
+			
+			// retrieve tasks indexes
+			src_pos = env_task_position[src_task_id];
+			dest_pos = task_position[dest_task_id];
+						
+			// form env to sys: SYSTEM INPUTS
+			src_angle = 240 + env_outs[src_pos]*DEGREES_OUTPUTS_SEPARATION; 			// adds 10 degrees per output
+			dest_angle = 120 - inps[dest_pos]*DEGREES_INPUTS_SEPARATION;	// subst 10 degrees per input
+			
+			// updates inps and outs vector for system and environment
+			env_outs[src_pos]++;
+			inps[dest_pos]++;
+							
+		} else { // env to env connection
+			// retrieve tasks indexes
+			src_pos = env_task_position[src_task_id];
+			dest_pos = env_task_position[dest_task_id];
+					
+			if(src_pos<dest_pos) { // from left to right
+				//distance = dest_pos - src_pos;
+				src_angle = 30 + outs[src_pos]*DEGREES_OUTPUTS_SEPARATION; 			// adds 10 degrees per output
+				dest_angle = 150 - inps[dest_pos]*DEGREES_INPUTS_SEPARATION;	// subst 10 degrees per input
+			} else if(src_pos>dest_pos) {  // from right to left
+				//distance = src_pos - dest_pos;
+				src_angle = 210 - outs[src_pos]*DEGREES_OUTPUTS_SEPARATION; 		// adds 10 degrees per output
+				dest_angle = 330 + inps[dest_pos]*DEGREES_INPUTS_SEPARATION;	// subst 10 degrees per input			
+			} else { // (src_pos==dest_pos) right auto arrow
+				src_angle = 95; 	// from right to left comming to the same buble
+				dest_angle = 85;	//
+			}
+			
+			// updates inps and outs vector for environment
+			env_outs[src_pos]++;
+			env_inps[dest_pos]++;
 		}
-		// updates inps and outs vector
-		outs[src_pos]++;
-		inps[dest_pos]++;
 		
 		//*sketch_file << "] -- (";
 		*sketch_file << "to[out=";

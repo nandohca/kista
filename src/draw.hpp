@@ -57,7 +57,15 @@ public:
 	void enable(); // enable sketch report and creates report header
 	                // (has to be called at construction time and after set_name, otherwise, settled name is overriden and the default one taken)
 	
+	// configuration of the draw
 	void draw_sys_level_conn();
+	
+	void highlight_environment();
+	void highlight_system();      // overrides the hilighting of application and platform
+	void highlight_application();
+	void highlight_platform();
+	
+	// auxiliar methods for other kista classes
 	
 	// add content to the sketch report file
 	void add_content(std::string content);
@@ -104,14 +112,18 @@ private:
 	std::string		sketch_file_name;
 	
 	bool sketch_enabled;
+	bool environment_box, system_box, application_box, platform_box;
 	
-	// structure to store task position (index from left to right)
+	// structure to store task positions (index from left to right)
 	// (used for improving system-level connection draw)
 	std::map<std::string, unsigned int> task_position;
-	
+	std::map<std::string, unsigned int> env_task_position;
+		
 	// vectors storing number of inputs and outputs
 	std::vector<unsigned int> outs;
 	std::vector<unsigned int> inps;
+	std::vector<unsigned int> env_outs;
+	std::vector<unsigned int> env_inps;
 };
 
 }  // end kista namespace

@@ -81,6 +81,13 @@ namespace kista {
 //
 //#define _TRACE_UNFOLDED_SCHEDULER_SIGNALS
 
+
+// *****************************************************
+// defaults for system sketch
+// *****************************************************
+#define DEGREES_OUTPUTS_SEPARATION 5
+#define DEGREES_INPUTS_SEPARATION 5
+
 // *****************************************************
 // defaults for TiKZ trace
 // *****************************************************
