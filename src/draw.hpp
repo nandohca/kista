@@ -65,6 +65,9 @@ public:
 	void highlight_application();
 	void highlight_platform();
 	
+	void only_image();
+	void set_scale(float scale_par);
+	
 	// auxiliar methods for other kista classes
 	
 	// add content to the sketch report file
@@ -113,6 +116,9 @@ private:
 	
 	bool sketch_enabled;
 	bool environment_box, system_box, application_box, platform_box;
+	bool only_image_flag;
+	
+	float scale;
 	
 	// structure to store task positions (index from left to right)
 	// (used for improving system-level connection draw)

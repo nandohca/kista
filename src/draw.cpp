@@ -37,6 +37,9 @@ void sketch_report_t::init() {
 	system_box = false;
 	application_box = false;
 	platform_box = false;
+	only_image_flag = false;
+	
+	scale = 1.0;
 }
 
 void sketch_report_t::set_file_name(std::string name_par) {
@@ -48,6 +51,16 @@ void sketch_report_t::enable() {
 	sketch_file = new ofstream(sketch_file_name);
 	sketch_enabled = true;
 //cout << "Sketch report file name: " << sketch_file_name << endl;
+}
+
+void sketch_report_t::only_image() {
+	check_call_before_sim_start("only_image");
+	only_image_flag = true;
+}
+
+void sketch_report_t::set_scale(float scale_par) {
+	check_call_before_sim_start("set_scale");	
+	scale = scale_par;
 }
 
 bool& sketch_report_t::is_enabled() {
@@ -86,8 +99,11 @@ void sketch_report_t::write_header() {
    // convert now to tm struct for UTC
    gmtime_p = gmtime(&now);
    daytime = asctime(gmtime_p);	
-	
-   *sketch_file << "\\documentclass[a4paper,10pt]{article}" << endl;
+   if(only_image_flag) {
+		*sketch_file << "\\documentclass[]{article}" << endl;	   
+   } else {
+		*sketch_file << "\\documentclass[a4paper,10pt]{article}" << endl;
+   }
    *sketch_file << "\\usepackage{tikz}" << endl;
    *sketch_file << "\\usepackage{verbatim}" << endl;
    *sketch_file << "\\usepackage[margin=15mm]{geometry}" << endl;
@@ -105,19 +121,41 @@ void sketch_report_t::write_header() {
    insert_TO_tikz_macro();
    
    *sketch_file << "\\begin{document}" << endl;
-		
-   *sketch_file << "File created by KisTA library" << endl << endl;
-   *sketch_file << "Author: F.Herrera" << endl << endl;
-   *sketch_file << "Institution: KTH" << endl << endl;
-   *sketch_file << "Date: 2013" << endl << endl;
-   *sketch_file << "All rights reserved by the authors. Further details to be defined by the adopted license." << endl << endl;
-   *sketch_file << "KisTA library compilation date: " << __DATE__ << " at " << __TIME__ << "." << endl;
-   *sketch_file << endl << endl;
-   *sketch_file << "Sketch Creation: " << daytime << endl << endl;
-		
-   *sketch_file << "Sketch options enabled:" << endl << endl;	
-   *sketch_file << "\\hfill" << endl << endl;
-   
+
+   if(!only_image_flag) {
+	   *sketch_file << "File created by KisTA library" << endl << endl;
+	   *sketch_file << "Author: F.Herrera" << endl << endl;
+	   *sketch_file << "Institution: KTH" << endl << endl;
+	   *sketch_file << "Date: 2013" << endl << endl;
+	   *sketch_file << "All rights reserved by the authors. Further details to be defined by the adopted license." << endl << endl;
+	   *sketch_file << "KisTA library compilation date: " << __DATE__ << " at " << __TIME__ << "." << endl;
+	   *sketch_file << endl << endl;
+	   *sketch_file << "Sketch Creation: " << daytime << endl << endl;
+			
+	   *sketch_file << "Sketch options enabled:" << endl;	
+	   if(with_sys_level_conn_names) {
+			*sketch_file << "draw system level connections, ";
+	   }
+
+	   if(environment_box) {
+			*sketch_file << "draw environment box, ";
+	   }
+
+	   if(system_box) {
+			*sketch_file << "draw environment box, ";	
+	   }  	
+	 
+	   if(application_box) {
+			*sketch_file << "draw system box, ";
+	   }  
+	   
+	   if(platform_box) {
+			*sketch_file << "draw platform box, ";
+	   } 
+	   *sketch_file << "scale = " << scale << endl;
+			
+	   *sketch_file << "\\hfill" << endl << endl;
+	}
    // defining styles for KisTA sketch export
    // *****************************************
    *sketch_file << "" << endl;
@@ -173,7 +211,14 @@ void sketch_report_t::write_header() {
    }
 
    // begin tikz picture environment
-   *sketch_file << "\\begin{tikzpicture}" << endl;
+   *sketch_file << "\% Use the scale factor for changing the size of the figure and better export to png" << endl;
+   *sketch_file << "\% You can set if from KisTA with set_scale method, or by editing this .tex file" << endl;
+   *sketch_file << "\\begin{tikzpicture}[scale=";
+   *sketch_file << scale;
+   *sketch_file << ", transform shape]" << endl;
+
+   //*sketch_file << "\\begin{tikzpicture}" << endl;
+
 }
 
 void sketch_report_t::write_tail() {
@@ -304,77 +349,84 @@ void sketch_report_t::actual_draw() {
 
 	// draw environment tasks
 	// ---------------------------------
-	
-	task_env_it = env_tasks_by_name.begin();
-	env_task_id_name = task_env_it->first;
-
-	env_task_position[env_task_id_name] = 0;
-	dot_by_slash(env_task_id_name); // (2) for node identifiers, "." are substituted by "/", to avoid drawing issues in tikz	
-	
-	*sketch_file << "\\node (" << env_task_id_name << ") [task_style] {$" << env_task_id_name << "$};" << endl;	
-	
-	env_task_prev_id_name = env_task_id_name;
-	dot_by_slash(env_task_prev_id_name);
+	if(env_tasks_by_name.size()>0) {
 		
-	task_env_it++;
-	i=1;
-	
-	while(task_env_it != env_tasks_by_name.end()) {	
+		task_env_it = env_tasks_by_name.begin();
 		env_task_id_name = task_env_it->first;
-		env_task_position[env_task_id_name] = i;
-		dot_by_slash(env_task_id_name);
-		
-		*sketch_file << "\\node (" << env_task_id_name  << ") [task_style, right=of ";
-		*sketch_file <<  env_task_prev_id_name;
-		*sketch_file << "] {$" << env_task_id_name << "$};" << endl;
 
+		env_task_position[env_task_id_name] = 0;
+		dot_by_slash(env_task_id_name); // (2) for node identifiers, "." are substituted by "/", to avoid drawing issues in tikz	
+		
+		*sketch_file << "\\node (" << env_task_id_name << ") [task_style] {$" << env_task_id_name << "$};" << endl;	
+		
 		env_task_prev_id_name = env_task_id_name;
 		dot_by_slash(env_task_prev_id_name);
-						
+			
 		task_env_it++;
-		i++;
-	}
+		i=1;
 		
-	env_task_id_name = env_tasks_by_name.begin()->first; // reference for lower layer
+		while(task_env_it != env_tasks_by_name.end()) {	
+			env_task_id_name = task_env_it->first;
+			env_task_position[env_task_id_name] = i;
+			dot_by_slash(env_task_id_name);
+			
+			*sketch_file << "\\node (" << env_task_id_name  << ") [task_style, right=of ";
+			*sketch_file <<  env_task_prev_id_name;
+			*sketch_file << "] {$" << env_task_id_name << "$};" << endl;
+
+			env_task_prev_id_name = env_task_id_name;
+			dot_by_slash(env_task_prev_id_name);
+							
+			task_env_it++;
+			i++;
+		}
+
+		env_task_id_name = env_tasks_by_name.begin()->first; // reference for lower layer
+	}
 	
 	// draw system tasks
 	// ---------------------------------
-	
-	task_it = task_info_by_name.begin();
-	task_id_name = task_it->first;
-
-	task_position[task_id_name] = 0;
-	dot_by_slash(task_id_name); // (2) for node identifiers, "." are substituted by "/", to avoid drawing issues in tikz	
-	
-	if(env_tasks_by_name.size()>0) {
-		*sketch_file << "\\node (" << task_id_name << ") [task_style, below=of " << env_task_id_name<< "] {$" << task_id_name << "$};" << endl;		
-	} else {
-		*sketch_file << "\\node (" << task_id_name << ") [task_style] {$" << task_id_name << "$};" << endl;	
-	}
-	
-	task_prev_id_name = task_id_name;
-	dot_by_slash(task_prev_id_name);
-		
-	task_it++;
-	i=1;
-	
-	while(task_it != task_info_by_name.end()) {	
+	if(task_info_by_name.size()>0) {	
+		task_it = task_info_by_name.begin();
 		task_id_name = task_it->first;
-		task_position[task_id_name] = i;
-		dot_by_slash(task_id_name);
-		
-		*sketch_file << "\\node (" << task_id_name  << ") [task_style, right=of ";
-		*sketch_file <<  task_prev_id_name;
-		*sketch_file << "] {$" << task_id_name << "$};" << endl;
 
+		task_position[task_id_name] = 0;
+		dot_by_slash(task_id_name); // (2) for node identifiers, "." are substituted by "/", to avoid drawing issues in tikz	
+		
+		if(env_tasks_by_name.size()>0) {
+			*sketch_file << "\\node (" << task_id_name << ") [task_style, below=of " << env_task_id_name<< "] {$" << task_id_name << "$};" << endl;		
+		} else {
+			*sketch_file << "\\node (" << task_id_name << ") [task_style] {$" << task_id_name << "$};" << endl;	
+		}
+		
 		task_prev_id_name = task_id_name;
 		dot_by_slash(task_prev_id_name);
-						
+			
 		task_it++;
-		i++;
-	}
+		i=1;
 		
-	task_id_name = task_info_by_name.begin()->first; // reference for lower layer
+		while(task_it != task_info_by_name.end()) {	
+			task_id_name = task_it->first;
+			task_position[task_id_name] = i;
+			dot_by_slash(task_id_name);
+			
+			*sketch_file << "\\node (" << task_id_name  << ") [task_style, right=of ";
+			*sketch_file <<  task_prev_id_name;
+			*sketch_file << "] {$" << task_id_name << "$};" << endl;
+
+			task_prev_id_name = task_id_name;
+			dot_by_slash(task_prev_id_name);
+							
+			task_it++;
+			i++;
+		}
+			
+		task_id_name = task_info_by_name.begin()->first; // reference for lower layer
+
+	} else {
+		rpt_msg = "While generating sketch. There are no system tasks.";
+		SC_REPORT_ERROR("KisTA",rpt_msg.c_str());
+	}
 	
 	// draw schedulers
 	// ---------------------------------
