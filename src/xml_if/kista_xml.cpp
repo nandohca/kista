@@ -418,6 +418,12 @@ int sc_main(int argc, char **argv) {
 					sketch_report.highlight_platform();
 				}
 			}
+			if(get_configured_sketch_only_image(doc)) {
+				sketch_report.only_image();
+			}
+			if(const char *sketch_scale_str = get_configured_sketch_scale(doc)) {
+				sketch_report.set_scale(atof(sketch_scale_str));
+			}			
 		}
 
 		if ( get_configured_functional_validation(doc) ) {

@@ -105,7 +105,7 @@ bool get_configured_export_sketch(xmlDocPtr doc) {
 const char *get_configured_sketch_file_name(xmlDocPtr doc) {
 	
 	get_configured_string_option(doc,
-								"/system/kista_configuration/sketch_file_name", // where to find the property
+								"/system/kista_configuration/export_sketch/file_name", // where to find the property
 								"sketch file name", // description of the property
 								"system_sketch" // default value if not found in XML system description
 								);
@@ -155,6 +155,23 @@ bool get_configured_sketch_highlight_platform(xmlDocPtr doc) {
 								"/system/kista_configuration/export_sketch/highlight_platform", // where to find boolean property
 								"draw box around platform elements when exporting a sketch of the KisTA model", // description of the boolean property
 								false // default value if not found in XML system description
+								);
+}
+
+bool get_configured_sketch_only_image(xmlDocPtr doc) {
+	
+	get_configured_boolean_option(doc,
+								"/system/kista_configuration/export_sketch/only_image", // where to find boolean property
+								"draw only the image, without the text reporting how the image was generated", // description of the boolean property
+								false // default value if not found in XML system description
+								);
+}
+
+const char *get_configured_sketch_scale(xmlDocPtr doc) {
+	get_configured_string_option(doc,
+								"/system/kista_configuration/export_sketch/set_scale", // where to find the property
+								"sketch scale", // description of the property
+								"1.0" // default value if not found in XML system description
 								);
 }
 
