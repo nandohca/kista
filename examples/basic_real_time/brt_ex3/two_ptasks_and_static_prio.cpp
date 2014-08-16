@@ -168,6 +168,11 @@ int sc_main (int, char *[]) {
    sketch_report.set_file_name("ex3_sketch"); // This will set the file name of the sketch report to "ex3_sketch.tex"
 												// otherwise, the default name "system_sketch.tex" will be applied
    sketch_report.enable();
+   
+   sketch_report.only_image();
+   
+   sketch_report.set_scale(4.0);
+      
 //   sketch_report.set_file_name("ex3_sketch"); // Here, it would be overriden, and the the default name used										
 
    sim_time = get_hyperperiod(task_set1); 
