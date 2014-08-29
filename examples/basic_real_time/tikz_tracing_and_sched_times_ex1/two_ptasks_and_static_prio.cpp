@@ -180,13 +180,15 @@ int sc_main (int, char *[]) {
    //gen_tikz_report_handler = create_tikz_activity_trace();
    gen_tikz_report_handler = create_tikz_activity_trace("2tasks_tikz_trace");
    
-   //set_scale(gen_tikz_report_handler,1);
+   set_scale(gen_tikz_report_handler,1.25);
    set_landscape(gen_tikz_report_handler);
-//   no_text_in_traces(gen_tikz_report_handler);
+   no_text_in_traces(gen_tikz_report_handler);
    do_not_show_unactive_boxes(gen_tikz_report_handler);
    set_time_stamps_max_separation(gen_tikz_report_handler,3);
    
-   cluster(gen_tikz_report_handler);
+   only_image(gen_tikz_report_handler);
+   
+//   cluster(gen_tikz_report_handler);
    
 //   compact(gen_tikz_report_handler);
 
