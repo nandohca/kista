@@ -21,6 +21,7 @@ brt_ex3/ two_ptasks_and_static_prio.cpp:
            Two task example used to show some dynamic (static priority) scheduling modelling
 	   features of kista, with mapping to an scheduler handling
 	   a single processing element.
+	   The example also shows some features of sketch report (only_image, set_scale).
 
 brt_ex4/ density_monotonic_ex.cpp:
        This example shows the usage of density monotonic example
