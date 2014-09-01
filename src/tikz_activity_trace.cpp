@@ -104,6 +104,11 @@ void do_not_show_unactive_boxes(tikz_activity_trace_handler handler) {
 	handler->do_not_show_unactive_boxes();
 }
 
+void only_image(tikz_activity_trace_handler handler) {
+	check_call_at_elaboration("only_image");
+	handler->only_image();
+}
+
 // ---------------------------------------------------
 // Implementation of the tikz_activity_trace class
 // ---------------------------------------------------
@@ -123,6 +128,7 @@ tikz_activity_trace::tikz_activity_trace(sc_module_name name) : sc_module(name) 
 		show_unactive_boxes = true;
 		clustered_style = false;
 		compact_style = false;
+		only_image_flag = false;
 }
 
 void tikz_activity_trace::cluster() {
@@ -167,6 +173,10 @@ void tikz_activity_trace::no_text_in_traces() {
 
 void tikz_activity_trace::do_not_show_unactive_boxes() {
 	show_unactive_boxes = false;
+}
+
+void tikz_activity_trace::only_image() {
+	only_image_flag = true;
 }
 
 void tikz_activity_trace::before_end_of_elaboration() {
@@ -319,44 +329,47 @@ void tikz_activity_trace::draw_start() {
 	*tikz_trace_file << "\\usetikzlibrary{shapes,arrows,fit,calc,positioning}" << endl;
 	
 	*tikz_trace_file << "\\begin{document}" << endl;
+	
+	// Print header (unless only image option is enabled)
+	if(!only_image_flag) {
+		*tikz_trace_file << "File created by KisTA library" << endl << endl;
+		*tikz_trace_file << "Author: F.Herrera" << endl << endl;
+		*tikz_trace_file << "Institution: KTH" << endl << endl;
+		*tikz_trace_file << "Date: 2014" << endl << endl;
+		*tikz_trace_file << "All rights reserved by the authors. Further details to be defined by the adopted license." << endl << endl;
+		*tikz_trace_file << "Tracing options enabled for the trace production:" << endl;
 		
-	*tikz_trace_file << "File created by KisTA library" << endl << endl;
-	*tikz_trace_file << "Author: F.Herrera" << endl << endl;
-	*tikz_trace_file << "Institution: KTH" << endl << endl;
-	*tikz_trace_file << "Date: 2014" << endl << endl;
-	*tikz_trace_file << "All rights reserved by the authors. Further details to be defined by the adopted license." << endl << endl;
-	*tikz_trace_file << "Tracing options enabled for the trace production:" << endl;
-	
-	*tikz_trace_file <<  "Style=";
-	if(clustered_style) *tikz_trace_file <<  "Clustered";
-	else *tikz_trace_file <<  "Flat";
-	*tikz_trace_file <<  ", ";
-	
-	if(compact_style) *tikz_trace_file <<  "Compact";
-	else *tikz_trace_file <<  "Unfolded";
-	*tikz_trace_file <<  "; ";
-	
-	*tikz_trace_file <<  "Baselines sep.=";
-	*tikz_trace_file << std::to_string(base_lines_separation);
-	*tikz_trace_file <<  "; ";
+		*tikz_trace_file <<  "Style=";
+		if(clustered_style) *tikz_trace_file <<  "Clustered";
+		else *tikz_trace_file <<  "Flat";
+		*tikz_trace_file <<  ", ";
+		
+		if(compact_style) *tikz_trace_file <<  "Compact";
+		else *tikz_trace_file <<  "Unfolded";
+		*tikz_trace_file <<  "; ";
+		
+		*tikz_trace_file <<  "Baselines sep.=";
+		*tikz_trace_file << std::to_string(base_lines_separation);
+		*tikz_trace_file <<  "; ";
 
-	*tikz_trace_file <<  "Max. t span=";
-	*tikz_trace_file << std::to_string(time_stamps_max_separation);
-	*tikz_trace_file <<  "; ";
-	
-	*tikz_trace_file <<  "Scale:=";
-	*tikz_trace_file << std::to_string(ttikz_trace_scale);
-	*tikz_trace_file <<  "; ";
+		*tikz_trace_file <<  "Max. t span=";
+		*tikz_trace_file << std::to_string(time_stamps_max_separation);
+		*tikz_trace_file <<  "; ";
+		
+		*tikz_trace_file <<  "Scale:=";
+		*tikz_trace_file << std::to_string(ttikz_trace_scale);
+		*tikz_trace_file <<  "; ";
 
-	if(ttikz_trace_landscape) *tikz_trace_file <<  "Landscape";
-	else *tikz_trace_file <<  "Portrait";
-	*tikz_trace_file <<  "; ";
+		if(ttikz_trace_landscape) *tikz_trace_file <<  "Landscape";
+		else *tikz_trace_file <<  "Portrait";
+		*tikz_trace_file <<  "; ";
 
-	if(show_schedulers_activity) *tikz_trace_file <<  "Show sched. activity.";
-	else *tikz_trace_file <<  "Do not show sched. activity.";
-	
-	*tikz_trace_file  << endl << "\\\\";
-	*tikz_trace_file  << endl;
+		if(show_schedulers_activity) *tikz_trace_file <<  "Show sched. activity.";
+		else *tikz_trace_file <<  "Do not show sched. activity.";
+		
+		*tikz_trace_file  << endl << "\\\\";
+		*tikz_trace_file  << endl;
+	}
 	
 	// Start to declare the TikZ picture
 	// ------------------------------------------------------------
@@ -1372,58 +1385,62 @@ void tikz_activity_trace::draw_end() {
     *tikz_trace_file << "\\end{tikzpicture}" << endl;
 
     *tikz_trace_file << endl;
-    	
-	// to show all the aliases for the Tasks
-	// -------------------------------------------------------
-	if(compact_style) {
-		*tikz_trace_file << "\% Show Automatic Task Alias names " << endl;
-		*tikz_trace_file << "\% --------------------------------" << endl;
-		*tikz_trace_file << "\\textbf{Task alias:}\\\\" << endl;
-		for(auto it = task_activity.begin(); it != task_activity.end(); ++it ) {
-			*tikz_trace_file << "T";
-			*tikz_trace_file << std::to_string(it->first->kista_id);
-			*tikz_trace_file << ": " << it->first->name();
-			*tikz_trace_file << "\\\\" << endl;
+    
+    // Print tail (unless only image option is enabled)
+	if(!only_image_flag) {
+			
+		// to show all the aliases for the Tasks
+		// -------------------------------------------------------
+		if(compact_style) {
+			*tikz_trace_file << "\% Show Automatic Task Alias names " << endl;
+			*tikz_trace_file << "\% --------------------------------" << endl;
+			*tikz_trace_file << "\\textbf{Task alias:}\\\\" << endl;
+			for(auto it = task_activity.begin(); it != task_activity.end(); ++it ) {
+				*tikz_trace_file << "T";
+				*tikz_trace_file << std::to_string(it->first->kista_id);
+				*tikz_trace_file << ": " << it->first->name();
+				*tikz_trace_file << "\\\\" << endl;
+			}
+			*tikz_trace_file << endl;
 		}
+			
+		// to show all the time stamps
+		// -------------------------------------------------------
+		*tikz_trace_file << "\% Show Time stamp values" << endl;
+		*tikz_trace_file << "\% ---------------------" << endl;
+		*tikz_trace_file << "\\textbf{Time Stamp values:}\\\\" << endl;	
+		*tikz_trace_file << "$";
+		for(unsigned int i=0;i<time_stamps.size();i++) {
+			*tikz_trace_file << "t_{";
+			*tikz_trace_file << std::to_string(i);
+			*tikz_trace_file << "} = ";
+			*tikz_trace_file << time_stamps[i].to_string();
+			*tikz_trace_file << "; ";
+		}
+		*tikz_trace_file << " \\\\" << endl;
+		*tikz_trace_file << "$" << endl;
+		
+		*tikz_trace_file << endl;
+		
+		// to show all the time spans
+		// -------------------------------------------------------
+		*tikz_trace_file << "\% Show Time span values" << endl;
+		*tikz_trace_file << "\% ---------------------" << endl;
+		*tikz_trace_file << "\\textbf{Time Span values:}\\\\" << endl;	
+		*tikz_trace_file << "$";
+		for(unsigned int i=0;i<time_spans.size();i++) {
+			*tikz_trace_file << "t_{";
+			*tikz_trace_file << std::to_string(i+1);
+			*tikz_trace_file << "} - t_{";
+			*tikz_trace_file << std::to_string(i);
+			*tikz_trace_file << "} = ";
+			*tikz_trace_file << time_spans[i].to_string();
+			*tikz_trace_file << "; ";
+		}
+		*tikz_trace_file << " \\\\" << endl;
+		*tikz_trace_file << "$" << endl;	
 		*tikz_trace_file << endl;
 	}
-		
-	// to show all the time stamps
-	// -------------------------------------------------------
-	*tikz_trace_file << "\% Show Time stamp values" << endl;
-    *tikz_trace_file << "\% ---------------------" << endl;
-    *tikz_trace_file << "\\textbf{Time Stamp values:}\\\\" << endl;	
-	*tikz_trace_file << "$";
-	for(unsigned int i=0;i<time_stamps.size();i++) {
-		*tikz_trace_file << "t_{";
-		*tikz_trace_file << std::to_string(i);
-		*tikz_trace_file << "} = ";
-		*tikz_trace_file << time_stamps[i].to_string();
-		*tikz_trace_file << "; ";
-	}
-	*tikz_trace_file << " \\\\" << endl;
-	*tikz_trace_file << "$" << endl;
-	
-	*tikz_trace_file << endl;
-	
-	// to show all the time spans
-	// -------------------------------------------------------
-	*tikz_trace_file << "\% Show Time span values" << endl;
-    *tikz_trace_file << "\% ---------------------" << endl;
-    *tikz_trace_file << "\\textbf{Time Span values:}\\\\" << endl;	
-	*tikz_trace_file << "$";
-	for(unsigned int i=0;i<time_spans.size();i++) {
-		*tikz_trace_file << "t_{";
-		*tikz_trace_file << std::to_string(i+1);
-		*tikz_trace_file << "} - t_{";
-		*tikz_trace_file << std::to_string(i);
-		*tikz_trace_file << "} = ";
-		*tikz_trace_file << time_spans[i].to_string();
-		*tikz_trace_file << "; ";
-	}
-	*tikz_trace_file << " \\\\" << endl;
-	*tikz_trace_file << "$" << endl;	
-	*tikz_trace_file << endl;
 	*tikz_trace_file << "\\end{document}" << endl;
 	*tikz_trace_file << endl;
 }

@@ -356,6 +356,38 @@ bool get_landscape_flag(xmlNodePtr cur) {
 	SC_REPORT_ERROR("KisTA-XML","Unexpected error. No set_landscape found.");
 }
 
+// detects if the current element has a only_image element
+bool has_only_image(xmlDocPtr doc, xmlNodePtr cur) {
+	xmlNodePtr curChildNodePtr;
+	curChildNodePtr = cur->xmlChildrenNode;
+	while (curChildNodePtr != NULL) {
+		if ((!xmlStrcmp(curChildNodePtr->name, (const xmlChar *)"only_image"))){
+			return true;
+		}
+		curChildNodePtr = curChildNodePtr->next;
+	}	
+	return false;
+}
+
+// gets only_image flag value
+bool get_only_image_flag(xmlNodePtr cur) {
+	xmlNodePtr curChildNodePtr;
+	xmlChar *valueStr;
+	curChildNodePtr = cur->xmlChildrenNode;
+	while (curChildNodePtr != NULL) {
+		if ((!xmlStrcmp(curChildNodePtr->name, (const xmlChar *)"only_image"))){
+			valueStr = xmlGetProp(curChildNodePtr, (const xmlChar *)"value");
+			if (!xmlStrcmp(valueStr, (const xmlChar *)"true")) {
+				return true;
+			} else {
+				return false;
+			}			
+		}
+		curChildNodePtr = curChildNodePtr->next;
+	}
+	// this point should never be reached
+	SC_REPORT_ERROR("KisTA-XML","Unexpected error. No only_image found.");
+}
 
 //
 // Top Helper functions to parse tikz traces
@@ -401,7 +433,9 @@ bool xml_create_tikz_activity_trace(xmlDocPtr doc) {
 	unsigned int 	max_number_of_time_stamps, time_stamps_max_separation;
 	unsigned int	base_lines_separation;
 	double			scale_value;
-	bool			no_text_in_traces_flag, do_not_show_unactive_boxes_flag, do_not_show_schedulers_flag, set_landscape_flag;
+	bool			no_text_in_traces_flag, do_not_show_unactive_boxes_flag,
+	                do_not_show_schedulers_flag, set_landscape_flag;
+	bool 			only_image_flag;
 	
 	
 	if(ThereIsTiKZtraces(doc)) {
@@ -719,6 +753,30 @@ bool xml_create_tikz_activity_trace(xmlDocPtr doc) {
 				}						
 #endif
 
+				// only image
+				// ----------------------------------------------------------------
+				if(has_only_image(doc,setIiKZ_trace_nodes->nodeTab[j])) {
+					only_image_flag = get_only_image_flag(setIiKZ_trace_nodes->nodeTab[j]);
+
+					if(only_image_flag) {
+						// command the only image
+						only_image(tikz_handler);
+					}
+					
+				}			
+				
+#ifdef _VERBOSE_KISTA_XML
+				if(global_kista_xml_verbosity) {					
+					rpt_msg = "TiKZ trace ";
+					rpt_msg += (const char *)tikz_trace_name;
+					if(only_image_flag) {
+						rpt_msg += ": only image will be exported.";
+					} else {
+						rpt_msg += ": header, image, time spans and time spans (by default).";
+					}
+					SC_REPORT_INFO("KisTA-XML",rpt_msg.c_str());
+				}						
+#endif
 
 		   } // end create tikz trace
 		   		

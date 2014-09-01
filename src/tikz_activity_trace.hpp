@@ -80,6 +80,11 @@ void do_not_show_unactive_boxes(tikz_activity_trace_handler handler);
 	// do not show labels within the activity boxes (state in the unfolded style,
 	// tasks short names in the compact style)
 
+void only_image(tikz_activity_trace_handler handler);
+	// export only the image to the pdf document (do not show the header,
+	// with the configuration options, nor the tail text with time stamps
+	// and time spans
+
 // ---------------------------------------------
 // Internal classes (not intended for user)
 // ---------------------------------------------
@@ -114,6 +119,8 @@ public:
 	                   // and the short task alias in the compact style)
 	void do_not_show_unactive_boxes(); // do not informative text within the activity boxes
 
+	void only_image(); // only export the image
+
 	//
 	// To Be done:
 	// In order to select tasks and schedulers to be represented
@@ -136,6 +143,7 @@ private:
 	bool			show_schedulers_activity;
 	bool			show_text_in_traces;
 	bool			show_unactive_boxes;
+	bool			only_image_flag;
 
 	// data structures to store:
 	// - time stamps of time axis
