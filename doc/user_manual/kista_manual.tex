@@ -89,6 +89,15 @@
 % scheduler methods
 % tracing activity
                 trace_utilizations,
+% TikZ tracing
+                tikz_activity_trace_handler,
+                create_tikz_activity_trace,
+                set_scale,
+                set_landscape,
+                do_not_show_unactive_boxes,
+                set_time_stamps_max_separation,
+                no_text_in_traces,
+                only_image,
 % sketch report
                 sketch_report_t,
 % Functional validation
@@ -306,9 +315,7 @@ analysis and documentation of the system.
 
 \subsection{Export task and scheduler activity to Tikz}
 \label{sec:activity2tikz}
-
-TBC
-%\input{activity2tikz.tex}
+\input{activity2tikz.tex}
 
 \subsection{System Sketch Report}
 \label{sec:sketch_report}
