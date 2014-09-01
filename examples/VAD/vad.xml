@@ -508,13 +508,17 @@
 		<verbose value="true"/>
 		<xml_front_end_verbose value="true"/>
 		<export_sketch value="true">
+			<file_name value="vad_sketch"/>
 			<draw_sys_level_conn_names value="true"/>
-			<highlight_environment value="false"/>
-			<highlight_system value="false"/>
+			<highlight_environment value="true"/>
+			<highlight_system value="true"/>
 			<highlight_application value="false"/>
-			<highlight_platform value="false"/>
-		</export_sketch>export_sketch>	
-		<sketch_file_name value="vad_sketch"/>
+			<highlight_platform value="true"/>
+			<!--
+			<only_image value="true"/>
+			<set_scale value="1.25"/>
+			-->
+		</export_sketch>
 
 		<!-- In order to enable functional validation -->
 		<functional_validation value="true"/>
@@ -540,21 +544,25 @@
 				<max_number_of_time_stamps value="16"/>
 				<time_stamps_max_separation value="3"/>
 				<!-- control of time axis information -->
-				<cluster value="true" compact="false"/>
+				<cluster value="true" compact="true"/>
 				<base_lines_separation value="1"/>
 						<!-- base lines separation, 1 (default),2,... no effect for compact format -->
 						
 				<!-- control of information in the draw -->
-				<!-- -->
+				<!-- 
 				<no_text_in_traces value="true"/>
-				
 				<do_not_show_unactive_boxes value="true"/>	
+				-->
+				
 				<!-- -->
 				<do_not_show_schedulers value="false"/>	
 				
 				<!-- control of picture format -->
 				<set_scale value="0.75"/>
 				<set_landscape value="true"/>
+				
+				<!-- <only_image value="true"/>
+				-->
 				
 			</tikz_trace>
 
