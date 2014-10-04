@@ -30,4 +30,55 @@ If you are using the C++ API, so you use KisTA as a SystemC/C++ library, then yo
 \subsection{Sources}
 \label{sec:install_bin}
 
-TBC
+KisTA has become an open development and its sources are available in the following
+GIT repository:\\ 
+\\
+\url{http://github.com/nandohca/kista}\\
+\\
+The commands to download the sources in a path of your system called \texttt{SOFT\_PATH} are
+the following ones
+
+\begin{verbatim}
+$cd SOFT\_PATH
+$git clone http://github.com/nandohca/kista kista
+\end{verbatim}
+
+This creates the directory \texttt{kista} within \texttt{SOFT\_PATH}, such
+then \texttt{KISTA\_PATH=SOFT\_PATH\\kista}.
+Then, move to the root of the KisTA sources, and compile the library.
+Use the following commands for it:
+
+\begin{verbatim}
+$cd KISTA\_PATH
+$make
+$make install
+\end{verbatim}
+
+This compiles and install the KisTA library, enabling its use as a SystemC-based
+C++ library (C++ API).
+The KisTA \texttt{\\include} and \texttt{\\lib} directories are generated within
+the \texttt{KISTA\_PATH} directory, with the headers and object libraries.
+%
+All the examples but the ones using the XML interface can be run with this.
+
+The KisTA Makefile contains also the \texttt{clean} rule,
+to eliminate the object files generated during the compilation,
+and the \texttt{ultraclean} rule, to elimitate as well the created library.
+
+Once the KisTA library has been compiled and installed it is
+possible to compile and install the KisTA XML front-end.
+For it, the following commands shall be used, asuming you are in
+the KISTA\_PATH:
+
+\begin{verbatim}
+$make kista-xml
+$make kista-xml install
+\end{verbatim}
+
+This will create a \texttt{\\bin} folder where an executable file, called \texttt{kista-xml}
+will be created and copied.
+The \texttt{kista-xml} is the one capable to parse an read a KisTA description in XML,
+and launch the static analysis and the simulations.
+
+
+

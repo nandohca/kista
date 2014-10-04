@@ -32,13 +32,13 @@
 
 \documentclass{article}
 
-\newif\ifpdf
+\newif\ifpdfformat
 
 % To generate pdf
-\pdftrue
+\pdfformattrue
 
 % To generate html
-%\pdffalse
+%\pdfformatfalse
 
 \usepackage{fullpage}
 \usepackage{graphicx}
@@ -48,6 +48,8 @@
 \usepackage{multirow}
 
 \usepackage{makeidx}
+\usepackage{hyperref}
+
 \makeindex
 \title{KisTA user manual}
 \author{Fernando Herrera}
@@ -167,7 +169,7 @@
 
 \begin{document}
 
-\ifpdf
+\ifpdfformat
 
 \input{./KisTA_um_cover.tex}
 
@@ -179,7 +181,7 @@
 
 \input{./version_table.tex}
 
-\ifpdf
+\ifpdfformat
 \pagebreak
 \fi
 
