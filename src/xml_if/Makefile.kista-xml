@@ -69,7 +69,7 @@ LIBDIR = -L. -L.. -L$(SYSTEMC)/lib-$(TARGET_ARCH) -L$(INSTALLDIR)/lib
 CFLAGS = -DSC_INCLUDE_DYNAMIC_PROCESSES -Wall -Wno-deprecated -Wno-return-type -Wno-char-subscripts -pthread $(DEBUG) $(OPT) $(EXTRACFLAGS)
 #CFLAGS = -arch i386 -Wall -Wno-deprecated -Wno-return-type -Wno-char-subscripts $(DEBUG) $(OPT) $(EXTRACFLAGS)
 
-LIBS =  -lstdc++ -lm $(EXTRA_LIBS) -lsystemc -lkista
+LIBS =  -lstdc++ -lm $(EXTRA_LIBS) -lsystemc -lkista -ldl
 
 EXE    	 = $(MODULE)
 STANDALONE  = $(MODULE)-standalone

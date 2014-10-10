@@ -1,7 +1,11 @@
 
 LIBNAME = kista
 
-KISTA_REVISION = $(shell svnversion)
+# For svn in KTH svn server
+# KISTA_REVISION = $(shell svnversion)
+
+# For GitHub 
+KISTA_REVISION = $(shell git rev-list HEAD | wc -l)
 
 export KISTA_REVISION
 
