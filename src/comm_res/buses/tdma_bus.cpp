@@ -391,16 +391,16 @@ void tdma_bus::allocate_channels(phy_address src, unsigned int required_channels
 		rpt_msg+= src->name();
 		SC_REPORT_ERROR("KisTA: TDMA bus",rpt_msg.c_str());
 	}
-	
+cout << "ANTES DE FIRST SLOT:" << first_slot << endl;
 	// assign free slots and retrieve automatically first slot
 	first_slot = assign_free_slots(required_channels);
-		
+cout << "DESPUES DE FIRST SLOT:" << first_slot << endl;		
 	// associates the assigned channels to the PE in the channel allocation table
 	channel_allocation_table[src] = required_channels;
-	
+
 	// associates the first slot allocated to the PE in the first_slot allocation_table
 	first_slot_allocation_table[src] = first_slot;
-	
+cout << " Y MAS DESPUES DE FIRST SLOT:" << src->name() << " " << first_slot_allocation_table[src] << endl;				
 	// update the account of channels assigned
 	n_allocated_channels += required_channels;
 
@@ -410,7 +410,7 @@ void tdma_bus::allocate_channels(phy_address src, unsigned int required_channels
 	rpt_msg += ": Assigning ";
 	rpt_msg += std::to_string(required_channels);
 	rpt_msg += " transmission channels (slots) from slot #";
-	rpt_msg += first_slot;
+	rpt_msg += std::to_string(first_slot);
 	rpt_msg += " to sender physical address (PE) ";
 	rpt_msg+= src->name();
 	SC_REPORT_INFO("KisTA: TDMA bus",rpt_msg.c_str());
@@ -473,12 +473,14 @@ void tdma_bus::report_bus_configuration() {
 }
 
 bool tdma_bus::check_slot_allocation() {
-	// checks that there are not overlaps in the slot allocatio
+	// checks that there are not overlaps in the slot allocation
 	// (the check does not report error if there are unsused slots)
 	std::string msg;
 	
-	unsigned int fs_1, fs_2;
+	unsigned int fs_1, fs_2; // first slot index
 	unsigned int n_slots_1, n_slots_2;
+	
+	print_slot_allocation();
 	
 	first_slot_allocation_table_t::iterator it1, it2;
 	channel_allocation_table_t::iterator nch_it1, nch_it2;
@@ -496,7 +498,7 @@ bool tdma_bus::check_slot_allocation() {
 		SC_REPORT_ERROR("KisTA",msg.c_str());
 	}
 
-	// here, it is ensured that first_slot_allocation_table size is the same as channel_allocation_table size
+	// here, it is ensured that the sizes of both the first_slot_allocation_table and the channel_allocation_table are the same
 	switch(first_slot_allocation_table.size()) {
 		case 0:
 			msg = "In TDMA bus ";
@@ -505,10 +507,10 @@ bool tdma_bus::check_slot_allocation() {
 			SC_REPORT_ERROR("KisTA",msg.c_str());
 			break;
 		case 1:
-			return true; // One slot allocation is  
-			break; // there cannot be any overlap, so the check is sucessful
+			return true; // Only one transmitter is allocating slots, so   
+			break;       // there cannot be any overlap, so the check is sucessful
 		//default:
-			// go on
+			// more than one transmitter is allocating slots, the check must go on
 	}
 	
 	// Here the channel allocation has been done for more than one transmitter (table sizes >1, and with the same size)
@@ -517,7 +519,7 @@ bool tdma_bus::check_slot_allocation() {
 	it2 = it1;
 	it2++;
 				
-	// it1: iterator in firs slots
+	// it1: iterator in first slots
 	do {
 	
 		do {
@@ -525,7 +527,8 @@ bool tdma_bus::check_slot_allocation() {
 			fs_2 = it2->second;				
 			
 			nch_it1 = channel_allocation_table.find(it1->first);
-			// check if, by any fail of the manual assignation, the PE in the first allocation is not found in the slots allocated table
+			// check if, due to a failure on the manual assignation,
+			// the PE in the n-th allocation is not found in the slots allocated table
 			if( nch_it1 == channel_allocation_table.end() ) {
 				msg = "In TDMA bus ";
 				msg += name();
@@ -545,7 +548,8 @@ bool tdma_bus::check_slot_allocation() {
 			}
 			
 			nch_it2 = channel_allocation_table.find(it2->first);
-			// check if, by any fail of the manual assignation, the PE in the first allocation is not found in the slots allocated table
+			// check if, due to a failure on the manual assignation,
+			// the PE in the (n+1)-th allocation is not found in the slots allocated table			
 			if( nch_it2 == channel_allocation_table.end() ) {
 				msg = "In TDMA bus ";
 				msg += name();
@@ -564,7 +568,8 @@ bool tdma_bus::check_slot_allocation() {
 				SC_REPORT_ERROR("KisTA",msg.c_str());			
 			}
 						
-			// the same PE is found both in the "first slot" table and int he "channels allocated" table, so the value is retrieved
+			// the same PE is found both in the "first slot" table and 
+			// in the "channels allocated" table, so the value is retrieved
 			n_slots_1 = nch_it1->second;
 			n_slots_2 = nch_it2->second;
 						
@@ -603,11 +608,11 @@ bool tdma_bus::check_slot_allocation() {
 			
 			it2++;
 
-		} while(it2 == first_slot_allocation_table.end());
+		} while(it2 != first_slot_allocation_table.end());
 		it1++;
 		it2 = it1;
 		it2++;
-	} while(it2 == first_slot_allocation_table.end());
+	} while(it2 != first_slot_allocation_table.end());
 
 	return true;
 }
@@ -618,7 +623,8 @@ bool tdma_bus::print_slot_allocation() {
 	cout << " PE\tfirst slot\tslots allocated:" << endl;
 	for(auto it = first_slot_allocation_table.begin(); it!=first_slot_allocation_table.end() ; it++) {
 		cout << " " << endl;
-		cout << it->first;
+		//cout << it->first;
+		cout << it->first->name();
 		cout << "\t";
 		cout << it->second;
 		cout << "\t";
