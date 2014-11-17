@@ -66,7 +66,7 @@ clean:
 	rm -rf *.o
 
 ultraclean: clean
-	rm -f $(LIB_FUN_NAME).a
+	rm -f lib$(LIB_FUN_NAME).a
 	rm -f $(LIB_FUN_NAME).so
 	rm -rf *~
 
