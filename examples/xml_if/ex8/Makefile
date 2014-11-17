@@ -39,9 +39,9 @@ $(DYN_LIBRARY).so: $(TASK_OBJS)
 
 run: $(DYN_LIBRARY).so
 	kista-xml $(SD_FILE)\
- --xml_system_configuration=./$(SC_FILE)\
- --xml_system_metrics=./$(SM_FILE)\
- --xml_system_metrics_definition=./$(SMD_FILE)
+	 --xml_system_configuration=./$(SC_FILE)\
+	 --xml_system_metrics=./$(SM_FILE)\
+	 --xml_system_metrics_definition=./$(SMD_FILE)
 
 sketch:
 	pdflatex $(EX_NAME)_sketch.tex
