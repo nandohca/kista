@@ -177,6 +177,89 @@ xmlNodePtr getStaticSchedulingNode(xmlNodePtr cur
 	return NULL;
 }
 
+scheduler_triggering_policy_t getSchedulerTriggeringPolicy(xmlDocPtr doc,
+								xmlNodePtr cur // task scheduler or comm scheduler node
+								) {
+	xmlChar* TriggeringSchedulerPolicy;
+	std::string msg;
+						
+	TriggeringSchedulerPolicy = xmlGetValueGen(cur, (xmlChar *)"triggering");								
+	
+	if(TriggeringSchedulerPolicy==NULL) {
+		// value field has not been provided. Then, static scheduling is assumed
+		// by default (this is for back compatibility with previous versions of KisTA)
+		return NON_PREEMPTIVE;
+	}
+	
+	if ( (!xmlStrcmp(TriggeringSchedulerPolicy, (const xmlChar *)"non_preemptive")) ) {
+		return NON_PREEMPTIVE;
+	} else if ( (!xmlStrcmp(TriggeringSchedulerPolicy, (const xmlChar *)"cooperative")) ) {
+		return COOPERATIVE;
+	} else if ( (!xmlStrcmp(TriggeringSchedulerPolicy, (const xmlChar *)"preemptive")) ) {
+		return PREEMPTIVE;
+	} else {
+		msg = "Unknown ";
+		msg += (const char *)TriggeringSchedulerPolicy;
+		msg += " triggering policy configured for scheduler.";
+		SC_REPORT_ERROR("kista-XML",msg.c_str());
+		return NON_PREEMPTIVE;
+	}
+}
+
+scheduler_policy_t getSchedulerPolicy(xmlDocPtr doc,
+								xmlNodePtr cur // task scheduler or comm scheduler node
+								) {
+	xmlChar* SchedulerPolicy;
+						
+	SchedulerPolicy = xmlGetValueGen(cur, (xmlChar *)"policy");								
+	
+	if(SchedulerPolicy==NULL) {
+		// value field has not been provided. Then, static scheduling is assumed
+		// by default (this is for back compatibility with previous versions of KisTA)
+		return STATIC_SCHEDULING;
+	}
+	
+	if ( (!xmlStrcmp(SchedulerPolicy, (const xmlChar *)"static_scheduling")) ) {
+		return STATIC_SCHEDULING;
+	} else if ( (!xmlStrcmp(SchedulerPolicy, (const xmlChar *)"random_scheduling")) ) {
+		return RANDOM_SCHEDULING;
+	} else if ( (!xmlStrcmp(SchedulerPolicy, (const xmlChar *)"pseudorandom_scheduling")) ) {
+		return PSEUDO_RANDOM_SCHEDULING;
+	} else if ( (!xmlStrcmp(SchedulerPolicy, (const xmlChar *)"cycle_executive")) ) {
+		return CYCLE_EXECUTIVE;
+	} else if ( (!xmlStrcmp(SchedulerPolicy, (const xmlChar *)"static_priorities")) ) {
+		return STATIC_PRIORITIES;
+	} 
+	 else if ( (!xmlStrcmp(SchedulerPolicy, (const xmlChar *)"dynamic_priorities")) ) {												
+		return DYNAMIC_PRIORITIES;
+	} else {
+		return USER_SCHEDULER_POLICY;
+	}
+}
+
+bool TimeSliceEnabled(xmlDocPtr doc,
+					xmlNodePtr cur // task scheduler or comm scheduler node
+								) {
+	xmlChar* TimeSliceEnabledValue;
+	std::string msg;
+						
+	TimeSliceEnabledValue = xmlGetValueGen(cur, (xmlChar *)"time_slice");								
+	
+	if(TimeSliceEnabledValue==NULL) {
+		// value field has not been provided. Then, static scheduling is assumed
+		// by default (this is for back compatibility with previous versions of KisTA)
+		return false;
+	}
+	
+	if ( (!xmlStrcmp(TimeSliceEnabledValue, (const xmlChar *)"yes")) ) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+
+
 // If found, returns the first scheduling policy node described for an RTOS instance node,
 // (indeed there should be only one)
 //  Note: currently supports just static scheduling policies
@@ -222,6 +305,9 @@ void create_SW_platform(xmlDocPtr doc, std::vector<scheduler*> &RTOS_vec) {
 	xmlChar *RTOSName;
 	
 	scheduler *RTOS_ptr;
+	
+	scheduler_triggering_policy_t	SchedTriggeringPolicy;
+	scheduler_policy_t 				SchedPolicy;
 	
 	static_schedule_by_task_names_t *static_schedule;
 
@@ -273,9 +359,67 @@ void create_SW_platform(xmlDocPtr doc, std::vector<scheduler*> &RTOS_vec) {
 			}
 
 			// Set scheduling policy
+			// ------------------------
 			curr_node = getSchedulerPolicyNode(doc,curr_node);
 
-			if(hasStaticScheduling(curr_node)) {
+			// Read setting of the triggering policy and set it correspondingly
+			SchedTriggeringPolicy = getSchedulerTriggeringPolicy(doc,curr_node);
+			
+#ifdef _VERBOSE_KISTA_XML
+				if(global_kista_xml_verbosity) {
+					rpt_msg = "Settled ";
+					switch(SchedTriggeringPolicy) {
+						case NON_PREEMPTIVE:
+							rpt_msg += "non_preemptive";
+							break;
+						case COOPERATIVE:
+							rpt_msg += "cooperative";
+							break;
+						case PREEMPTIVE:
+							rpt_msg += "preemptive";
+							break;
+						default:
+							rpt_msg += "unknown";
+					}
+					rpt_msg += " triggering policy for scheduler ";
+					rpt_msg += (const char*)RTOSName;
+					SC_REPORT_INFO("KisTA-XML",rpt_msg.c_str());
+				}
+#endif	
+
+			RTOS_ptr->set_triggering_policy(SchedTriggeringPolicy);
+
+			// Read if time slicing is enabled
+#ifdef _VERBOSE_KISTA_XML
+			if(global_kista_xml_verbosity) {			
+				rpt_msg = " Time slice ";
+			}
+#endif			
+		    if(TimeSliceEnabled(doc,curr_node)) {
+#ifdef _VERBOSE_KISTA_XML
+				if(global_kista_xml_verbosity) {			
+					rpt_msg += " enabled ";
+				}
+#endif
+				RTOS_ptr->enable_time_slicing();
+			}
+#ifdef _VERBOSE_KISTA_XML
+			else {
+				if(global_kista_xml_verbosity) {			
+					rpt_msg += " disabled ";
+				}
+			}
+			rpt_msg += " for scheduler ";
+			rpt_msg += (const char*)RTOSName;
+			SC_REPORT_INFO("KisTA-XML",rpt_msg.c_str());						
+#endif					
+
+			// Read setting of the policy and set it correspondingly
+		    SchedPolicy = getSchedulerPolicy(doc,curr_node);
+
+		    switch(SchedPolicy) {
+
+			  case STATIC_SCHEDULING:
 				static_schedule = new static_schedule_by_task_names_t;
 
 				// Fixes the policy of the KisTA scheduler as STATIC
@@ -285,7 +429,7 @@ void create_SW_platform(xmlDocPtr doc, std::vector<scheduler*> &RTOS_vec) {
 					printf("Kista-xml INFO: Fixing static scheduling policy\n");
 				}
 #endif			
-				// get the static schedule from the XML file	
+				// get and set the static schedule from the XML file	
 				curr_node = getStaticSchedulingNode(curr_node);
 				if( getStaticSchedule(curr_node,*static_schedule) <1) {
 					if(global_kista_xml_verbosity) {
@@ -307,16 +451,45 @@ void create_SW_platform(xmlDocPtr doc, std::vector<scheduler*> &RTOS_vec) {
 					}
 #endif
 				}
+				
 				// For the moment, the plugin states at least N_hyperperiods
 				RTOS_ptr->set_sufficient_global_simulation_time(N_hyperperiods_for_sim_time);	
-			} else {
-				SC_REPORT_ERROR("KisTA-XML","Currently, XML interface of KisTA supports only static scheduling policies");
+			
+				break;
+			  
+			  case STATIC_PRIORITIES:
+			  	RTOS_ptr->set_policy(STATIC_PRIORITIES);
+			  	/*
+			  	static_priorities_policy_t StaticPrioSchedulingPolicy;
+		  	
+			  	StaticPrioSchedulingPolicy = getStaticPrioSchedulingPolicy(curr_node);
+			  	
+			  	RTOS_ptr->set_static_priorities_policy(StaticPrioSchedulingPolicy);
+*/
+			    rpt_msg = "The \"static priorities\" policy configured for the RTOS instance \"";
+				rpt_msg += (const char *)RTOSName;
+				rpt_msg += "\" is not currently supported.";
+				SC_REPORT_ERROR("KisTA-XML", rpt_msg.c_str());
+				break;
+				
+			  case DYNAMIC_PRIORITIES:
+			    rpt_msg = "The \"dynamic priorities\" policy configured for the RTOS instance \"";
+				rpt_msg += (const char *)RTOSName;
+				rpt_msg += "\" is not currently supported.";
+				SC_REPORT_ERROR("KisTA-XML", rpt_msg.c_str());
+				break;
+
+			  default:
+			    rpt_msg = "The scheduling policy configured for the RTOS instance \"";
+				rpt_msg += (const char *)RTOSName;
+				rpt_msg += "\" is not currently supported.";
+				SC_REPORT_ERROR("KisTA-XML", rpt_msg.c_str());
 			}
 			
-			// Adding the recently created and configured PE to the created HW platform
+			// Adding the recently created and configured RTOS to the created HW platform
 			RTOS_vec.push_back(RTOS_ptr);
-		}
-		
+		}	
+					
 	   // -------------------------------------------------------------------
        // Parses communication scheduling information associated to the RTOS
        // -------------------------------------------------------------------
@@ -379,15 +552,8 @@ void create_SW_platform(xmlDocPtr doc, std::vector<scheduler*> &RTOS_vec) {
 
 				// For the moment, the plugin states at least N_hyperperiods
 				RTOS_ptr->set_sufficient_global_simulation_time(N_hyperperiods_for_sim_time);	
-			} else {
-				rpt_msg = "Unsupported communication scheduling for RTOS ";
-				rpt_msg += (const char *)RTOSName;
-				rpt_msg += ". Currently, XML interface of KisTA supports only static communication scheduling policies.";
-				SC_REPORT_ERROR("KisTA-XML", rpt_msg.c_str());
-			}
-			
-		}
-		
+			}	
+		}	
 		
 	}
 	 
