@@ -479,6 +479,16 @@ void create_SW_platform(xmlDocPtr doc, std::vector<scheduler*> &RTOS_vec) {
 				SC_REPORT_ERROR("KisTA-XML", rpt_msg.c_str());
 				break;
 
+			  case CYCLE_EXECUTIVE:
+			    RTOS_ptr->set_policy(CYCLE_EXECUTIVE);
+			    /*
+			    rpt_msg = "The \"cycle executive\" policy configured for the RTOS instance \"";
+				rpt_msg += (const char *)RTOSName;
+				rpt_msg += "\" is not currently supported.";
+				SC_REPORT_ERROR("KisTA-XML", rpt_msg.c_str());
+			    */
+			    break;
+			    
 			  default:
 			    rpt_msg = "The scheduling policy configured for the RTOS instance \"";
 				rpt_msg += (const char *)RTOSName;
