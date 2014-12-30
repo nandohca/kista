@@ -1764,6 +1764,11 @@ void scheduler::static_analysis() {
 	static_analysis_function = NULL;
 
 	// Passes static analysis stablished for any policy
+#ifdef _REPORT_COMMON_STATIC_ANALYSIS_PASS
+		msg = "Passing common static analysis for scheduler ";
+		msg += name();
+		SC_REPORT_INFO("KisTA", msg.c_str());
+#endif
 	common_static_analysis(gets_tasks_assigned());
 	
 	// Passes static analysis for the configured policy

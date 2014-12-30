@@ -45,7 +45,7 @@ void attach_default_available_static_analysis() {
 	
 	// Add default policy dependnet static schedulability analysis
 	
-	// Liu & Layland bound checj
+	// Liu & Layland bound check
 	current_scheduler_t.scheduler_policy = STATIC_PRIORITIES;
 	current_scheduler_t.static_priorities_policy = RATE_MONOTONIC;
 	current_scheduler_t.dynamic_priorities_policy = USER_DYNAMIC_PRIORITY_POLICY; // actually not used
@@ -54,9 +54,9 @@ void attach_default_available_static_analysis() {
 	static_analysis_table[current_scheduler_t]=Liu_and_Layland_bound;
 
 #ifdef _REPORT_DEFAULT_STATIC_ANALYSIS
-	msg = "Full utilization common schedulability static analysis and ";
+	msg = "Common static schedulability analysis (full utilization) enabled.\n";
 	msg += to_string(static_analysis_table.size());
-	msg += " policy specific analysis enabled.";
+	msg += " policy specific analyses enabled.";
 	SC_REPORT_INFO("KisTA",msg.c_str());
 #endif
 }
@@ -107,15 +107,22 @@ void full_utilization_bound(const taskset_by_name_t *assigned_tasks) {
 	double assigned_tasks_utilization;
 	msg = "Passing full utilization bound...";
 
-	assigned_tasks_utilization = utilization(*assigned_tasks);
-	if(assigned_tasks_utilization>=1.0) {
-		msg += "FAILED.\n  Utilization = " ;
-		msg += std::to_string(assigned_tasks_utilization);
-		SC_REPORT_ERROR("KisTA",msg.c_str());
-	} else {
-		msg += "PASSED.\n  Utilization = " ;
-		msg += std::to_string(assigned_tasks_utilization);		
-		SC_REPORT_INFO("KisTA",msg.c_str());
+	if (is_periodic(*assigned_tasks)) {
+		assigned_tasks_utilization = utilization(*assigned_tasks);
+		if(assigned_tasks_utilization>=1.0) {
+			msg += "FAILED.\n  Utilization = " ;
+			msg += std::to_string(assigned_tasks_utilization);
+			SC_REPORT_ERROR("KisTA",msg.c_str());
+		} else {
+			msg += "PASSED.\n  Utilization = " ;
+			msg += std::to_string(assigned_tasks_utilization);		
+			SC_REPORT_INFO("KisTA",msg.c_str());
+		}
+	} else { // if the task set is not periodic, the utilization cannot be 
+	         // calculated statically at least for one task
+	         // (since at least one task is not static or there is not period)
+	         msg += "SKIPPED.\n The taskset is not periodic.";
+	         SC_REPORT_WARNING("KisTA",msg.c_str());
 	}
 }
 
