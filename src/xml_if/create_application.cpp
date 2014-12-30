@@ -146,8 +146,117 @@ bool readWCEI(xmlNodePtr cur,  task_info_t *Task_info_ptr) {
 	return return_value;
 }
 
+// detects if the current element has a Priority element
+bool hasPriority(xmlNodePtr cur) {
+	return hasChild(cur,"priority");
+}
+
+// read Priority element
+
+unsigned int readPriority(xmlNodePtr cur,  task_info_t *Task_info_ptr) {
+	
+	std::string rpt_msg;
+	xmlChar *valueStr;
+	unsigned int return_value;
+	
+	valueStr = xmlGetValueGen(cur,(xmlChar *)"value");
+		
+	if(valueStr==NULL) {
+		rpt_msg = "No priority value specified for priority";
+		SC_REPORT_INFO("KisTA-XML",rpt_msg.c_str());		
+	}
+	
+	return_value = atoi((const char *)valueStr);
+
+	Task_info_ptr->set_priority(return_value);
+
+#ifdef _VERBOSE_KISTA_XML
+	if(global_kista_xml_verbosity) {
+		rpt_msg = "Priority = ";
+		rpt_msg += (const char *)valueStr;
+		rpt_msg +=  ".";
+		SC_REPORT_INFO("KisTA-XML",rpt_msg.c_str());
+	}
+#endif
+
+	return return_value;
+}
 
 
+// detects if the current element has a Period element
+bool hasPeriod(xmlNodePtr cur) {
+	return hasChild(cur,"period");
+}
+
+// read Period element
+
+bool readPeriod(xmlNodePtr cur,  task_info_t *Task_info_ptr) {
+	
+	std::string rpt_msg;
+	xmlChar *unitStr;
+	xmlChar *valueStr;
+	double return_value;
+	
+	valueStr = xmlGetValueGen(cur,(xmlChar *)"value");
+		
+	if(valueStr==NULL) return false;
+	
+	return_value = atof((const char *)valueStr);
+	
+	unitStr = xmlGetValueGen(cur,(xmlChar *)"unit");
+
+	return_value = conv_value_by_unit(return_value,unitStr,NULL); // convert to second
+
+	Task_info_ptr->set_Period(sc_time(return_value,SC_SEC));
+
+#ifdef _VERBOSE_KISTA_XML
+	if(global_kista_xml_verbosity) {
+		rpt_msg = "Read Period: ";
+		rpt_msg +=  sc_time(return_value,SC_SEC).to_string();
+		SC_REPORT_INFO("KisTA-XML",rpt_msg.c_str());
+	}
+#endif
+
+	return return_value;
+}
+
+
+// detects if the current element has a Period element
+bool hasDeadline(xmlNodePtr cur) {
+	return hasChild(cur,"deadline");
+}
+
+// read Period element
+
+bool readDeadline(xmlNodePtr cur,  task_info_t *Task_info_ptr) {
+	
+	std::string rpt_msg;
+	xmlChar *unitStr;
+	xmlChar *valueStr;
+	double return_value;
+	
+	valueStr = xmlGetValueGen(cur,(xmlChar *)"value");
+		
+	if(valueStr==NULL) return false;
+	
+	return_value = atof((const char *)valueStr);
+	
+	unitStr = xmlGetValueGen(cur,(xmlChar *)"unit");
+
+	return_value = conv_value_by_unit(return_value,unitStr,NULL); // convert to second
+
+	Task_info_ptr->set_Deadline(sc_time(return_value,SC_SEC));
+
+#ifdef _VERBOSE_KISTA_XML
+	if(global_kista_xml_verbosity) {
+		rpt_msg = "Read Deadline: ";
+		rpt_msg +=  sc_time(return_value,SC_SEC).to_string();
+		SC_REPORT_INFO("KisTA-XML",rpt_msg.c_str());
+	}
+#endif
+
+	return return_value;
+}
 
 xmlNodeSetPtr getTaskPropertiesFromApplication(xmlDocPtr doc) {
 	xmlNodeSetPtr nodeset;
@@ -188,11 +297,23 @@ void getTaskProperties(xmlDocPtr doc,xmlNodePtr currNode, task_info_t *Task_info
 				readWCEI(getFirstChild(curChildNodePtr,"WCEI"),Task_info_ptr);
 				properties_found = true;
 			}
+			if(hasPriority(curChildNodePtr)) {
+				readPriority(getFirstChild(curChildNodePtr,"priority"),Task_info_ptr);
+				properties_found = true;
+			}			
+			if(hasPeriod(curChildNodePtr)) {
+				readPeriod(getFirstChild(curChildNodePtr,"period"),Task_info_ptr);
+				properties_found = true;
+			}
+			if(hasDeadline(curChildNodePtr)) {
+				readDeadline(getFirstChild(curChildNodePtr,"deadline"),Task_info_ptr);
+				properties_found = true;
+			}
 		}
 		curChildNodePtr=curChildNodePtr->next;
 	}
 	
-	// (2) if not found, it looks for task properties directly hanging in the application section
+	// (2) if not found, it looks for task properties directly hanging from the application section
 	
 	TaskPropertiesFromApplication = getTaskPropertiesFromApplication(doc);
 	
@@ -217,7 +338,23 @@ void getTaskProperties(xmlDocPtr doc,xmlNodePtr currNode, task_info_t *Task_info
 				if(hasWCET(TaskPropertiesFromApplication->nodeTab[j])) {
 					readWCET(getFirstChild(TaskPropertiesFromApplication->nodeTab[j],"WCET"),Task_info_ptr);
 					properties_found = true;
-				}	
+				}
+				if(hasWCEI(TaskPropertiesFromApplication->nodeTab[j])) {
+					readWCEI(getFirstChild(TaskPropertiesFromApplication->nodeTab[j],"WCEI"),Task_info_ptr);
+					properties_found = true;
+				}
+				if(hasPriority(TaskPropertiesFromApplication->nodeTab[j])) {
+					readPriority(getFirstChild(TaskPropertiesFromApplication->nodeTab[j],"priority"),Task_info_ptr);
+					properties_found = true;
+				}			
+				if(hasPeriod(TaskPropertiesFromApplication->nodeTab[j])) {
+					readPeriod(getFirstChild(TaskPropertiesFromApplication->nodeTab[j],"period"),Task_info_ptr);
+					properties_found = true;
+				}
+				if(hasDeadline(TaskPropertiesFromApplication->nodeTab[j])) {
+					readDeadline(getFirstChild(TaskPropertiesFromApplication->nodeTab[j],"deadline"),Task_info_ptr);
+					properties_found = true;
+				}
 			}
 		}
 	}
