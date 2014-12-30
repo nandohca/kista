@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Example sample7.xml for XML front-end of the KisTA library -->
+
+<!--	-->
+<!--	of KTH/ICT/ES -->
+ <simulator_input_interface xmlns="http://www.multicube.eu/" version="1.4">
+ </simulator_input_interface>
+

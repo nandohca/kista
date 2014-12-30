@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Example of system metrics definition file for Multicube-compliant XML front-end of the KisTA library -->
+<!-- In this case, the design space file is used only to state only the required outputs -->
+
+<!--	Reproduces the gSimple3A model explored via the Analytical DSE tool  -->
+<!--	of KTH/ICT/ES -->
+<design_space xmlns="http://www.multicube.eu/" version="1.4">
+	
+	<!-- used by exploration tool if used -->
+	<simulator> 
+		<simulator_executable path="/path/my_simulator_executable/kista-xml" />
+	</simulator>
+	
+	<!-- used by exploration tool if used -->
+	<parameters>
+		<!-- Processing resources -->
+		<parameter name="PE_NODES" description ="" type="string" min="1" max="2"/>
+				
+			<!-- Mapping -->
+		<parameter name="par_name_1" description ="Description of par_name_1" type="integer" min="1" max="2"/>
+
+		<parameter name="par_name_2" description ="Description of par_name_2" type="string">
+			<item value="value1" />
+			<item value="value2" />
+		</parameter>
+
+	</parameters>
+	
+	<!-- used by performance estimation tool (KisTA in this case) to define the output metrics -->
+	
+	<!-- KisTA makes an extensive report if this design space file is not used...   -->
+	<!-- but be aware that then KisTA can rise some error if not all the input data -->
+	<!-- to calculate all the metrics that KisTA can calculate are provided         -->
+	<system_metrics> 
+	
+	    <!-- Example of feasible metric names in KisTA -->
+	    
+	  <!-- metrics related to the application, specifically ... -->
+	  <!-- application task related:... -->
+	  <!-- name="task/task_name/utilization"-->
+	  <!-- name="task/task_name/miss_deadline" -->
+	  <!-- and related to communication elements of the application:
+	  <system_metric name="comm_synch/fifo1/write_throughput" type="float" unit="bps" /> 
+	  <system_metric name="comm_synch/fifo1/write_stationary_throughput" type="float" unit="bps" />	  
+       -->
+      <!-- metrics related to the schedulers, their utilization and the utilization of
+           the underlying platform
+	  <system_metric name="rtos/sched1/sched_utilization" type="float" unit="" />
+  	  <system_metric name="rtos/sched2/plat_utilization" type="float" unit="" />
+  	   -->
+	  <!-- name="rtos/sched_name/plat_utilization"-->
+	  <!-- name="rtos/sched_name/number_of_schedulings"-->
+	  <!-- name="rtos/sched_name/starvation" -->
+	  <!-- name="rtos/sched_name/miss_deadlines"-->
+	  <!-- name="rtos/sched_name/sched_utilization"-->
+  	   
+  	  <!-- To Be Supported:
+  	  <system_metric name="PE1/mem usage" type="unsigned" unit="byte" />
+  	  <system_metric name="PE2/mem usage" type="unsigned" unit="byte" />
+     -->	  
+     <!-- Following, we report the same metrics as reported in the console in the brt1 
+          example which does not uses the xml front-end -->
+    <system_metric name="task/T1/utilization" type="float" unit="%" />   
+    <system_metric name="task/T2/utilization" type="float" unit="%" /> 
+    <!-- <system_metric name="task/" type="float" unit="%" />  TASKSET?? -->
+    
+    <system_metric name="rtos/sched1/number_of_schedulings" type="unsigned" unit="" /> 
+    <system_metric name="rtos/sched1/number_of_context_switches" type="unsigned" unit="" /> 
+    <system_metric name="rtos/sched1/sched_utilization" type="float" unit="" /> 
+    <system_metric name="rtos/sched1/plat_utilization" type="float" unit="" /> 
+    <system_metric name="rtos/sched1/tasks_utilization" type="float" unit="" />
+ 
+	</system_metrics>
+	
+	<!-- Section for the Exploration tool, with tools for constraining the exploration space -->
+	
+	<rules>
+
+		<!-- rules for T MAPs (TBD) --> 
+
+
+		<!-- A-DSE input: MAX_PE_NODES constraint -->
+		<!-- Rules on the number of processing elements, given the MAX_PE_NODES constraint -->
+		<rule name="Maximum and minimum Number of Nodes">
+		<and>
+			<less-equal>
+				<parameter name="PE_NODES"/>
+					<!-- 2, value comming from the A-DSE input-->
+				<parameter name="2"/>
+			</less-equal>
+			<greater-equal>
+				<parameter name="PE_NODES"/>
+				<parameter name="1"/>
+			</greater-equal>
+		</and>				
+		</rule>
+
+
+	</rules>
+	
+	
+</design_space>
