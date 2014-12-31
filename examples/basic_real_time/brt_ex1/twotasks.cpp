@@ -30,26 +30,31 @@
      
 #include "kista.hpp"
 
-#define _EXPERIMENT_1
+//#define _EXPERIMENT_1
 //#define _EXPERIMENT_2
-//#define _EXPERIMENT_3
+#define _EXPERIMENT_3
 
 
-// experiment 1: check that, by default kista policy is non-preemptive, and
-// that only completion of task means that the scheduler will be notified and
-// a further scheduling will be done.
-// In a fist mode of experiment 1 the user comment _FINITE_TASKS, so to model
-// infinite tasks and check what happen. The user will see that without yields
-// (commenting _USE_YIELDS one tasks takes the processor and the other is
-// starved. If the yields are used (define _USE_YIELDS), it does not solves
-// the problem yet, because the default policy of the scheduler is non-preemptive,
-// which ignores yields. To solve it, the Experiment2 defines as well the
-// cooperative scheduling policy (which triggers the scheduler when the task
-// completes or when it makes a yield)
+// experiment 1:
+// --------------------
+// check that, by default kista policy is non-preemptive.
+// Only completion of task involves a notification to the scheduler and
+// so a new scheduling.
+// Thue user can execute the experiment 1 in a first mode by commenting
+// _FINITE_TASKS. This way, infinite tasks are modeleded.
+// The user will see that without yields (commenting _USE_YIELDS) one tasks
+// takes the processor and the other is starved. 
+// If the yields are used (define _USE_YIELDS), it does not prevents
+// the starvation, because the default policy of the scheduler is non-preemptive,
+// which ignores yields. 
 //
-// If the user comments _FINITE_TASKS, then it will observe a clear starvation
-// because we have to infinite tasks, so the former taking the processors involves
-// the starvation of the other
+// To solve it, the Experiment2 defines the cooperative scheduling policy 
+// It involves tht the scheduling is launched every time the task
+// completes or makes a yield)
+//
+// If the user comments _FINITE_TASKS, we model again infinite tasks
+// and an starvation can be still observed.
+// The first task which takes the processors involves the starvation of the other.
 // When defining _FINITE_TASKS, the tasks specified are finite and the completion of
 // the first executing, provided that there is at least one consume statement in the task
 // (no mater if it is a consume of SC_ZERO_TIME), gives a chance to the other task to execute.
@@ -57,8 +62,8 @@
 // For the default non-preemptive policy, completion is the only efective event, and
 // yields will not involve scheduling.
 #ifdef _EXPERIMENT_1
-#define _FINITE_TASKS
-//#define _USE_YIELDS
+//#define _FINITE_TASKS
+#define _USE_YIELDS
 // Notice that if you comment _SET_COOPERATIVE variable, the scheduler will be non-preemptive
 // by default, and one of the tasks will get starved. 
 // However, YIELDS SHOULD NOT APPEAR in a Non-Preemptive configuration because they lock the execution
@@ -76,10 +81,11 @@
 // by default, and one of the tasks will get starved
 #endif
 
-// experiment 3: use time slicing and a preemptive/cooperative scheduler to make them cooperate without explicit grant
+// experiment 3: use time slicing and a preemptive/cooperative scheduler
+//	 to make them cooperate without explicit grant
 #ifdef _EXPERIMENT_3
 #define _SET_ROUND_ROBIN
-#define _COMPACT_STYLE
+//#define _COMPACT_STYLE
 #endif
 
 // two (non-periodical) tasks with different consumptions
