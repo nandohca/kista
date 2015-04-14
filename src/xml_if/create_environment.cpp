@@ -86,6 +86,7 @@ VOIDFPTR get_env_task_function(xmlDocPtr doc,xmlNodePtr currNode,xmlChar *env_ta
 		file_with_path_name = (const char *)env_task_fun_file;
 	} else {
 		file_with_path_name = (const char *)env_task_fun_path;
+		file_with_path_name += "/";
 		file_with_path_name += (const char *)env_task_fun_file;
 	}
 

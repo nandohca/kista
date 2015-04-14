@@ -79,9 +79,9 @@ VOIDFPTR get_function(xmlDocPtr doc,xmlNodePtr currNode, std::string mother_node
 		rpt_msg += file_with_path_name;
 		rpt_msg += ", containing function '";
 		rpt_msg += (const char *)fun_name;
-		rpt_msg += " for ";
+		rpt_msg += "' for ";
 		rpt_msg += mother_node_name;
-		rpt_msg += "' could not be opened.";
+		rpt_msg += " could not be opened.";
 		SC_REPORT_ERROR("KisTA-XML",rpt_msg.c_str());
     }
     
@@ -122,12 +122,16 @@ void create_global_system_init(xmlDocPtr doc)
 	} else {
 		GlobalInitNodeSet = XPathObjectPtr->nodesetval;
 		if (GlobalInitNodeSet->nodeNr > 1) {
-			SC_REPORT_ERROR("KisTA-XML","More than one global init node has been specified for the system. You should specify only one.");
-		} else {
+			rpt_msg = to_string(GlobalInitNodeSet->nodeNr);
+			rpt_msg += " global initialization nodes have been found. We recomment there is one per application.";
+			SC_REPORT_WARNING("KisTA-XML", rpt_msg.c_str());
+		}
+		// call the global init functionalities
+		for(int i=0; i<GlobalInitNodeSet->nodeNr; i++) {
 			// Get the global init functionality (via task pointer)
-			GlobalInit_fun_p = get_function(doc,GlobalInitNodeSet->nodeTab[0],"system global init");
+			GlobalInit_fun_p = get_function(doc,GlobalInitNodeSet->nodeTab[i],"application global init");
 			
-			// call the global init functionality
+			// call the current global init functionality
 			GlobalInit_fun_p();
 		}
 	}
