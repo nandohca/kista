@@ -68,6 +68,7 @@ VOIDFPTR get_function(xmlDocPtr doc,xmlNodePtr currNode, std::string mother_node
 		file_with_path_name = (const char *)fun_file;
 	} else {
 		file_with_path_name = (const char *)fun_path;
+		file_with_path_name += "/";
 		file_with_path_name += (const char *)fun_file;
 	}
 
