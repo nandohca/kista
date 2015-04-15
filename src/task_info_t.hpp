@@ -36,6 +36,7 @@ class registered_event;
 class scheduler;
 
 class task_info_t : public sc_module  {
+	friend class application;
 	friend class scheduler;
 	friend void consume(sc_time comp_time);
 	friend void consume_WCET();
@@ -51,12 +52,21 @@ class task_info_t : public sc_module  {
 public:
 
 	// constructor
-//	task_info_t(const char* name, VOIDFPTR f);
-//	task_info_t(std::string name, VOIDFPTR f);
+	//   to declare a task which is assigned to the default application
 	task_info_t(sc_module_name name, VOIDFPTR f, task_role_t role_par=SYSTEM_TASK); // by default, is a system task
+	// when this constructor is called, the task is implicitly associated to a default application ("deffapp")
+	// this default application is implicitly created the very first time a task is created with this constructor
+	
+	// constructor stating the application it belongs to (an application must exist and be created before
+	// This constructor assumes that there is at least one application declared
+	// Then, it does not allows to use the default application (for clarity in 
+	// the description methodology)	
+	task_info_t(sc_module_name name, VOIDFPTR f, std::string app_name, task_role_t role_par=SYSTEM_TASK); // by default, is a system task
 	
 	void 				set_task_process_handler(sc_process_handle phandler); // to store the process handler
 	sc_process_handle	&get_task_process_handler(); 	  // to get the process handler
+
+	application_t*		get_application(); // returns the associated application
 
 	void                set_scheduler(scheduler *scheduler_p); 
 	scheduler		    *get_scheduler();	
@@ -126,7 +136,10 @@ public:
 	unsigned int				kista_id; // assign an unsigned id to the task
 	
 private:
-
+	// auxiliary method for initializaiton after stablishing task-app link in the constructors
+	void init(sc_module_name name, VOIDFPTR f, task_role_t role_par=SYSTEM_TASK); // by default, is a system task
+	
+	application_t* app_p;
 	VOIDFPTR task_functionality;
 	task_role_t role;
 	

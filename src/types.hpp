@@ -26,6 +26,7 @@ namespace kista {
 // forward declarations
 // -------------------------
 class sketch_report_t;
+class application_t;
 class task_info_t;
 typedef task_info_t* logic_address;  		// let define task links
 template<class address_type> class link_t;
@@ -58,7 +59,10 @@ struct const_char_cmp {
 // declaration of task function interface
 typedef void (*VOIDFPTR)();
 
-// Types for system tasks (the ones to be mapped to the platfomr)
+// Types for system applications
+typedef std::map<std::string, application_t*>		applications_by_name_t;
+
+// Types for system tasks (the basic functional unit mapped to the platfom)
 typedef std::vector<task_info_t*> 					taskset_t;
 typedef std::map<sc_process_handle, task_info_t*>	tasks_info_by_phandle_t;
 typedef std::map<std::string, task_info_t*>			tasks_info_by_name_t;
@@ -173,13 +177,18 @@ enum comm_synch_role_t	{ SYSTEM_COMMSYNCH = 0,
 enum io_comm_synch_sense_t	{ INPUT = 0, 
                           OUTPUT = 1,
                           INPUT_AND_OUTPUT = 2,
-                          UNSET = 3
+                          UNSET_IO_SENSE = 3
 };
 
 enum task_role_t	{ SYSTEM_TASK = 0, 
                       ENV_TASK = 1
                       };
 
+enum app_visibility_t	{ UNSET_APP_VISIBILITY = 0, 
+						  SET_IMPLICIT_APPS = 1,
+                          SET_EXPLICIT_APPS = 2
+                      };
+                      
 // METRIC DEFINITIONS
 
 struct system_metric_definition_t {

@@ -504,12 +504,12 @@ VOIDFPTR get_node_function(xmlDocPtr doc,xmlNodePtr currNode,
 			SC_REPORT_INFO("KisTA-XML",rpt_msg.c_str());
 		}
 #endif
-		file_with_path_name = (const char *)fun_file;
+		file_with_path_name = ".";
 	} else {
 		file_with_path_name = (const char *)fun_path;
-		file_with_path_name += "/";
-		file_with_path_name += (const char *)fun_file;
 	}
+	file_with_path_name += "/";
+	file_with_path_name += (const char *)fun_file;
 
 	handle = dlopen(file_with_path_name.c_str(), RTLD_LAZY);
 
@@ -569,6 +569,61 @@ unsigned int getNumberOfTasks(xmlDocPtr doc) {
 	return setTasknodes->nodeNr;
 }
 
+// get all Tasks from the application
+xmlNodeSetPtr getApplications(xmlDocPtr doc) {
+	xmlNodeSetPtr nodeset;
+	xmlXPathObjectPtr  XPathObjectPtr;
+	XPathObjectPtr = getNodeSet(doc,(xmlChar *)"/system/application");
+	if(XPathObjectPtr==NULL) {
+		SC_REPORT_ERROR("KisTA-XML","Application creation failed. No Application was read in the XML input.");
+	}
+	nodeset = XPathObjectPtr->nodesetval;
+	return nodeset;
+}
+
+unsigned int getNumberOfApplications(xmlDocPtr doc) {
+	xmlNodeSetPtr setTasknodes;
+	setTasknodes=getApplications(doc);
+	return setTasknodes->nodeNr;
+}
+
+xmlChar* getOwnerAppName(xmlDocPtr doc,xmlNodePtr task_node) {
+	xmlChar *name;
+	xmlNodePtr app_node;
+	app_node = task_node->parent;
+	if(app_node==NULL) {
+		SC_REPORT_ERROR("KisTA-XML","Unexpected error while retrieving owner application name for a task");
+	}
+	name = xmlGetValueGen(app_node,(xmlChar *)"name");
+	if(name==NULL) {
+		SC_REPORT_ERROR("KisTA-XML","while retrieving owner application name for a task.Application parent node found, but no name could be retrieved.");
+	}
+	return name;
+}
+
+/*
+ // following two functions not-debugged
+xmlNodeSetPtr getTasksFromApp(xmlDocPtr doc,std::string AppName) {
+	std::string msg;
+	xmlNodeSetPtr nodeset;
+	xmlXPathObjectPtr  XPathObjectPtr;
+	XPathObjectPtr = getNodeSet(doc,(xmlChar *)("/system/application[name="+AppName+"]/task"));
+	if(XPathObjectPtr==NULL) {
+		msg = "Application creation failed, while retrieving task from application ";
+		msg += AppName;
+		SC_REPORT_ERROR("KisTA-XML",msg.c_str());
+	}
+	nodeset = XPathObjectPtr->nodesetval;
+	return nodeset;
+}
+
+unsigned int getNumberOfTasksOfApp(xmlDocPtr doc, std::string AppName) {
+	xmlNodeSetPtr setTasknodes;
+	setTasknodes=getTasksFromApp(doc);
+	return setTasknodes->nodeNr;
+}
+*/
+
 // get all Coomm&&Synchronization nodes from the application
 xmlNodeSetPtr getCommSynchNodes(xmlDocPtr doc) {
 	xmlNodeSetPtr nodeset;
@@ -605,8 +660,60 @@ bool supported_communication_data_type(const char *DataType) {
 	else return true;	
 }
 
+// obtains the number of /application/ entries in the xml description
+// In case one application it only create tasks, which are associated to the default task.
+// If there are several applications, they are created and their tasks are created 
+unsigned int create_applications(xmlDocPtr doc) {
+		xmlNodeSetPtr setAppnodes;
+		xmlChar *AppName;
+		std::string rpt_msg;
+		application_t *app_ptr;
+		unsigned int number_of_applications;
+
+		number_of_applications = getNumberOfApplications(doc);
+
+		if(number_of_applications==0) {
+			SC_REPORT_ERROR("KisTA-XML","No applications captured");
+		} else if(number_of_applications==1) {
+			SC_REPORT_WARNING("KisTA-XML","One application description detected.");
+			//
+			// create application by only instancing tasks (under the default application)
+			//
+			// no KisTA explicit application instances (of application_t type) are created
+		} else if(number_of_applications>1) {
+			SC_REPORT_WARNING("KisTA-XML","A Several applications description detected.");
+			//
+			// create application by only instancing tasks (under the default application)
+			// (the number of io channels created is the addition of io channels used by each app)
+			//
+
+	
+			setAppnodes = getApplications(doc);
+			// setTasknodes should not be NULL here because we have already checked that there were nodes in the tree
+	
+			for(unsigned int j=0; j< getNumberOfApplications(doc) ; j++) {
+	   
+				AppName = xmlGetValueGen(setAppnodes->nodeTab[j],(xmlChar *)"name");
+
+				if(AppName==NULL) {
+					rpt_msg = "While parsing the System Description file and creating Application instance.";
+					rpt_msg += "No name found for an Application. This is currently an error in KisTA, which obligues each explicit application to have an identifier.";
+					SC_REPORT_ERROR("KisTA-XML",rpt_msg.c_str());
+				} else {
+					if(global_kista_xml_verbosity) {
+						printf("kista-XML INFO: Creating Application instance %s.\n",AppName);
+					}
+					app_ptr = new application_t((const char *)AppName); // this, automatically registers the application in the global
+					                                      // application register of Kista, "applications_by_name"
+				}
+			}
+		}
+		
+		return number_of_applications;
+}
+
 // return the number of IO channels created
-unsigned int create_application(xmlDocPtr doc, std::vector<task_info_t*> &task_vec,
+unsigned int create_tasks(xmlDocPtr doc, std::vector<task_info_t*> &task_vec,
 												fifo_buffer_int_set_t  &fb_int_map,
 												fifo_buffer_uint_set_t  &fb_uint_map,
 												fifo_buffer_short_set_t  &fb_short_map,
@@ -616,11 +723,15 @@ unsigned int create_application(xmlDocPtr doc, std::vector<task_info_t*> &task_v
 												fifo_buffer_char_set_t  &fb_char_map,
 												fifo_buffer_voidp_set_t  &fb_voidp_map,
 												fifo_buffer_message_set_t  &fb_msg_map,
-												bool create_env_flag_par
+												bool create_env_flag_par,
+												unsigned int n_applications // created tasks have to be linked to
+												                            // their corresponding application instances
+												                            // if they were created (when n_applications>1)
 	) {
 	unsigned int j;
 	xmlNodeSetPtr setTasknodes;
 	xmlChar *TaskName;
+	const xmlChar *OwnerAppName;
 	
 	xmlNodeSetPtr setCommSynchNodes;
 	xmlChar *CommSynchName;
@@ -680,18 +791,36 @@ unsigned int create_application(xmlDocPtr doc, std::vector<task_info_t*> &task_v
 			rpt_msg += "No name found for a task. This is currently an error in KisTA, which obligues each task to have an identifier.";
 			SC_REPORT_ERROR("KisTA-XML",rpt_msg.c_str());
 		} else {
-			if(global_kista_xml_verbosity) {
-				printf("kista-XML INFO: Creating Task instance %s.\n",TaskName);
+			
+			// retrieve Owner app name in case it needs to be used in task info constructor
+            // (when applications are explicity instanced, i.e. when n_applications>1)
+            if(n_applications>1) {
+				OwnerAppName = getOwnerAppName(doc,setTasknodes->nodeTab[j]);
 			}
 			
+			if(global_kista_xml_verbosity) {
+				rpt_msg = "Creating Task instance ";
+				rpt_msg += (const char *)TaskName;
+				if(n_applications>1) {
+					rpt_msg += ", associated to application ";
+					rpt_msg += (const char *)OwnerAppName;
+				}
+				rpt_msg += ".";
+				SC_REPORT_INFO("KisTA-XML",rpt_msg.c_str());
+			}
+
 			// get task function
 			task_fun_p = get_node_function(doc,setTasknodes->nodeTab[j],
 			                                "Task",
 			                                TaskName,
 			                                "function");
-                           		
+                                       		
 			if(task_fun_p!=NULL) {
-				Task_info_ptr = new task_info_t((const char *)TaskName,task_fun_p); // The default funtionality is used by default
+				if(n_applications>1) {
+					Task_info_ptr = new task_info_t((const char *)TaskName,task_fun_p,(const char*)OwnerAppName); // The default funtionality is used by default
+				} else {
+					Task_info_ptr = new task_info_t((const char *)TaskName,task_fun_p); // The default funtionality is used by default
+				}
 			} else {
 				// if not read or provided, then a (void) default_collaborative functionality is used
 //	   	   Task_info_ptr = new task_info_t((const char *)TaskName,NULL); // for the moment without the function pointer (or a default function)
@@ -703,10 +832,13 @@ unsigned int create_application(xmlDocPtr doc, std::vector<task_info_t*> &task_v
 					SC_REPORT_INFO("KisTA-XML",rpt_msg.c_str());
 				}
 #endif
-				Task_info_ptr = new task_info_t((const char *)TaskName,default_collaborative_functionality); // The default funtionality is used by default
+				if(n_applications>1) {
+					Task_info_ptr = new task_info_t((const char *)TaskName,default_collaborative_functionality,(const char*)OwnerAppName); // The default funtionality is used by default
+				} else {
+					Task_info_ptr = new task_info_t((const char *)TaskName,default_collaborative_functionality); // The default funtionality is used by default
+				}
 			}
 	   	   // TO DO;
-	   	   //    - Support of link to user functionalities
 	   	   //    - Default funtionalities for aperiodic collaborative tasks, and for periodic tasks, if possible automating
 	   	   //      the selection by detecting the schedulers and the assignations of tasks to them
 	   	   //    - Read of more properties
@@ -1190,5 +1322,6 @@ unsigned int create_application(xmlDocPtr doc, std::vector<task_info_t*> &task_v
 	
 	return n_io_channels;
 }
+
 
 #endif

@@ -22,6 +22,7 @@
 
 using namespace std;
 
+#include "application_t.hpp"
 #include "task_info_t.hpp"
 #include "scheduler.hpp"
 #include "processing_element.hpp"
@@ -45,8 +46,115 @@ namespace kista {
 		task_info_t(sc_module_name(name.c_str()), f);
 	}	
 */
+
+	//   to declare a task which is assigned to the default application
+
 	task_info_t::task_info_t(sc_module_name name, VOIDFPTR f, task_role_t role_par)
-													: sc_module(name) {
+													: sc_module(name)
+	{
+		std::string rpt_msg;
+		if(role_par==SYSTEM_TASK) {	// stating the application visibility only refer to system tasks		
+			switch(app_visibility) { // app_modelling_type in global_elements
+				case UNSET_APP_VISIBILITY:
+					app_visibility = SET_IMPLICIT_APPS;
+					break;
+				case SET_IMPLICIT_APPS:
+				    // go on normaly
+					break;					
+				case SET_EXPLICIT_APPS:
+				default:
+					// previous task declarations used multiple apps style so an error condition is raised
+					rpt_msg = "While creating task ";
+					rpt_msg += this->name();
+					rpt_msg += ". At least one task has been declared and associated to an explicitly declared application, while ";
+					rpt_msg += this->name();
+					rpt_msg += " task is associated to the implicit application (no association an explicit application).\n";
+					rpt_msg += "You should either construct a model where all the tasks are associated to the implicit application or a model where every task is associated to a previously declared application\n";
+					SC_REPORT_ERROR("KisTA", rpt_msg.c_str());									
+			}
+		}	
+		// the pointer to the associated application is null, 
+		// which is coherent with the global parameter  app_modelling_type=IMPLICIT_APP,
+		// meaning that all the system tasks declared belong to the same application
+		this->app_p = NULL;
+		
+		// initialize the remaining task info
+		init(name,f,role_par);
+	}
+
+
+	// constructor stating the application it belongs to (an application must exist and be created before
+	
+	// This constructor assumes that there is at least one application declared
+	// Then, it does not allows to use the default application (for clarity in 
+	// the description methodology)
+
+
+	task_info_t::task_info_t(sc_module_name name, VOIDFPTR f, std::string app_name, task_role_t role_par)
+													: sc_module(name)
+	{
+		std::string rpt_msg;
+		if(role_par==SYSTEM_TASK) {	// stating the application visibility only refer to system tasks		
+			switch(app_visibility) { // app_modelling_type in global_elements
+				case UNSET_APP_VISIBILITY:
+					app_visibility = SET_EXPLICIT_APPS;
+					break;
+				case SET_IMPLICIT_APPS:
+					// previous task declarations used multiple apps style so an error condition is raised
+					rpt_msg = "While creating task ";
+					rpt_msg += this->name();
+					rpt_msg += ". At least a task was previously declared and associated to the implicit application (i.e. no associated to any app), while ";
+					rpt_msg += this->name();
+					rpt_msg += " task is explicitly associated to the application ";
+					rpt_msg += app_name;
+					rpt_msg += ".\n";
+					rpt_msg += "You should either construct a model where all the tasks are associated to the implicit application or a model where every task is associated to a previously declared application\n";
+					SC_REPORT_ERROR("KisTA", rpt_msg.c_str());									
+					break;				
+				case SET_EXPLICIT_APPS:
+				default:
+					break;
+					// go on normaly
+			}
+		}
+		
+		// generate the default application in case it does not exist
+		if(applications_by_name.size()==0) {
+			rpt_msg = "While creating task ";
+			rpt_msg += this->name();
+			rpt_msg += ". The aplication list is empty. You should declare an application before declaring a task associated to it.";
+			SC_REPORT_ERROR("KisTA", rpt_msg.c_str());
+		} else {
+			applications_by_name_t::iterator it = applications_by_name.find(app_name);
+
+			if (it!=applications_by_name.end()) {
+				// There is only one application declared and it is the default application
+				// (we assume that a model with the default application is being constructed
+				this->app_p = it->second;
+				  // This updates the task_info_t structure, and links it to the corresponding application
+			} else {
+				rpt_msg = "While creating task ";
+				rpt_msg += this->name();
+				rpt_msg += ". Application";
+				rpt_msg += app_name;
+				rpt_msg += " not found in the application list. Please, ensure that the application is declared before the task declaration.";
+				SC_REPORT_ERROR("KisTA", rpt_msg.c_str());				
+			}			
+			
+			// Following, the application object is updated, adding to it this newly created task (by name)
+			// and making effective a double link
+			// here, this->app_p should be pointing to the application_t object of the app_name application		
+			this->app_p->tasks_by_name[this->name()]=this;
+											
+			// initialize the remaining task info
+			init(name,f,role_par);
+		}
+	}
+
+
+	void task_info_t::init(sc_module_name name, VOIDFPTR f, task_role_t role_par) {	
+		// refuster t
+														
 		task_functionality = f;
 				// task_info_t elements are created as System tasks by default
 		role = role_par;
@@ -94,7 +202,10 @@ namespace kista {
 		}
 	}
 
-
+	application_t* task_info_t::get_application() {
+		return app_p;
+	}
+	
 	VOIDFPTR &task_info_t::get_functionality() {
 		return task_functionality;
 	}

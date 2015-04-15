@@ -28,6 +28,17 @@ sc_time global_sim_time(DEFAULT_SIM_TIME_NS,SC_NS);
 
 sketch_report_t sketch_report;
 
+ // by default, the modeller can build a model where all the system
+ // tasks belong to single application
+ // KisTA supports models where the system tasks can be clustered into
+ // several applications (then the use_implicit_application flag becomes
+ // false). It requires to explicitly declare applications first and
+ // to declare the tasks passing the application they are associated to
+ // (both styles cannot be merged, either one or another is used)
+app_visibility_t app_visibility = UNSET_APP_VISIBILITY;
+// applications_by_name holds the list of explicit applications declared
+applications_by_name_t	applications_by_name;
+
 taskset_t tasks;
 // This is a global hash table for fast access to task info from
 // the process handler, and by name:

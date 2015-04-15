@@ -83,12 +83,12 @@ VOIDFPTR get_env_task_function(xmlDocPtr doc,xmlNodePtr currNode,xmlChar *env_ta
 			rpt_msg += " function was provided. The file will be searched in the current directory.";
 			SC_REPORT_WARNING("KisTA-XML",rpt_msg.c_str());
 		}
-		file_with_path_name = (const char *)env_task_fun_file;
+		file_with_path_name = ".";
 	} else {
 		file_with_path_name = (const char *)env_task_fun_path;
-		file_with_path_name += "/";
-		file_with_path_name += (const char *)env_task_fun_file;
 	}
+	file_with_path_name += "/";
+	file_with_path_name += (const char *)env_task_fun_file;
 
 	handle = dlopen(file_with_path_name.c_str(), RTLD_LAZY);
 

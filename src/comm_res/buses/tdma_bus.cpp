@@ -391,16 +391,16 @@ void tdma_bus::allocate_channels(phy_address src, unsigned int required_channels
 		rpt_msg+= src->name();
 		SC_REPORT_ERROR("KisTA: TDMA bus",rpt_msg.c_str());
 	}
-cout << "ANTES DE FIRST SLOT:" << first_slot << endl;
+
 	// assign free slots and retrieve automatically first slot
 	first_slot = assign_free_slots(required_channels);
-cout << "DESPUES DE FIRST SLOT:" << first_slot << endl;		
+
 	// associates the assigned channels to the PE in the channel allocation table
 	channel_allocation_table[src] = required_channels;
 
 	// associates the first slot allocated to the PE in the first_slot allocation_table
 	first_slot_allocation_table[src] = first_slot;
-cout << " Y MAS DESPUES DE FIRST SLOT:" << src->name() << " " << first_slot_allocation_table[src] << endl;				
+
 	// update the account of channels assigned
 	n_allocated_channels += required_channels;
 

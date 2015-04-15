@@ -12,6 +12,7 @@
 
 #include "draw.hpp"
 #include "taskset_by_name_t.hpp"
+#include "application_t.hpp"
 #include "scheduler.hpp"
 #include "processing_element.hpp"
 #include "comm_res/buses/tdma_bus.hpp"
@@ -142,11 +143,11 @@ void sketch_report_t::write_header() {
 	   }
 
 	   if(system_box) {
-			*sketch_file << "draw environment box, ";	
+			*sketch_file << "draw system box, ";	
 	   }  	
 	 
 	   if(application_box) {
-			*sketch_file << "draw system box, ";
+			*sketch_file << "draw application box(es), ";
 	   }  
 	   
 	   if(platform_box) {
@@ -309,11 +310,13 @@ void sketch_report_t::actual_draw() {
 	std::string rpt_msg;
 	std::string task_id_name, task_prev_id_name,
 				env_task_id_name, env_task_prev_id_name;
+	std::string	last_task_id_name;
 	std::string sched_id_name, sched_prev_id_name;
 	std::string pe_id_name, pe_prev_id_name;
 	std::string commres_id_name, commres_prev_id_name;
 	
 	// to iterate assigned taskets
+	applications_by_name_t::iterator app_it;
 	taskset_by_name_t::iterator taskset_it; // iterator for taskset
 	taskset_by_name_t *current_tasks_assigned;
 	
@@ -324,6 +327,8 @@ void sketch_report_t::actual_draw() {
 	//PEset_t::iterator PEset_it; // iterator for PEset 
 	//PEset_t *current_PEs_assigned;
 	processing_element *current_PEs_assigned; // for the moment, a single PE assigned
+	
+	std::string last_app_name;
 	
 	// draw tasks
 	// ---------------------------------
@@ -385,7 +390,7 @@ void sketch_report_t::actual_draw() {
 	}
 	
 	// draw system tasks
-	// ---------------------------------
+	// ----------------------------------------------------------------------
 	if(task_info_by_name.size()>0) {	
 		task_it = task_info_by_name.begin();
 		task_id_name = task_it->first;
@@ -420,7 +425,9 @@ void sketch_report_t::actual_draw() {
 			task_it++;
 			i++;
 		}
-			
+		
+		last_task_id_name = task_id_name; // to be used later with application boxes
+		
 		task_id_name = task_info_by_name.begin()->first; // reference for lower layer
 
 	} else {
@@ -641,6 +648,7 @@ void sketch_report_t::actual_draw() {
 		*sketch_file << "\\node [right=of env_box] {$Environment$};" << endl;
 	}
 	
+	// either a system box or application(s) and platform boxes are drawn
 	if(system_box) {
 		*sketch_file << "\\begin{scope}[on background layer]" << endl;
 		*sketch_file << "\\node[sys_box_st,fit = ";
@@ -678,16 +686,52 @@ void sketch_report_t::actual_draw() {
 		*sketch_file << "\\node [right=of sys_box] {$System$};" << endl;
 	} else {
 		if(application_box) {
-			*sketch_file << "\\begin{scope}[on background layer]" << endl;
-			*sketch_file << "\\node[app_box_st,fit = ";
-			for(task_it=task_info_by_name.begin(); task_it != task_info_by_name.end(); task_it++) {
-				*sketch_file << "(";
-				*sketch_file << task_it->first;
-				*sketch_file << ")";
+			switch(app_visibility) {
+				case UNSET_APP_VISIBILITY:
+					SC_REPORT_WARNING("KisTA","Application visibility unset. This is an unexpected situation while drawing application boxes. They will not be drawn. Please, contact the authors.");
+					break;
+				case SET_IMPLICIT_APPS:
+					// draw for a single application (default application)
+					// A single box (default application) without label wraps all the tasks
+					*sketch_file << "\\begin{scope}[on background layer]" << endl;
+					*sketch_file << "\\node[app_box_st,fit = ";
+					for(task_it=task_info_by_name.begin(); task_it != task_info_by_name.end(); task_it++) {
+						*sketch_file << "(";
+						*sketch_file << task_it->first;
+						*sketch_file << ")";
+					}
+					*sketch_file << "] (app_box) {};" << endl;
+					*sketch_file << "\\end{scope}" << endl;
+					*sketch_file << "\\node [right=of app_box] {$Application$};" << endl;
+					break;
+				case SET_EXPLICIT_APPS:
+					// draw for a multiple applications
+					// A box per application wraps its tasks. Each application box has a corresponding label
+					*sketch_file << "\\begin{scope}[on background layer]" << endl;
+					app_it=applications_by_name.begin();
+					while(app_it!=applications_by_name.end()) {
+						*sketch_file << "\\node[app_box_st,fit = ";
+						task_it = app_it->second->tasks_by_name.begin(); // now task_it points to the first element in the application task list
+						while(task_it!=app_it->second->tasks_by_name.end()) {
+							*sketch_file << "(";
+							*sketch_file << task_it->first;
+							  // now check if this app is the one which contains the last task node (in the right part of the draw)
+							if(task_it->first == last_task_id_name) { // string comparison
+								last_app_name=app_it->first;
+							}
+							*sketch_file << ")";
+							task_it++;
+						}
+						*sketch_file << ",label=\\color{red}" << app_it->first; // prints the app name as box label in red
+						*sketch_file << "] (" << app_it->first << "_app_box) {};" << endl;
+						app_it++;
+					}
+					*sketch_file << "\\end{scope}" << endl;
+					*sketch_file << "\\node [right=of " << last_app_name << "_app_box] {$Applications$};" << endl;
+					break;				
+				default:
+					SC_REPORT_WARNING("KisTA","Unexpected situation while drawing application boxes. They will not be drawn. Please, contact the authors.");
 			}
-			*sketch_file << "] (app_box) {};" << endl;
-			*sketch_file << "\\end{scope}" << endl;
-			*sketch_file << "\\node [right=of app_box] {$Application$};" << endl;			
 		}
 		
 		if(platform_box) {

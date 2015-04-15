@@ -246,7 +246,7 @@ fifo_buffer<T>::fifo_buffer( int _size) :
 	write_th_mon = NULL;
     read_th_mon = NULL;
     role = SYSTEM_COMMSYNCH;
-    io_sense = UNSET;
+    io_sense = UNSET_IO_SENSE;
     //
     completed_transactions = new sc_semaphore(sc_gen_unique_name("fifo_buffer_transac_sem"),0); 
     //
@@ -263,7 +263,7 @@ fifo_buffer<T>::fifo_buffer( const char* _name, int _size) :
 	write_th_mon = NULL;
 	read_th_mon = NULL;
     role = SYSTEM_COMMSYNCH;
-    io_sense = UNSET;    
+    io_sense = UNSET_IO_SENSE;    
     //
     completed_transactions = new sc_semaphore(sc_gen_unique_name("fifo_buffer_transac_sem"),0);  
     //
@@ -280,7 +280,7 @@ fifo_buffer<T>::fifo_buffer( const char* _name) :
 	write_th_mon = NULL;
 	read_th_mon = NULL;
 	role = SYSTEM_COMMSYNCH;
-    io_sense = UNSET;	
+    io_sense = UNSET_IO_SENSE;	
     //
     completed_transactions = new sc_semaphore(sc_gen_unique_name("fifo_buffer_transac_sem"),0);  	
     //
@@ -297,7 +297,7 @@ fifo_buffer<T>::fifo_buffer( const char* _name, int _size, task_info_t* src_par,
 	write_th_mon = NULL;
 	read_th_mon = NULL;
     role = SYSTEM_COMMSYNCH;
-    io_sense = UNSET;    
+    io_sense = UNSET_IO_SENSE;    
     //
     completed_transactions = new sc_semaphore(sc_gen_unique_name("fifo_buffer_transac_sem"),0);  
     //
@@ -314,7 +314,7 @@ fifo_buffer<T>::fifo_buffer( const char* _name, int _size, const char *src_name_
 	write_th_mon = NULL;
 	read_th_mon = NULL;	
     role = SYSTEM_COMMSYNCH;
-    io_sense = UNSET;    
+    io_sense = UNSET_IO_SENSE;    
     //
     completed_transactions = new sc_semaphore(sc_gen_unique_name("fifo_buffer_transac_sem"),0);  
     //
@@ -1116,7 +1116,7 @@ cout << endl;
 		rpt_msg += this->dest->name();
 		rpt_msg += ") both belong to the system. However, the channel has been stated as I/O."; 
 		SC_REPORT_ERROR("KisTA",rpt_msg.c_str());
-		return UNSET;
+		return UNSET_IO_SENSE;
 	} else if ((!src_in_system) && (!dest_in_system)) {
 		rpt_msg = "Channel ";
 		rpt_msg += this->name();
@@ -1126,9 +1126,9 @@ cout << endl;
 		rpt_msg += this->dest->name();
 		rpt_msg += ") both belong to the environment. However, the channel has been stated as I/O."; 
 		SC_REPORT_ERROR("KisTA",rpt_msg.c_str());	
-		return UNSET;		
+		return UNSET_IO_SENSE;		
 	} else {
-		return UNSET;
+		return UNSET_IO_SENSE;
 	}
 }
 

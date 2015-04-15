@@ -46,6 +46,7 @@
 #include "global_elements.hpp"
 #include "kista_version.hpp"
 #include "processing_element.hpp"
+#include "application_t.hpp"
 #include "task_info_t.hpp"
 #include "link_t.hpp"
 #include "link_info_t.hpp"

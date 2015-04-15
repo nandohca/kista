@@ -131,7 +131,7 @@ public:
 	void set_dynamic_priorities_policy(dynamic_priorities_policy_t dpp = EARLIEST_DEADLINE_FIRST); // EARLIES_DEADLINE_FIRST (default), USER
 	void set_earliest_deadline_first();      // == set_dynamic_priority_policy(EARLIEST_DEADLINE_FIRST)
 
-	void set_Round_Robin(); // set the scheduler as preemptive, with CYCLE_EXECUTIVE scheduler policy and enables time slicing
+	void set_Round_Robin(); // set the scheduler as preemptive, with CYCLE_EXECUTIVE scheduler policy, preemptive and enables time slicing
 
 	// TO GET SCHEDULER CONFIGURATION
 	// --------------------------------------------

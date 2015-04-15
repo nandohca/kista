@@ -192,8 +192,8 @@ int sc_main(int argc, char **argv) {
 //cout << smd_path_name << endl;
 //cout << "*************************************" << endl;	
 	
-	// Create platform variables
-//	taskset_by_name_t						Application;
+	// Create persistent variables for the system description
+	vector<application_t*>		apps;
 	vector<task_info_t*>		app_task;
 	vector<processing_element*>	PE;
 	vector<scheduler*> 			RTOS;
@@ -206,6 +206,7 @@ int sc_main(int argc, char **argv) {
     
 	bool create_env_flag; // loaded to true when env_tasks.size()>0
 	unsigned int number_of_io_channels;
+	unsigned int n_applications;
 
 	// The XML front-end will create as many KisTA task sets as RTOS instances
 	// It does it by creating a map of tasksets pointers, where the key 
@@ -308,14 +309,22 @@ int sc_main(int argc, char **argv) {
 		}
 #endif
 		
-		// create application (return the number of io channels created
-		number_of_io_channels = create_application(doc,app_task,
-													fifo_buffer_int, fifo_buffer_uint,
-													fifo_buffer_short,fifo_buffer_ushort,
-													fifo_buffer_float, fifo_buffer_double,
-													fifo_buffer_char, fifo_buffer_voidp,
-													fifo_buffer_msg,
-													create_env_flag);
+		// create explicit instances of applicaitons (if there are several)
+		n_applications=create_applications(doc);
+		
+		//
+		// create tasks instances (if n_applications>1, since explicit application
+		//   instances are declared, the created tasks are linked to them)
+		//
+		number_of_io_channels = create_tasks(doc,
+												app_task,
+												fifo_buffer_int, fifo_buffer_uint,
+												fifo_buffer_short,fifo_buffer_ushort,
+												fifo_buffer_float, fifo_buffer_double,
+												fifo_buffer_char, fifo_buffer_voidp,
+												fifo_buffer_msg,
+												create_env_flag,
+												n_applications);
 
 #ifdef _VERBOSE_KISTA_XML		
 		if(global_kista_xml_verbosity) {

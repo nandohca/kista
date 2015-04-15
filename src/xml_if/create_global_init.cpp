@@ -22,7 +22,7 @@
 //
 //		get global init function pointer from a dynamic library 
 //
-VOIDFPTR get_function(xmlDocPtr doc,xmlNodePtr currNode, std::string mother_node_name) {
+VOIDFPTR get_function(xmlDocPtr doc,xmlNodePtr currNode, std::string function_purpose) {
 	std::string rpt_msg;
 	const char *dlsym_error;
 	
@@ -38,7 +38,7 @@ VOIDFPTR get_function(xmlDocPtr doc,xmlNodePtr currNode, std::string mother_node
 
 	if(fun_name==NULL) {
 		rpt_msg = "Functionality for";
-		rpt_msg += mother_node_name;
+		rpt_msg += function_purpose;
 		rpt_msg += " not provided. Please, use the \"function\" attribute for it.";
 		SC_REPORT_ERROR("KisTA-XML",rpt_msg.c_str());
 	}
@@ -49,7 +49,7 @@ VOIDFPTR get_function(xmlDocPtr doc,xmlNodePtr currNode, std::string mother_node
 		rpt_msg = "No object file containing function ";
 		rpt_msg += (const char *)fun_name;
 		rpt_msg += " for ";
-		rpt_msg += mother_node_name;
+		rpt_msg += function_purpose;
 		rpt_msg += " was provided.";
 		SC_REPORT_ERROR("KisTA-XML",rpt_msg.c_str());
 	}
@@ -61,16 +61,16 @@ VOIDFPTR get_function(xmlDocPtr doc,xmlNodePtr currNode, std::string mother_node
 			rpt_msg = "No path for the object file containing function ";
 			rpt_msg += (const char *)fun_name;
 			rpt_msg += " for ";
-			rpt_msg += mother_node_name;
+			rpt_msg += function_purpose;
 			rpt_msg += " was provided. The file will be searched in the current directory.";
 			SC_REPORT_WARNING("KisTA-XML",rpt_msg.c_str());
 		}
-		file_with_path_name = (const char *)fun_file;
+		file_with_path_name = ".";
 	} else {
 		file_with_path_name = (const char *)fun_path;
-		file_with_path_name += "/";
-		file_with_path_name += (const char *)fun_file;
 	}
+	file_with_path_name += "/";
+	file_with_path_name += (const char *)fun_file;
 
 	handle = dlopen(file_with_path_name.c_str(), RTLD_LAZY);
 
@@ -80,7 +80,7 @@ VOIDFPTR get_function(xmlDocPtr doc,xmlNodePtr currNode, std::string mother_node
 		rpt_msg += ", containing function '";
 		rpt_msg += (const char *)fun_name;
 		rpt_msg += "' for ";
-		rpt_msg += mother_node_name;
+		rpt_msg += function_purpose;
 		rpt_msg += " could not be opened.";
 		SC_REPORT_ERROR("KisTA-XML",rpt_msg.c_str());
     }
@@ -95,7 +95,7 @@ VOIDFPTR get_function(xmlDocPtr doc,xmlNodePtr currNode, std::string mother_node
 		rpt_msg = "Function symbol ";	
 		rpt_msg += (const char *)fun_name;
 		rpt_msg += " for ";
-		rpt_msg += mother_node_name;		
+		rpt_msg += function_purpose;		
 		rpt_msg += " could not be loaded from library ";
 		rpt_msg += file_with_path_name.c_str();
 		rpt_msg += ".";
