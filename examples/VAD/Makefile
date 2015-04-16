@@ -149,3 +149,4 @@ ultraclean:clean
 	rm -f *.so
 	rm -f $(EX_NAME)_output.xml
 	rm -f *.pdf
+	rm -f *.vcd

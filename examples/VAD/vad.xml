@@ -512,7 +512,7 @@
 			<draw_sys_level_conn_names value="true"/>
 			<highlight_environment value="true"/>
 			<highlight_system value="true"/>
-			<highlight_application value="false"/>
+			<highlight_application value="true"/>
 			<highlight_platform value="true"/>
 			<!--
 			<only_image value="true"/>
