@@ -334,10 +334,10 @@ void tikz_activity_trace::draw_start() {
 	if(!only_image_flag) {
 		*tikz_trace_file << "File created by KisTA library" << endl << endl;
 		*tikz_trace_file << "Author: F.Herrera" << endl << endl;
-		*tikz_trace_file << "Institution: KTH" << endl << endl;
-		*tikz_trace_file << "Date: 2014" << endl << endl;
-		*tikz_trace_file << "All rights reserved by the authors. Further details to be defined by the adopted license." << endl << endl;
-		*tikz_trace_file << "Tracing options enabled for the trace production:" << endl;
+		*tikz_trace_file << "Institution: KTH (2012-2014, Jul), Univ. of Cantabria (from 2014, Sept.)" << endl << endl;
+		*tikz_trace_file << "Rights reserved by the authors in the terms defined by the KisTA license." << endl << endl;
+		*tikz_trace_file << "KisTA library compilation date: " << __DATE__ << " at " << __TIME__ << "." << endl << endl;
+		*tikz_trace_file << "Tracing Options used:" << endl;
 		
 		*tikz_trace_file <<  "Style=";
 		if(clustered_style) *tikz_trace_file <<  "Clustered";
@@ -1394,12 +1394,18 @@ void tikz_activity_trace::draw_end() {
 		if(compact_style) {
 			*tikz_trace_file << "\% Show Automatic Task Alias names " << endl;
 			*tikz_trace_file << "\% --------------------------------" << endl;
-			*tikz_trace_file << "\\textbf{Task alias:}\\\\" << endl;
-			for(auto it = task_activity.begin(); it != task_activity.end(); ++it ) {
+			*tikz_trace_file << "\\textbf{Task alias list (alias=task name):}\\\\" << endl;
+			auto it = task_activity.begin();
+			while(it!=task_activity.end()) {
 				*tikz_trace_file << "T";
 				*tikz_trace_file << std::to_string(it->first->kista_id);
-				*tikz_trace_file << ": " << it->first->name();
-				*tikz_trace_file << "\\\\" << endl;
+				*tikz_trace_file << "=" << it->first->name();
+				it++;
+				if(it == task_activity.end()) {
+					*tikz_trace_file << "\\\\" << endl;
+				} else {
+					*tikz_trace_file << " , " << endl;
+				}
 			}
 			*tikz_trace_file << endl;
 		}

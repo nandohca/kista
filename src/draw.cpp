@@ -98,7 +98,8 @@ void sketch_report_t::write_header() {
    daytime = ctime(&now);
 
    // convert now to tm struct for UTC
-   gmtime_p = gmtime(&now);
+   //gmtime_p = gmtime(&now);
+   gmtime_p = localtime(&now);
    daytime = asctime(gmtime_p);	
    if(only_image_flag) {
 		*sketch_file << "\\documentclass[]{article}" << endl;	   
@@ -126,10 +127,9 @@ void sketch_report_t::write_header() {
    if(!only_image_flag) {
 	   *sketch_file << "File created by KisTA library" << endl << endl;
 	   *sketch_file << "Author: F.Herrera" << endl << endl;
-	   *sketch_file << "Institution: KTH" << endl << endl;
-	   *sketch_file << "Date: 2013" << endl << endl;
-	   *sketch_file << "All rights reserved by the authors. Further details to be defined by the adopted license." << endl << endl;
-	   *sketch_file << "KisTA library compilation date: " << __DATE__ << " at " << __TIME__ << "." << endl;
+	   *sketch_file << "Institution: KTH (2012-2014, Jul), Univ. of Cantabria (from 2014, Sept.)" << endl << endl;
+	   *sketch_file << "Rights reserved by the authors in the terms defined by the KisTA license." << endl << endl;
+	   *sketch_file << "KisTA library compilation date: " << __DATE__ << " at " << __TIME__ << "." << endl << endl;
 	   *sketch_file << endl << endl;
 	   *sketch_file << "Sketch Creation: " << daytime << endl << endl;
 			
