@@ -48,12 +48,20 @@ void attach_static_analysis(SAFPTR fun, scheduler_t  	sched_t);
 //	void attach_static_analysis(SAFPTR fun, scheduler_policy_t  			scheduler_policy, static_priorities_policy_t  	static_priorities_policy);
 //	void attach_static_analysis(SAFPTR fun, scheduler_policy_t  			scheduler_policy, dynamic_priorities_policy_t  	dynamic_priorities_policy);
 	
-// STATIC ANANLYSIS PROVIDED:
+// STATIC ANALYSIS PROVIDED:
 
 // checks if a given task set utilization is below a 100% bound
 void full_utilization_bound(const taskset_by_name_t *assigned_tasks);
 
+// precise utilization bound (based on the calculation of response times
+// (REF: )
+// Necessary and sufficient check for schedulability
+// capable to state if a task set is schedulable for utilizations
+// over Liu&Layland bound, but below 100%
+void precise_schedulability_analysis(const taskset_by_name_t *assigned_tasks);
+
 // checks if a given task set utilization is below the Liu&Layland bound
+// That is a sufficient condition for schedulability
 void Liu_and_Layland_bound(const taskset_by_name_t *assigned_tasks);
 
 

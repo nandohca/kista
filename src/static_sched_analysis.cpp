@@ -126,6 +126,48 @@ void full_utilization_bound(const taskset_by_name_t *assigned_tasks) {
 	}
 }
 
+void precise_bound(const taskset_by_name_t *assigned_tasks) {
+		std::string msg;
+	double assigned_tasks_utilization;
+	unsigned int N_int;
+	double N;
+	
+	double bound;
+	
+	msg = "Precise schedulability_analysis ...";
+
+	msg += "This schedulability analysis is not implemented.\n";
+	SC_REPORT_ERROR("KisTA",msg.c_str());
+
+/*	
+	N_int = assigned_tasks->size();
+	N = (double)N_int;
+	
+	// calculate 2^(1/N)
+	bound =  ( pow (2.0 , 1.0/N) - 1.0) * N;
+	
+	assigned_tasks_utilization = utilization(*assigned_tasks);
+
+	if(assigned_tasks_utilization>=bound) {
+		msg += "FAILED.\n";	
+	} else {
+		msg += "PASSED.\n";		
+	}
+	
+	msg += "Utilization = ";
+	msg += std::to_string(assigned_tasks_utilization);
+	msg += ", N=";
+	msg += std::to_string(N_int);
+	msg += ", L&L bound=";
+	msg += std::to_string(bound);	
+		
+	if(assigned_tasks_utilization>=bound) {
+		SC_REPORT_ERROR("KisTA",msg.c_str());
+	} else {	
+		SC_REPORT_INFO("KisTA",msg.c_str());
+	} 
+	* /
+}
 
 void Liu_and_Layland_bound(const taskset_by_name_t *assigned_tasks) {
 	std::string msg;
