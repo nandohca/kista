@@ -39,6 +39,10 @@
 
 namespace kista {
 
+#define MAX_TDMA_BUS_CONF_ERROR 0.001
+// 0.1%
+#define MAX_TDMA_BUS_CONF_TIME_ERROR sc_time(1,SC_PS);
+
 // empty constructor
 void tdma_bus::init_params() {
   	n_allocated_channels = 0;
@@ -447,9 +451,6 @@ unsigned int tdma_bus::allocate_BW(phy_address src, unsigned int required_bps) {
 	return required_slots*channel_eBW;
 }
 	
-#define MAX_TDMA_BUS_CONF_ERROR 0.001
-#define MAX_TDMA_BUS_CONF_TIME_ERROR sc_time(1,SC_PS);
-
 void tdma_bus::report_bus_configuration() {
 	cout << "TDMA Bus " << name() << " configuration completed: " << endl;
 	cout << "\t\t static channels = " << n_channels << endl;
