@@ -51,21 +51,36 @@
 				        triggering : (non_preemptive), preemptive, cooperative, unknown
 				        time_slice : (no), yes
 SHORTCUTS: 
-						policy: round_robin = cycle_executive & preemptive & time_slice
+						policy="round_robin" IS EQUIVALENT TO policy="cycle_executive" & triggering="preemptive" & time_slice="yes"
+						policy="RMS" IS EQUIVALENT TO policy="static_priorities" & dispatch="RateMonotonic" & triggering="preemptive" & time_slice="no"
+						policy="DMS" IS EQUIVALENT TO policy="static_priorities" & dispatch="DeadlineMonotonic" & triggering="preemptive" & time_slice="no"
+						policy="EDF" IS EQUIVALENT TO policy="dynamic_priorities" & dispatch="EarliestDeadlineFirst" & triggering="preemptive" & time_slice="no"
 						
 				  -->
 				  <scheduler_policy policy="cycle_executive" triggering="preemptive" time_slice="yes">
 				  <!--
 				  <scheduler_policy policy="static_scheduling" triggering="non_preemptive" time_slice="yes">
 				  -->
+				        <!-- Applies to configure static scheduling policy-->
 						 <static_scheduling>
 							<!-- Static scheduling is read only if policy is static_scheduling (default) -->
 							<!-- This should be a parameter -->
 							<item value="T1"/>
 							<item value="T2"/>
 						 </static_scheduling>
+						
+						 <!-- Applies to configure static priorities policy-->
+						 <!-- dispatching (RateMonotonic), DeadlineMonotonic, DensityMonotonic-->
+						 <!--              In the former case it can be ommited since it is the default-->
+						 <dispatching="RateMonotonic" />
+						
+						 <!-- Applies to configure static priorities policy-->
+						  
 				  </scheduler_policy>
-			  </task_scheduler>			  
+			  </task_scheduler>
+			  <!--
+			  <tick_timer value="10" unit="ms"/>
+				-->  
 		  </rtos>
 	  </SW_platform>
 		  
