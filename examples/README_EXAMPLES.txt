@@ -132,4 +132,9 @@ synch_ex6/ static_sched_with_synch.cpp:
 --------------
 	Void adctivity detector example showing many features supported by the XML interface, including hook of
 	system and environment functionality, functional validation, trace and TiKZ trace report, etc.
+
+/jpeg_encoder
+--------------
+	Adaptation of the jpeg_encoder example available with the ForSyDe-SystemC distribution
+
 	
