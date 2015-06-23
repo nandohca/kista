@@ -144,6 +144,47 @@ void shared_bus::report_bus_configuration() {
 	
 }
 
+// -------------------------------------------------------------
+//   Overloading Implementation of virtual assessment methods
+// -------------------------------------------------------------
+
+void shared_bus::set_MaxP2Pdelay(phy_address src, phy_address dest, unsigned int msg_size)
+{
+	SC_REPORT_ERROR("KisTA","method of shared bus not implemented");
+}
+
+void shared_bus::set_MaxP2Pdelay(phy_link_t &link, unsigned int msg_size)
+{
+	SC_REPORT_ERROR("KisTA","method of shared bus not implemented");
+}
+
+sc_time& shared_bus::get_MaxP2Pdelay(phy_address src, phy_address dest, unsigned int msg_size) {
+	SC_REPORT_ERROR("KisTA","method of shared bus not implemented");	
+}
+
+sc_time& shared_bus::get_MaxP2Pdelay(phy_link_t &link, unsigned int msg_size) {
+	SC_REPORT_ERROR("KisTA","method of shared bus not implemented");
+}
+		
+void shared_bus::set_CurrentP2Pdelay(phy_address src, phy_address dest, unsigned int msg_size) {
+	SC_REPORT_ERROR("KisTA","method of shared bus not implemented");
+}
+	
+void shared_bus::set_CurrentP2Pdelay(phy_link_t &link, unsigned int msg_size)
+{
+	SC_REPORT_ERROR("KisTA","method of shared bus not implemented");
+}
+
+sc_time& shared_bus::get_CurrentP2Pdelay(phy_address src, phy_address dest, unsigned int msg_size)
+{
+	SC_REPORT_ERROR("KisTA","method of shared bus not implemented");
+}
+
+sc_time& shared_bus::get_CurrentP2Pdelay(phy_link_t &link, unsigned int msg_size) {
+	SC_REPORT_ERROR("KisTA","method of shared bus not implemented");
+}
+	
+
 } // namespace kista
 
 #endif
