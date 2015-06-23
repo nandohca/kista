@@ -95,7 +95,8 @@ install:
 	cp -rf $(SRCDIR)/src/system_level_bypass/*.hpp $(INC_INSTALLDIR)/system_level_bypass
 	mkdir -p $(INC_INSTALLDIR)/annotation_plugin
 	cp -rf $(SRCDIR)/src/annotation_plugin/*.hpp $(INC_INSTALLDIR)/annotation_plugin
-
+	mkdir -p $(INC_INSTALLDIR)/load_analysis
+	cp -rf $(SRCDIR)/src/load_analysis/*.hpp $(INC_INSTALLDIR)/load_analysis
 	
 clean:
 	make -C ./src clean
@@ -139,7 +140,8 @@ src_lines:
 	   $(SRC)/comm_res/buses/*.hpp $(SRC)/comm_res/buses/*.cpp\
 	   $(SRC)/system_level_bypass/*.hpp $(SRC)/system_level_bypass/*.cpp\
 	   $(SRC)/annotation_plugin/*.hpp $(SRC)/annotation_plugin/*.cpp\
-       $(SRC)/xml_if/*.cpp
+       $(SRC)/xml_if/*.cpp\
+       $(SRC)/load_analysis/*.cpp       
        
 #	   $(SRC)/comm_res/networks/*.hpp $(SRC)/comm_res/networks/*.hpp\       
 #	   $(SRC)/xml_if/*.hpp
@@ -149,5 +151,6 @@ ex_lines:
 	 $(SYN_EX)1/*.cpp $(SYN_EX)2/*.cpp $(SYN_EX)3/*.cpp $(SYN_EX)4/*.cpp $(SYN_EX)5/*.cpp $(SYN_EX)6/*.cpp\
 	 $(COMRES_EX)1/*.cpp\
 	 $(EX)/fdl2013_ex/*.cpp $(EX)/fdl2013_ex/*.h\
-	 $(EX)/VAD/*.cpp $(EX)/VAD/*.h $(EX)/VAD/*.hpp $(EX)/VAD/env_fun/*.cpp
+	 $(EX)/VAD/*.cpp $(EX)/VAD/*.h $(EX)/VAD/*.hpp $(EX)/VAD/env_fun/*.cpp\
+	 $(EX)/vad_jpeg/env/*.cpp $(EX)/vad_jpeg/vad/*.cpp $(EX)/vad_jpeg/vad/*.hpp $(EX)/vad_jpeg/jpeg/*.cpp
 #	 $(EX)/VAD/*.cpp $(EX)/VAD/*.h $(EX)/VAD/*.hpp $(EX)/VAD/fun/*.h $(EX)/VAD/fun/*.cpp $(EX)/VAD/env_fun/*.cpp

@@ -15,9 +15,11 @@
 #ifndef ANALYSIS_HPP
 #define ANALYSIS_HPP
 
+#include <string>
+
 class load_unit {
 public:	
-	std:string		name;
+	std::string		name;
 	sc_time			wc_load;
 	sc_time			period;
 	sc_time			rel_deadline;

@@ -1,10 +1,14 @@
 
+#include "load_analysis.cpp"
 
 void main(int argc, char *argv[]) {
 
 	load_unit_set_t loaders_set;
 	
 	load_unit loader1, loader2, loader3, loader4;
+	
+	load_unit_set_t::iterator load_it;
+	load_unit curr_load_unit;
 	
     // This case, assumes priority assigned by period (Rate monotonic) = deadline
 
@@ -45,10 +49,27 @@ void main(int argc, char *argv[]) {
 		
 	if( assess_precise_bound(loaders_set, true) ) {
 		cout << "Task set pass the precise bound check" << endl;
+	} else {
+		cout << "Task set pass does not pass the precise bound check" << endl;
 	}
 	
-	if( assess_precise_bound(loaders_set, true) ) {
+	if( assess_precise_bound(loaders_set, false) ) {
 		cout << "Task set pass the precise bound check" << endl;
+	} else {
+		cout << "Task set pass does not pass the precise bound check" << endl;
+	}
+	
+	load_it = loaders_set.begin();
+	
+	while(load_it!=loaders_set.end()) {
+		curr_load_unit = load_it->second;
+		cout << curr_load_unit->name;
+		cout << ": worst-case response time = ";
+		cout << curr_load_unit->wc_response;
+		cout << ", deadline = ";
+		cout << curr_load_unit->rel_deadline;
+		cout << endl;
+		load_it++;
 	}
 	
 }

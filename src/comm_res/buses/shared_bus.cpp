@@ -49,31 +49,13 @@ namespace kista {
 
 void shared_bus::set_default_params() {
 	// initialization values according to the default values
-	bus_width = 32;
+	bus_width_bits = 32; // in bits
 	bus_bandwidth_bps = 100000;
 	bus_frequency_Hz = 3200000;
 }
 
 shared_bus::shared_bus(sc_module_name name) {
-	init_params();
-}
-	
-shared_bus::shared_bus(unsigned int		width_bits, // width in bits of the bus
-						double 			frequency_Hz,  // frequency in HZ of the bus
-						sc_module_name 	name) {
-	bus_width_bits=width_bits;
-	bus_frequency_Hz=frequency_Hz;
-	// the bandwidth is automatically settled as a consequence
-	bus_bandwidth_bps = width_bits*frequency_Hz;
-}
-
-shared_bus::shared_bus(unsigned int		width_bits, // width in bits of the bus
-						double			bandwith_bps,  // bandwidth capacity in bps
-						sc_module_name 	name) {
-	bus_width_bits = width_bits;
-	bus_bandwidth_bps = bandwith_bps;
-	// the frequency is automatically settled as a consequence
-	bus_frequency_Hz = bandwith_bps/width_bits;
+	set_default_params();
 }
 
 // Bus attribute setters/getters
@@ -105,11 +87,11 @@ double& shared_bus::get_bandwidth() { // return bus bandwidth in bps
 }
 
 void shared_bus::before_end_of_elaboration() {
-	double calc_bus_bandwidth_bps;
+	double calc_bandwidth_bps;
 	double error; // percentual error, deviation over the lower bandwidth value,
 	              // either settled or calculated, to make consider the more restrictive case
-	std::strig msg;
-	calc_bus_bandwidth_bps = bus_width_bits*bus_frequency_Hz;
+	std::string msg;
+	calc_bandwidth_bps = bus_width_bits*bus_frequency_Hz;
 	// calculates the biggest error possible (as an absolute value, always positive)
 	if(bus_width_bits==0.0) {
 		msg="Setting shared bus \"";
@@ -141,16 +123,25 @@ void shared_bus::before_end_of_elaboration() {
 		msg="Setting shared bus \"";
 		msg += this->name();
 		msg += "\". Incoherent setting of attributes. The product of the current bus bandwidth (";
-		msg += ;
+		msg += bus_bandwidth_bps;
 		msg += " bits), per the bus frequency (";
-		msg += ;
+		msg += bus_frequency_Hz;
 		msg += " Hz) yields a deviation from the configured bus bandwith (";
-		msg += ;
+		msg += error;
 		msg += " bps) bigger than the maximum allowed deviation configured (";
-		msg += to_string();
-		msg += " \%)";
+		msg += MAX_SHARED_BUS_CONFIGURATION_ERROR;
+		msg += " )";
 		SC_REPORT_ERROR("KisTA",msg.c_str());
 	}
+}
+
+
+void shared_bus::report_bus_configuration() {
+	cout << "Shared Bus " << name() << " configuration completed: " << endl;
+	cout << "\t\t bus width (bits) = " << bus_width_bits << endl;
+	cout << "\t\t bus bandwidth (bps) = " << bus_bandwidth_bps << endl;
+	cout << "\t\t bus frequency (frequency) = " << bus_frequency_Hz << endl;
+	
 }
 
 } // namespace kista

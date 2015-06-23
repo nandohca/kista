@@ -15,6 +15,9 @@
 #ifndef ANALYSIS_CPP
 #define ANALYSIS_CPP
 
+#include "load_analysis.hpp"
+
+
 // orders the load units just by priority (does not presume rate monotonic or similar)
 bool operator<(const load_unit &lhs, const load_unit &rhs) {
 	if (lhs.priority < rhs.priority) return true;

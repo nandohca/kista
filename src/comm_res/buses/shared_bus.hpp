@@ -43,19 +43,11 @@ class shared_bus : public	phy_comm_res_t {
 	
 public:
 	// constructor
-	// Generation of the tdma_bus object for a separated configuration (useful for XML front-end)
+	// Generation of the shared_bus object for a separated configuration (useful for XML front-end)
 	// This constructor makes a default setting of parameters(bus_width=32, frequency=100000Hz, and
-	// bandwidth=3200000)
+	// bandwidth=3200000)		
 	shared_bus(sc_module_name name = sc_gen_unique_name("shared_bus"));
-	
-	shared_bus(unsigned int		width_bits = 32, // width in bits of the bus
-			   double 			frequency_Hz = 100000,  // frequency in HZ of the bus
-			   sc_module_name 	name = sc_gen_unique_name("tdma_bus"));
-
-	shared_bus(unsigned int		width_bits = 32, // width in bits of the bus
-			   double			bandwith_bps = 3200000,  // bandwidth capacity in bps
-			   sc_module_name 	name = sc_gen_unique_name("tdma_bus"));
-
+			   
 	// Bus attribute setters/getters
 	void set_width(unsigned int width_bits);
 	unsigned int &get_width(); // return bus width in bits
@@ -65,7 +57,6 @@ public:
 
 	void set_bandwidth(double frequency_Hz);
 	double &get_bandwidth(); // return bus bandwidth in bps
-
 	
 	// Overload of setters independent on the specific value
 	using phy_comm_res_t::set_MaxP2Pdelay; // this is required to enable the use of the non-overloaded methods with the same function name
@@ -92,7 +83,7 @@ public:
 	
 	// CONTROL OF THE ACCURACY OF THE MODEL
 	// 	Currently supported levels:
-	//			0: In principle, one bound provided only
+	//			0: In principle, only one bound level provided only
 	//
 	//void 			  set_accuracy_level(accuracy_level_t level);
 	//accuracy_level_t& get_accuracy_level();
@@ -100,7 +91,7 @@ public:
 
 private:
 
-	unsigned int bus_width_bits;
+	unsigned int bus_width_bits; // in bits
 	
 	double bus_bandwidth_bps;
 	
