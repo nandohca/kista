@@ -17,7 +17,8 @@
 
 #include "load_analysis.hpp"
 
-
+namespace kista {
+	
 // orders the load units just by priority (does not presume rate monotonic or similar)
 bool operator<(const load_unit &lhs, const load_unit &rhs) {
 	if (lhs.priority < rhs.priority) return true;
@@ -123,5 +124,6 @@ bool assess_precise_bound(load_unit_set_t loaders, bool immediate_exit=false) {
 	
 }
 
+} // namespace kista
 #endif
 

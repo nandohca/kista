@@ -83,6 +83,9 @@
 #include "draw.hpp"
 #include "tikz_activity_trace.hpp"
 
+// analysis utilities
+#include "load_analysis/load_analysis.hpp"
+
 // -------------------------------------------------------------------------------
 // SYNCHRONIZATION
 // -------------------------------------------------------------------------------

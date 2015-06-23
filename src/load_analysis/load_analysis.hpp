@@ -16,7 +16,8 @@
 #define ANALYSIS_HPP
 
 #include <string>
-
+namespace kista {
+	
 class load_unit {
 public:	
 	std::string		name;
@@ -54,5 +55,7 @@ typedef std::map<unsigned int, load_unit> load_unit_set_t;
 //  immediately if any response time exceeds its deadline
 //
 bool assess_precise_bound(load_unit_set_t loaders, bool immediate_exit=false);
+
+} // namespace kista
 
 #endif

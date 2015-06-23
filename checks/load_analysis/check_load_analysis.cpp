@@ -1,7 +1,10 @@
 
-#include "load_analysis.cpp"
+//#include "load_analysis/load_analysis.hpp"
 
-void main(int argc, char *argv[]) {
+#include "kista.hpp"
+
+//void main(int argc, char *argv[]) {
+int sc_main(int argc, char *argv[]) {
 
 	load_unit_set_t loaders_set;
 	
@@ -14,36 +17,36 @@ void main(int argc, char *argv[]) {
 
 	// loader 1
 	loader1.name          = "loader1";
-	loader1.wc_load       = SC_TIME(1.0,SC_SEC);
-	loader1.period        = SC_TIME(3.0,SC_SEC);
-	loader1.rel_deadline  = SC_TIME(3.0,SC_SEC);
+	loader1.wc_load       = sc_time(1.0,SC_SEC);
+	loader1.period        = sc_time(3.0,SC_SEC);
+	loader1.rel_deadline  = sc_time(3.0,SC_SEC);
 	loader1.priority      = 1;
 
 	// loader 2
 	loader1.name          = "loader2";
-	loader1.wc_load       = SC_TIME(1.0,SC_SEC);
-	loader1.period        = SC_TIME(5.0,SC_SEC);
-	loader1.rel_deadline  = SC_TIME(5.0,SC_SEC);
+	loader1.wc_load       = sc_time(1.0,SC_SEC);
+	loader1.period        = sc_time(5.0,SC_SEC);
+	loader1.rel_deadline  = sc_time(5.0,SC_SEC);
 	loader1.priority      = 2;
 
 	// loader 3
 	loader1.name          = "loader3";
-	loader1.wc_load       = SC_TIME(1.0,SC_SEC);
-	loader1.period        = SC_TIME(6.0,SC_SEC);
-	loader1.rel_deadline  = SC_TIME(6.0,SC_SEC);
+	loader1.wc_load       = sc_time(1.0,SC_SEC);
+	loader1.period        = sc_time(6.0,SC_SEC);
+	loader1.rel_deadline  = sc_time(6.0,SC_SEC);
 	loader1.priority      = 3;
 
 	// loader 4
 	loader1.name          = "loader4";
-	loader1.wc_load       = SC_TIME(2.0,SC_SEC);
-	loader1.period        = SC_TIME(10.0,SC_SEC);
-	loader1.rel_deadline  = SC_TIME(10.0,SC_SEC);
+	loader1.wc_load       = sc_time(2.0,SC_SEC);
+	loader1.period        = sc_time(10.0,SC_SEC);
+	loader1.rel_deadline  = sc_time(10.0,SC_SEC);
 	loader1.priority      = 4;
 	
-	loaders_set.insert(1,loader1);
-	loaders_set.insert(2,loader2);
-	loaders_set.insert(3,loader3);
-	loaders_set.insert(4,loader4);
+	loaders_set.insert(make_pair(1,loader1));
+	loaders_set.insert(make_pair(2,loader2));
+	loaders_set.insert(make_pair(3,loader3));
+	loaders_set.insert(make_pair(4,loader4));
 	
 	// Observation: maybe a priority_queue could be used also for the implementation of the assess_precise_bound function
 		
@@ -53,7 +56,7 @@ void main(int argc, char *argv[]) {
 		cout << "Task set pass does not pass the precise bound check" << endl;
 	}
 	
-	if( assess_precise_bound(loaders_set, false) ) {
+	if( assess_precise_bound(loaders_set) ) { //  like assess_precise_bound(loaders_set, false)
 		cout << "Task set pass the precise bound check" << endl;
 	} else {
 		cout << "Task set pass does not pass the precise bound check" << endl;
@@ -63,11 +66,11 @@ void main(int argc, char *argv[]) {
 	
 	while(load_it!=loaders_set.end()) {
 		curr_load_unit = load_it->second;
-		cout << curr_load_unit->name;
+		cout << curr_load_unit.name;
 		cout << ": worst-case response time = ";
-		cout << curr_load_unit->wc_response;
+		cout << curr_load_unit.wc_response;
 		cout << ", deadline = ";
-		cout << curr_load_unit->rel_deadline;
+		cout << curr_load_unit.rel_deadline;
 		cout << endl;
 		load_it++;
 	}
