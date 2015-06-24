@@ -16,6 +16,10 @@
 #define ANALYSIS_HPP
 
 #include <string>
+#include <map>
+
+#include "systemc.h"
+
 namespace kista {
 	
 class load_unit {
@@ -31,11 +35,16 @@ public:
 // orders the load units just by priority (does not presume rate monotonic or similar)
 bool operator<(const load_unit &lhs, const load_unit &rhs);
 
-//
-// ordered map: there can be load units with the same priority
-//              but they are ordered by priority
-//
-typedef std::map<unsigned int, load_unit> load_unit_set_t;
+
+// load_unit_set:
+//     ordered set of load units. There can be load units with the same priority
+typedef std::multimap<unsigned int, load_unit> load_unit_set_t;
+
+// load_unit_set_with_unique_priorities_t:
+//     ordered set of load units. Eeach load unit has UNIQUE priorities
+typedef std::map<unsigned int, load_unit> load_unit_set_with_unique_priorities_t;
+
+// Observation: maybe a priority_queue could be used also for the implementation of the assess_precise_bound function
 
 //
 // Precise assessment if a set of periodic load units is schedulable
@@ -53,8 +62,17 @@ typedef std::map<unsigned int, load_unit> load_unit_set_t;
 //
 //  If the input parameter immediate_exit==true, then the function returns
 //  immediately if any response time exceeds its deadline
+// (all response times might not be calculated in case of non-schedulability)
 //
-bool assess_precise_bound(load_unit_set_t loaders, bool immediate_exit=false);
+//  A false flag (or not parameter) ensures the calculation of all the parameters
+//  although the analysis can take more time (it is the default behaviour)
+//
+bool assess_precise_bound(load_unit_set_with_unique_priorities_t &loaders, bool immediate_exit=false);
+
+
+// This is the analysis for the generic case. It considers the interference
+// of loaders with the same priority. It leads to a more pesimistic bouds.
+bool assess_precise_bound(load_unit_set_t &loaders, bool immediate_exit=false);
 
 } // namespace kista
 

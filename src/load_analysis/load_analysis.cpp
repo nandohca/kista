@@ -15,6 +15,8 @@
 #ifndef ANALYSIS_CPP
 #define ANALYSIS_CPP
 
+//#define _DEBUG_LOAD_ANALYSIS
+
 #include "load_analysis.hpp"
 
 namespace kista {
@@ -31,13 +33,16 @@ bool operator<(const load_unit &lhs, const load_unit &rhs) {
 // 
 // Considers iterative solution for Joseph&Pandya equations
 //
-bool assess_precise_bound(load_unit_set_t loaders, bool immediate_exit=false) {
-	load_unit_set_t::iterator load_it;
-	load_unit_set_t::iterator hp_load_it; // index pointing to higher priority loads
+	
+bool assess_precise_bound(load_unit_set_with_unique_priorities_t &loaders, bool immediate_exit) {	
+	load_unit_set_with_unique_priorities_t::iterator load_it;
+	load_unit_set_with_unique_priorities_t::iterator hp_load_it; // index pointing to higher (or same) priority loads
 		
 	sc_time R; 		// response
 	sc_time R_next; // next response calculation (for iterative solving)
 	sc_time I; // interference
+	double rel_diff;
+	
 	// to store the bound for the number of repetitions (triggers)
 	// of a task of higher priority
 	double b_doub;
@@ -47,19 +52,48 @@ bool assess_precise_bound(load_unit_set_t loaders, bool immediate_exit=false) {
 	
 	bool assessment_result;
 	
+	if(loaders.size()<1) {
+		SC_REPORT_ERROR("KisTA","Loaders list empty when calling precise load analysis");
+	}
+	
 	assessment_result=true; // assessment result: passed by default
 
-	load_it = loaders.begin();
-	hp_load_it = loaders.begin(); 
+	load_it = loaders.begin();    // points to the current assessed loader
+	
+#ifdef _DEBUG_LOAD_ANALYSIS	
+	cout << "START Load Analysis (LA): " << endl;		
+#endif
 
 	// since loader is an ordered set and the oders for the load units is
 	// stablished by priority, this loops from the higher priority (lesser priority number)
 	// to the lower priority (bigger priority number)
 	while(load_it != loaders.end()) {
-		
+
+#ifdef _DEBUG_LOAD_ANALYSIS			
+cout << "\tLA: " << load_it->second.name << "loader" <<endl;
+#endif	
 		// fixed point solution for Response time
-		// first guess 
+		// first guess  
+		// the own wc load of the loader...
 		R_next = load_it->second.wc_load;
+//cout << "\t\t\t R0= " << R_next << endl;		
+		//... plus all the wc load of the more prioritary loaders
+		// first rest of index to Hither Priority loaders
+		hp_load_it = loaders.begin(); // to point to higher priority loaders
+		while (hp_load_it->first < load_it->first)
+		{
+//cout << " add " << hp_load_it->second.wc_load << endl;			
+			R_next += hp_load_it->second.wc_load;
+			hp_load_it++;
+		} 
+
+#ifdef _DEBUG_LOAD_ANALYSIS
+cout << "\t\tStart with R= " << R_next << endl;
+#endif
+	
+		//reset hp_load_it index
+		hp_load_it = loaders.begin(); // to point to higher priority loaders	
+
 		iterations = 0;
 		// do one guess more at least, and so until the error is lesser than
 		// a quantity (ideally no error)
@@ -71,20 +105,27 @@ bool assess_precise_bound(load_unit_set_t loaders, bool immediate_exit=false) {
 			// calculates the interference, as a function of the current guess of the response time
 			// and of the periods and loads of the higher priority loads
 			I=SC_ZERO_TIME;
-			while(hp_load_it < load_it) {
+			
+			// first calculate the interference of all the loaders with higher priority
+			while(hp_load_it->first < load_it->first) {
 				// calculates Inteference of this load unit of higher priority
 				// on the lower priority task
-				b_doub = R/hp_load_it->wc_period;
+				b_doub = R/hp_load_it->second.period;
 				b=ceil(b_doub); // the idea is to get the highest integer bounging
 								// the real value (it may require a check)
-				I += b*hp_load_it->wc_load;
+				I += b*hp_load_it->second.wc_load;
 				hp_load_it++;
 			}
 			
+//cout << "ITERATE" << endl;
+//cout << "  I= " << I << endl;
+
 			// calculates the next guess of the response, once the interference
 			// is calculated
 			R_next = R + I;
 			
+//cout << "  R (updated)= " << R_next << endl;			
+
 			// calculate the relative distance in the error
 			if(R_next>R) {
 				rel_diff = (R_next-R)/R_next;
@@ -97,8 +138,12 @@ bool assess_precise_bound(load_unit_set_t loaders, bool immediate_exit=false) {
 				printf("KisTA Error: Reached the maximum number of iterations %d for fixed point equation solving in precise load analysis.\n",iterations-1);
 				exit(-1);
 			}
+			
 		} while(rel_diff>MAX_RELATIVE_DIFF_FOR_PRECISE_BOUND);
 		
+#ifdef _DEBUG_LOAD_ANALYSIS
+cout << "\t\tFinish with R= " << R_next << " after " << iterations << " iterations." << endl;
+#endif	
 		// reaching this point means that the fixed point equuation is
 		// solved with a satisfactory accuracy.
 		
@@ -107,10 +152,10 @@ bool assess_precise_bound(load_unit_set_t loaders, bool immediate_exit=false) {
 		if(R_next > R) R=R_next;
 		
 		// checks if the response exceeds the relative deadline
-		if(R>rel_deadline) assessment_result= false;
+		if(R>load_it->second.rel_deadline) assessment_result= false;
 				
 		// The responde time is stored
-		load_it->wc_response = R;
+		load_it->second.wc_response = R;
 		
 		// in case that immediate exit is configured and the analysis leads to non-schedulability
 		// the function returns immediately and stops the calculation of responses
@@ -122,6 +167,20 @@ bool assess_precise_bound(load_unit_set_t loaders, bool immediate_exit=false) {
 	// no more responses to calculate, return the result of the assessment
 	return assessment_result;
 	
+}
+
+
+bool assess_precise_bound(load_unit_set_t &loaders, bool immediate_exit) {	
+	
+	SC_REPORT_ERROR("KisTA","Precisse bound for a load set supporting loaders with same priorities not implemented yet.");
+// Code similar to the previous one adding something like	
+			
+			// This is a generic algorithm, which allows for a case where
+			// there are loaders with the same priority.
+			// Then, the worst case considers the possibility of interference
+			// from same priority loaders
+//			while(hp_load_it->first < load_it->first) {}
+			
 }
 
 } // namespace kista
