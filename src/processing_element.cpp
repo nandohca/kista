@@ -1,6 +1,6 @@
 /*****************************************************************************
 
-  processing_element.hpp
+  processing_element.cpp
   
    This file belongs to the KisTA library
    All rights reserved by the authors (until further License definition)

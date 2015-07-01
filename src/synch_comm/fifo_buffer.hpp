@@ -141,7 +141,7 @@ public:
 	//void bind(task_info_t* src, task_info_t* dest); // relies on that logic address is task info pointer
 	                                                 // (see link.hpp)
 	
-	void map_to(phy_comm_res_t *phy_comm_res_par); // nethod to map to a pysical communication resource
+	void map_to(phy_comm_res_t *phy_comm_res_par); // nethod to map to a physical communication resource
 												// (only required if map() has different alternatives
 												//  so this method can be used to fix it, instead letting
 												//  having an automatic resolution)
