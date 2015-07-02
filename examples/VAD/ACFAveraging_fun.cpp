@@ -105,7 +105,13 @@ BEGIN_TASK_WITH_INIT(ACFAveraging_fun,
 		in_scal_acf, // scaling factor for the autocorrelations
 		out_L_av0,   // ACF averaged over last four frames
 		out_L_av1);  // ACF averaged over previous four frames
-
+		// Note: there is an implicit conversion from Word32 array (acf_averaging prototype)
+		//       the short array in this wrapper function, which enables the match to the
+		//       short array declared at the corresponding output edges (E1 and E2)
+		//       The conversion does not produces any change of the VAD functionality,
+		//       since the outputs are flags, result of the voice detection (or not),
+		//       and only the LSB is used actually.
+		//       Thanks Hosein for the observation!
 	CONSUME_T;
 
 	PRINT_TASK(TASK_NAME,"send");
