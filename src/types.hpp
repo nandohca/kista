@@ -33,6 +33,7 @@ template<class address_type> class link_t;
 typedef link_t<logic_address> logic_link_t;
 class logic_link_info_t;
 class processing_element;
+class memory_resource;
 typedef processing_element*	  phy_address;	// let define PE links 
 typedef link_t<phy_address>   phy_link_t;
 class scheduler;
@@ -71,8 +72,11 @@ typedef std::map<std::string, task_info_t*>			tasks_info_by_name_t;
 typedef std::map<const char*, task_info_t*, const_char_cmp> taskset_by_name_t;
 
 
-// similar for PEs
+// map table for PEs
 typedef std::map<std::string, processing_element*>	PE_by_name_t;
+
+// map table for memory elements (MEM)
+typedef std::map<std::string, memory_resource*>		MEM_by_name_t;
 
 // global map types for communication resources
 typedef std::map<std::string, phy_comm_res_t*>		phy_comm_res_by_name_t;

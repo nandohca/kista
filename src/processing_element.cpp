@@ -50,6 +50,8 @@ processing_element::processing_element(sc_module_name name) : sc_module(name) {
 	std::string PE_name;
 	PE_name = this->name();
 	PEref_by_name[PE_name]=this;
+	
+	bound_comm_res_p = NULL;
 };
 
 void processing_element::set_clock_period_ns(unsigned int cloc_period_ns_var) {
@@ -111,8 +113,23 @@ network_interface* processing_element::get_netif() {
 }
 	
 void processing_element::connect(phy_comm_res_t *bound_comm_res_par) {	//
-	bound_comm_res_p = bound_comm_res_par;
-	bound_comm_res_p->plug(this); // complete a double link between the communication resource and the processing element
+	if((bound_comm_res_p != NULL) &&
+		(bound_comm_res_par != bound_comm_res_p)
+	  ) {
+		msg = "Trying to connect processing element ";
+		msg += this->name();
+		msg += " to the communication resource ";
+		msg += bound_comm_res_par->name();
+		msg += ". The processing element was already connected to the communication resource ";
+		msg += bound_comm_res_p->name();
+		msg += ". KisTA currently supports only the connection of a processing element to a single communication resource.";
+		SC_REPORT_ERROR("Kista",msg.c_str());
+	}
+	else
+	{
+		bound_comm_res_p = bound_comm_res_par;
+		bound_comm_res_p->plug(this); // complete a double link between the communication resource and the processing element
+	}
 }
 
 phy_comm_res_t* processing_element::get_connected_comm_res() {

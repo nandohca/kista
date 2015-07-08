@@ -1,6 +1,6 @@
 /*****************************************************************************
 
-  memory_resource.cpp
+  memory_resource.hpp
   
    This file belongs to the KisTA library
    All rights reserved by the authors (until further License definition)
@@ -19,6 +19,8 @@
 
 #include "defaults.hpp"
 
+#include "comm_res/phy_comm_res.hpp"
+
 namespace kista {
 
 class memory_resource : public sc_module {
@@ -36,23 +38,25 @@ public:
 	// (however this is required for dual port ram directly linking a 
 	// a PE for instance)
 	phy_comm_res_t* get_connected_comm_res();
-
-	// time characterizations for communication within the processing element
-	sc_time get_access_time(unsigned int message_size = 1 ); 		// current delay, message size in bits
 	
-	// This is to fix the delay (latency) , modelled as independent from message size
+	// This is to fix the delay (latency) which occurs regardless from the message size (0 by default)
 	void    set_access_time(sc_time access_time = SC_ZERO_TIME ); 	// current delay, message size in bits
 	sc_time	get_access_time();
 	
+	// bandwidth determines the latency which depends on the data size transfer
+	// (the bus can be a limiting factor!!)
 	void set_bandwidth(double bps);
 	double get_bandwidth();
 		
 private:
-	unsigned int latency;
+
+	void before_end_of_elaboration();
+
+	sc_time latency;
 	unsigned int bandwidth;
 	
 	phy_comm_res_t *bound_comm_res_p; // bound communication resource
-		
+	string msg;
 };
 
 

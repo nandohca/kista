@@ -58,6 +58,7 @@ extern pe_set_t pes;
 // Global hash table for fast access to processing element info by name
 // it is updated by each new PE created
 extern PE_by_name_t PEref_by_name;
+extern MEM_by_name_t MEMref_by_name;
 
 extern phy_commres_set_t phy_commres_set;
 extern phy_comm_res_by_name_t phy_commres_by_name;

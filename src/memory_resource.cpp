@@ -30,14 +30,30 @@ namespace kista {
 // constructor
 memory_resource::memory_resource(sc_module_name name) : sc_module(name)
 {
-	std::string PE_name;
+	std::string mem_name;
 	mem_name = this->name();
-	memref_by_name[mem_name]=this;
+	MEMref_by_name[mem_name]=this;
+	bound_comm_res_p = NULL;
 };
 
 void memory_resource::connect(phy_comm_res_t *bound_comm_res_par)
 {
-
+	if((bound_comm_res_p != NULL) &&
+		(bound_comm_res_par != bound_comm_res_p)
+	  ) {
+		msg = "Trying to connect memory resource ";
+		msg += this->name();
+		msg += " to the communication resource ";
+		msg += bound_comm_res_par->name();
+		msg += ". The memory resource was already connected to the communication resource ";
+		msg += bound_comm_res_p->name();
+		msg += ". KisTA currently supports only the connection of a memory resource to a single communication resource.";
+		SC_REPORT_ERROR("Kista",msg.c_str());
+	} else
+	{
+		bound_comm_res_p = bound_comm_res_par;
+		bound_comm_res_p->plug(this); // complete a double link between the communication resource and the processing element
+	}
 }
 
 	// if there is more than one connected, the result is not specified
@@ -46,35 +62,34 @@ void memory_resource::connect(phy_comm_res_t *bound_comm_res_par)
 	// a PE for instance)
 phy_comm_res_t* memory_resource::get_connected_comm_res()
 {
-
+	return bound_comm_res_p;
 }
 
-
-// time characterizations for communication within the processing element
-sc_time memory_resource::get_access_time(unsigned int message_size = 1 ) 		// current delay, message size in bits
-{
-
-}
 	
 // This is to fix the delay (latency) , modelled as independent from message size
-void    memory_resource::set_access_time(sc_time access_time = SC_ZERO_TIME ) // current delay, message size in bits
+void memory_resource::set_access_time(sc_time access_time = SC_ZERO_TIME ) // current delay, message size in bits
 {
-	
+	latency = access_time;
 }
  	
 sc_time	memory_resource::get_access_time()
 {
-	
+	return latency;
 }
 	
 void memory_resource::set_bandwidth(double bps)
 {
-
+	bandwidth = bps;
 }
 
 double memory_resource::get_bandwidth()
 {
+	return bandwidth;
+}
 
+void processing_element::before_end_of_elaboration()  {
+	// allows drawing it
+	sketch_report.draw(this);
 }
 
 } // namespace kista
