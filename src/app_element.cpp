@@ -13,35 +13,49 @@
   Class to support an abstract hw resource implementation
   
  *****************************************************************************/
-#ifndef HW_RESOURCE_CPP
-#define HW_RESOURCE_CPP
+#ifndef APP_ELEMENT_CPP
+#define APP_ELEMENT_CPP
 
 #include <systemc.h>
 
 #include "defaults.hpp"
 
-#include "hw_resource.hpp"
+#include "app_element.hpp"
 
 namespace kista {
 	
-hw_resource::hw_resource(sc_module_name name, resource_t type) : sc_module(name) {
+app_element::app_element(sc_module_name name, app_element_e type) : sc_module(name) {
 	address = this;
-	resource_type = type;
+	type = type;
 }
 
-resource_t hw_resource::get_type() {
-	return resource_type;
+app_element_e app_element::get_app_element_type() {
+	return type;
+}
+
+std::string app_element::name() {
+	return sc_module::name();  // name() sc_module method
 }
 	
-phy_address hw_resource::get_address() {
-	return this;
+logic_address app_element::get_address() {
+	return (logic_address)this;
 	//return (phy_address)this; // actually not required conversion, 
 	                            // (see types.hpp)
 }
 
-bool hw_resource::operator==(hw_resource& rha) {
-	if ( (this->address == rha.address) && (this->resource_type == rha.resource_type) ) return true;
+bool app_element::operator==(app_element& rha) {
+	if ( (this->address == rha.address) && (this->type == rha.type) ) return true;
 	else return false;
+}
+
+
+void app_element::set_scheduler(scheduler *scheduler_p)
+{
+	sched_p = scheduler_p;
+}
+
+scheduler* app_element::get_scheduler() {
+	return sched_p;
 }
 
 
