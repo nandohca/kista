@@ -16,27 +16,35 @@
 #ifndef HW_RESOURCE_CPP
 #define HW_RESOURCE_CPP
 
-hw_resource::hw_resource(resource_t type = PROCESSING_ELEMENT) {
+#include <systemc.h>
+
+#include "defaults.hpp"
+
+#include "hw_resource.hpp"
+
+namespace kista {
+	
+hw_resource::hw_resource(sc_module_name name, resource_t type) : sc_module(name) {
 	address = this;
-	type = type;
+	resource_type = type;
 }
 
-resource_t hw_resource::get_resource_type() {
-	return type;
+resource_t hw_resource::get_type() {
+	return resource_type;
 }
 	
-// return the pointer in memory to the object of the given type
-void* hw_resource::operator() {
-	return (void *)this;
+phy_address hw_resource::get_address() {
+	return this;
+	//return (phy_address)this; // actually not required conversion, 
+	                            // (see types.hpp)
 }
 
-void hw_resource*get_address() {
-	return (void *)this;
-}
-
-bool operator==(hw_resource& rha) {
-	if ( (this->address == rha.address) && (this->type == rha.type) ) return true;
+bool hw_resource::operator==(hw_resource& rha) {
+	if ( (this->address == rha.address) && (this->resource_type == rha.resource_type) ) return true;
 	else return false;
 }
+
+
+} // namespace kista
 
 #endif

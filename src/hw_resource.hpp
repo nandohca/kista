@@ -16,28 +16,37 @@
 #ifndef HW_RESOURCE_HPP
 #define HW_RESOURCE_HPP
 
+#include <systemc.h>
+
+#include "types.hpp"
+
+namespace kista {
+	
 enum resource_t {
 	PROCESSING_ELEMENT = 0,
 	MEMORY_RESOURCE =1
 };
 
-class hw_resource {
+class hw_resource: public sc_module {
 public:
 
-	hw_resource(resource_t type = PROCESSING_ELEMENT);
+	hw_resource(sc_module_name name, resource_t type);
 	
-	resource_t get_resource_type();
+	resource_t get_type();
 	
 	// return the pointer in memory to the object of the given type
-	void *operator ();
-	void *get_address();
-	
+	operator phy_address () {return get_address();}
+	phy_address get_address();
+		
 	// equality operator
 	bool operator==(hw_resource& rha);
 
 private:
 	void *address;
-	resource_t type;
+	resource_t resource_type;
 };
+
+
+} // namespace kista
 
 #endif
