@@ -19,11 +19,12 @@
 
 #include "defaults.hpp"
 
+#include "hw_resource.hpp"
 #include "comm_res/phy_comm_res.hpp"
 
 namespace kista {
 
-class memory_resource : public sc_module {
+class memory_resource : public hw_resource {
 
 public:
 	// constructor
@@ -40,23 +41,23 @@ public:
 	phy_comm_res_t* get_connected_comm_res();
 	
 	// This is to fix the delay (latency) which occurs regardless from the message size (0 by default)
-	void    set_access_time(sc_time access_time = SC_ZERO_TIME ); 	// current delay, message size in bits
+	void    set_access_time(sc_time access_time = SC_ZERO_TIME); 	// current delay, message size in bits
 	sc_time	get_access_time();
 	
 	// bandwidth determines the latency which depends on the data size transfer
 	// (the bus can be a limiting factor!!)
 	void set_bandwidth(double bps);
-	double get_bandwidth();
+	double get_bandwidth_bps();
 		
 private:
 
 	void before_end_of_elaboration();
 
 	sc_time latency;
-	unsigned int bandwidth;
+	unsigned int bandwidth_bps;
 	
 	phy_comm_res_t *bound_comm_res_p; // bound communication resource
-	string msg;
+	std::string msg;
 };
 
 

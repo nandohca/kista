@@ -333,6 +333,7 @@ bool link_t<address_type>::is_intracomm() const
 	return (this->src==this->dest);
 }
 
+
 #define _PRINT_LINK_ADDRESSES
 
 template<class address_type>
@@ -392,7 +393,7 @@ struct hash<link_t<address_type> > : public __hash_base<size_t, link_t<address_t
 
 //
 // Definition of a hash function for enabling matching through the (link, message size)
-// This way, a communication resource can cached attributes for a (link, message size) key
+// This way, a communication resource can cache attributes for a (link, message size) key
 //
 
 

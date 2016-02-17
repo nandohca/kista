@@ -27,6 +27,8 @@ namespace kista {
 sc_time global_sim_time(DEFAULT_SIM_TIME_NS,SC_NS);
 
 sketch_report_t sketch_report;
+// vebosity control
+bool global_verbosity;
 
  // by default, the modeller can build a model where all the system
  // tasks belong to single application
@@ -59,6 +61,7 @@ sched_set_t scheds;
 sched_set_by_name_t scheds_by_name;
 
 pe_set_t pes;
+mem_set_t mems;
 // Global hash table for fast access to processing element info by name
 // it is updated by each new PE created
 PE_by_name_t PEref_by_name;

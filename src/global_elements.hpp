@@ -24,6 +24,9 @@ namespace kista {
 extern sc_time global_sim_time;
 extern sketch_report_t sketch_report;
 
+// vebosity control
+extern bool global_verbosity;
+
  // by default, the modeller can build a model where all the system
  // tasks belong to single application
  // KisTA supports models where the system tasks can be clustered into
@@ -55,6 +58,7 @@ extern sched_set_t scheds;
 extern sched_set_by_name_t scheds_by_name;
 
 extern pe_set_t pes;
+extern mem_set_t mems;
 // Global hash table for fast access to processing element info by name
 // it is updated by each new PE created
 extern PE_by_name_t PEref_by_name;

@@ -7,6 +7,24 @@ RELEASE NOTES
 KisTA : KTH Infrastructure for SystemC Static and Simulation-based Time Analysis of concurrent applications on distributed and many-core embedded systems
 ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
+-----------------------------------------------------------------------------
+Numbering in the reports below correspond to commits on the GIT server svn server
+-----------------------------------------------------------------------------
+
+R70:
+------
+  - First version working on the VAD example after a re-work of the underlying
+    structure of the KisTA library to support a base application element and a
+    basic hw_resource.
+    This rework includes a first implementation of the shared_var communication
+    mechanism for the application model and of the memory_resource.
+    In fact, the aforementioned re-work is required to recognize PE-PE direct
+    links and PE-memory resource links, which can be associated to task-shared variable
+    logic elements in the application modelling.
+
+-----------------------------------------------------------------------------
+Numbering in the reports below correspond to commits on the KTH svn server
+-----------------------------------------------------------------------------
 Beyond R336
 ------------
 

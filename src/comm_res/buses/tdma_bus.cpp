@@ -837,9 +837,11 @@ void tdma_bus::before_end_of_elaboration() {
 	    // Following we could fill the static properties of each logic link
 	    // However, they are not so interesting, since in the TDMA case,
 	    // The response time depends on the size of the
-	    // message, which involves in any case the recalculation of 
-	    // the P2P delay for each invokation of the method Current...
-	    // or even Max, every call.
+	    // message (even for the worst-case delay), which involves in any case the recalculation of 
+	    // the P2P delay for each invokation of the any of the methods for
+	    // Current, and Max delay at every call.
+	    // What it is done is to calculate it at each get delay call
+	    // and cache the value
 	}
 */
 
@@ -850,7 +852,7 @@ void tdma_bus::before_end_of_elaboration() {
 	//
 	
 	// Following, completes the static timing characterization of the tdma bus for all
-	// the registeres physical links, given the slot allocation provided
+	// the registered physical links, given the slot allocation provided
 
 /*	
 	links_table_t::iterator link_it;
@@ -1116,7 +1118,7 @@ void tdma_bus::set_MaxP2Pdelay(phy_link_t &plink,
 	} 
 
  	comm_delay = calculate_MaxP2Pdelay(msg_size,slots_allocated);
- 			
+cout << "CALCULATED COMM DELAY max P2P DELAY " << comm_delay << endl; 			
 	// NOTE: 
 	//  Here it uses the inherited function of the comm_res base class
 	// caching of the delay value (for the given message size)
@@ -1124,7 +1126,7 @@ void tdma_bus::set_MaxP2Pdelay(phy_link_t &plink,
 	// message size and the number of slots allocated (fixed for each plink),
 	// so for each link, the delay depends only on the message size.
 	
-	set_MaxP2Pdelay(plink,comm_delay, msg_size);
+	phy_comm_res_t::set_MaxP2Pdelay(plink,comm_delay, msg_size);
 
 }
 

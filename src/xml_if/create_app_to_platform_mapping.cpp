@@ -51,7 +51,7 @@ task_info_t *getTaskInfoByName(std::vector<task_info_t*> &task_vec, const char *
 	std::string rpt_msg;
 	
 	for(i=0; i< task_vec.size() ; i++) {
-		if(!strcmp(task_vec[i]->name(),name)) {
+		if(!strcmp(task_vec[i]->name().c_str(),name)) {
 			return task_vec[i];
 		}
 	}

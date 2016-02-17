@@ -47,7 +47,8 @@ using namespace std;
 #define _VERBOSE_KISTA_XML
 
 // To control verbosity when KisTA and KisTA front-end (when the libraries are compiled to enable it)
-bool global_kista_verbosity;
+// extern bool kista::global_verbosity; // in kista.hpp
+
 bool global_kista_xml_verbosity;
 
 // For the moment, the plugin states at least N_hyperperiods
@@ -228,14 +229,15 @@ int sc_main(int argc, char **argv) {
 
 	// Read KisTA configuration
 	//-------------------------------------------------------
+	// configure the verbosity of the KisTA library from the XML front-end
+	kista::global_verbosity = get_configured_kista_verbosity(doc);
+
 	// configure verbosity of the KisTA-XML front-end
 	global_kista_xml_verbosity = get_configured_kista_xml_verbosity(doc);
 
-	global_kista_verbosity = get_configured_kista_verbosity(doc);
-
 	if(global_kista_xml_verbosity) {
 		cout << "KisTA-XML verbose." << endl;
-		if(global_kista_verbosity) cout << "KisTA verbose." << endl;
+		if(kista::global_verbosity) cout << "KisTA verbose." << endl;
 		else cout << "KisTA silent." << endl;
 	}
 

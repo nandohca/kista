@@ -45,7 +45,8 @@
 
 #include "global_elements.hpp"
 #include "kista_version.hpp"
-#include "processing_element.hpp"
+//#include "processing_element.hpp"
+#include "app_element.hpp"
 #include "application_t.hpp"
 #include "task_info_t.hpp"
 #include "link_t.hpp"
@@ -56,13 +57,16 @@
 #include "scheduler.hpp"
 #include "scheduler_penalties.hpp"
 #include "scheduling_time_calculators.hpp"
+#include "hw_resource.hpp"
 #include "processing_element.hpp"
+#include "memory_resource.hpp"
 // user tasks constructs
 #include "user_task_constructs.hpp"
 #include "mapped_links_t.hpp"
 
 //communication resource ( generic network)
-#include "comm_res/phy_link.hpp"
+#include "comm_res/phy_link_t.hpp"
+#include "comm_res/phy_link_info_t.hpp"
 #include "comm_res/comm_res.hpp"
 #include "comm_res/logic_comm_res.hpp"
 #include "comm_res/phy_comm_res.hpp"
@@ -136,6 +140,7 @@
 
 // templates (here while not separated compilation)
 #include "synch_comm/fifo_buffer.hpp"
+#include "synch_comm/shared_var.hpp"
 
 using namespace kista;
 

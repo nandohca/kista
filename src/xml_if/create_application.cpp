@@ -327,7 +327,7 @@ void getTaskProperties(xmlDocPtr doc,xmlNodePtr currNode, task_info_t *Task_info
 				SC_REPORT_ERROR("KisTA-XML",msg.c_str());
 			}
 			
-			if((!xmlStrcmp(TaskName,(xmlChar *)Task_info_ptr->name()))) { // found task properties for the task 
+			if((!xmlStrcmp(TaskName,(xmlChar *)Task_info_ptr->name().c_str()))) { // found task properties for the task 
 #ifdef _VERBOSE_KISTA_XML
 				if(global_kista_xml_verbosity) {
 					msg = "Read properties of task ";
@@ -383,7 +383,7 @@ void default_raw_functionality() {
 		current_task=sc_get_current_process_handle();		
         task_info_p  = task_info_by_phandle[current_task];
 //		sched_info_p = task_info_by_phandle[current_task]->get_scheduler();
-		printf("kista-XML INFO: Task %s : Default raw functionality at %s.\n",task_info_p->name(), sc_time_stamp().to_string().c_str());
+		printf("kista-XML INFO: Task %s : Default raw functionality at %s.\n",task_info_p->name().c_str(), sc_time_stamp().to_string().c_str());
 	}
 #endif		
 }
@@ -399,7 +399,7 @@ void default_collaborative_functionality() {
 	
 	while(true) {
 		if(global_kista_xml_verbosity) {
-			printf("kista-XML INFO: Task %s : Default collaborative functionality at %s.\n",task_info_p->name(), sc_time_stamp().to_string().c_str());
+			printf("kista-XML INFO: Task %s : Default collaborative functionality at %s.\n",task_info_p->name().c_str(), sc_time_stamp().to_string().c_str());
 		}
 		consume_WCET();
 		yield();

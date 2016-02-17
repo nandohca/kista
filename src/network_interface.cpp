@@ -94,12 +94,14 @@ void network_interface::request_sending(
 ) {
 	
 #ifdef _REPORT_NETIF_SEND_REQUESTS
-	std::string rpt_msg;
-	rpt_msg = "Request sending in PE ";
-	rpt_msg += owner_PE->name();
-	rpt_msg += " network interface at ";
-	rpt_msg += sc_time_stamp().to_string();
-	SC_REPORT_INFO("KisTA",rpt_msg.c_str());
+	if(kista::global_verbosity) {
+		std::string rpt_msg;
+		rpt_msg = "Request sending in PE ";
+		rpt_msg += owner_PE->name();
+		rpt_msg += " network interface at ";
+		rpt_msg += sc_time_stamp().to_string();
+		SC_REPORT_INFO("KisTA",rpt_msg.c_str());
+	}
 #endif
 	
 	// send_queue[sc_time_stamp()] = send_msg_req; // not possible in multimap, so we use the previously seen style
@@ -164,25 +166,26 @@ void network_interface::network_interface_proc() {
 			comm_delay = cur_msg_req.comm_res->get_CurrentP2Pdelay(*cur_msg_req.phy_link , cur_msg_req.message_size);
 		}
 
-#ifdef _REPORT_NETIF_DISPATCH		
-		msg = "Network interface of PE ";
-		msg += owner_PE->name();
-		msg = " start to send message for system-level comm&synch ";
-		msg += cur_msg_req.logic_link->get_link_name();
-		msg += " at ";
-		msg += sc_time_stamp().to_string();
+#ifdef _REPORT_NETIF_DISPATCH
+		if(kista::global_verbosity) {
+			msg = "Network interface of PE ";
+			msg += owner_PE->name();
+			msg += " start to send message for system-level comm&synch ";
+			msg += cur_msg_req.logic_link->get_link_name();
+			msg += " at ";
+			msg += sc_time_stamp().to_string();
 #ifdef _REPORT_COMMUNICATION_DELAYS
-		if(worst_case_communication_enabled) {
-			msg += " with maximum associated delay: ";
-			msg += comm_delay.to_string();
-			msg += "\n";
-		} else {
-			msg += " with current associated delay: ";
-			msg += comm_delay.to_string();
-			msg += "\n";						
+			if(worst_case_communication_enabled) {
+				msg += " with maximum associated delay: ";
+				msg += comm_delay.to_string();
+				msg += "\n";
+			} else {
+				msg += " with current associated delay: ";
+				msg += comm_delay.to_string();
+				msg += "\n";						
+			}
+#endif
 		}
-#endif		
-		SC_REPORT_INFO("KisTA",msg.c_str());
 #endif
 		
 		wait(comm_delay);

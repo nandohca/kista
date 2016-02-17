@@ -11,28 +11,23 @@ KisTA : KTH/K-th Infrastructure for SystemC Static and Simulation-based Time Ana
   All rights reserved by the authors (until further License definition)
 
   Author: F. Herrera
-  Institution: KTH
+  Institution: KTH, UC
   Deparment:   Electronic Systems
-  Date: 2013 February
+  Date: 2016 February
 ---------------------------------------------------------------------------------------------------------------------------------------------
 
 FEATURES:
-
-  - Light-weighted, SystemC-based (light dependencies)
+---------
+  - SystemC-based
   - Interface for exploration
 
 Modelling:
-  - CONCURRENT APPLICATIONS
+----------
+  - CONCURRENT APPLICATIONS and DEPENDENCIES (synchronizations) among application tasks  
   - Orientation FOR HARD REAL TIME analysis (response times, deadlines, utilizations, etc)
   - Architectural MAPPING and SCHEDULING policies
-		- Partitioned and global scheduling for MULTIPROCESSORS
-  - DEPENDENCIES (synchronizations) among application tasks    
-  - Platform SoC with NoC with Network:
-	specific target: TWO LEVELS NETWORK:
-			 - On chip network: NoC modelling (on chip network)
-			 - Off chip network: Generic
-                                 Domain Specific (Automotive) Flexray, TTEThernent, ... 
-                                                 (avionics) ARINX
+		- Partitioned scheduling for MULTIPROCESSORS 
+
   - Consideration of "Non-Idealities" 
 	- Scheduling times
 		- static or model
@@ -82,30 +77,40 @@ KisTA input:
 	- Scheduling policy
 
   - Platform:
-	- multiple processors (TBC)
+	- multiple processors
 
   - Architectural mapping
 	
   - Consideration of impact of Synchronization Communication among tasks accodding
-    to underlying platform: architecture and netowrk connection
-    on the architecture) (TBC)    
+    to underlying platform: architecture and network connection
+    on the architecture   
 
   - Network: (TBC)
      - generic
      - specific
-		- NoC (many-core SoC) (connection with NoC modelling tools)
 		- Predictable networks (TDMA)
-		- contention bus
+		- contention bus (in progress)
+		TO DO:
+		- NoC (many-core SoC) (connection with NoC modelling tools)
 		- wireless (connection with wireless modelling libraries)
 
 
+
+Some to does:
+  - global schedulers  
+  - Platform SoC with NoC with Network:
+	specific target: TWO LEVELS NETWORK:
+			 - On chip network: NoC modelling (on chip network)
+			 - Off chip network: Generic
+                                 Domain Specific (Automotive) Flexray,  
+                                                 (avionics) ARINX
 KisTA output:
 ----------------
 
 Static Analysis:
 -----------------
  - Utilizations, Densities
- - Schedulability analysis, configuration aware (TBC)
+ - Schedulability analysis, configuration aware
 
 SIMULATION REPORTS:
 -------------------
@@ -124,10 +129,13 @@ SIMULATION REPORTS:
 
   - Facilities for Capturing (Time) Performance Constraints (TBC)
 
-  - Throughtput (TBC)
+  - Throughtput (total and in stationary state)
 
   - Task State Traces
 		- Detailed traces
+
+  - Wave traces
+
 
 KisTA interface (TBC):
   - XML interface with exploration tool

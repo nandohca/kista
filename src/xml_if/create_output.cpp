@@ -230,7 +230,7 @@ void create_MULTICUBE_full_output(char *xml_out_file, vector<scheduler*> &RTOS, 
 		node = xmlNewChild(root_node, NULL, (xmlChar *)"system_metric", NULL);
 		metric_name = metric_name_base + "utilization";
 		xmlNewProp(node,(xmlChar *)"name", (xmlChar *)metric_name.c_str());
-		double_value = app_task[i]->get_scheduler()->get_task_utilization(app_task[i]->name());
+		double_value = app_task[i]->get_scheduler()->get_task_utilization(app_task[i]->name().c_str());
 		value_string = ext_to_string(double_value);
 		xmlNewProp(node,(xmlChar *)"value", (xmlChar *)value_string);
 
@@ -431,7 +431,7 @@ void create_MULTICUBE_selected_output(char *xml_out_file, char *smd_file_name,
 			
 			// get the task
 			for(i=0;i<app_task.size();i++) {
-				if(!strcmp(curr_tok,app_task[i]->name())) {
+				if(!strcmp(curr_tok,app_task[i]->name().c_str())) {
 					found_elem_with_metric = true;
 					curr_task = app_task[i];
 					break;
@@ -448,7 +448,7 @@ void create_MULTICUBE_selected_output(char *xml_out_file, char *smd_file_name,
 			curr_tok = strtok(NULL,"/");
 			
 			if(!strcmp(curr_tok,"utilization")) {
-				double_value = curr_task->get_scheduler()->get_task_utilization(curr_task->name());
+				double_value = curr_task->get_scheduler()->get_task_utilization(curr_task->name().c_str());
 				value_string = ext_to_string(double_value);				
 				xmlNewProp(node,(xmlChar *)"value", (xmlChar *)value_string);
 			} else if (!strcmp(curr_tok,"avg_response_time")) {
@@ -1331,8 +1331,8 @@ void create_KisTA_XML_output(char *xml_out_file, vector<scheduler*> &RTOS, vecto
 
     for(unsigned int i=0; i<app_task.size(); i++) {
 		node = xmlNewChild(root_node, NULL, (xmlChar *)"task_rpt", NULL);
-		xmlNewChild(node, NULL, (xmlChar *)"name", (xmlChar *)app_task[i]->name());	
-		xmlNewChild(node, NULL, (xmlChar *)"task_utilization", (xmlChar *)to_string(app_task[i]->get_scheduler()->get_task_utilization(app_task[i]->name())).c_str() );
+		xmlNewChild(node, NULL, (xmlChar *)"name", (xmlChar *)app_task[i]->name().c_str());	
+		xmlNewChild(node, NULL, (xmlChar *)"task_utilization", (xmlChar *)to_string(app_task[i]->get_scheduler()->get_task_utilization(app_task[i]->name().c_str())).c_str() );
 		
 //		xmlNewChild(node, NULL, (xmlChar *)"avg_response_time", (xmlChar *)app_task[i]->avg_response_time().to_string().c_str() );
 // avg_response_time not implemented yet

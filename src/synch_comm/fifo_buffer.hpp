@@ -386,19 +386,23 @@ fifo_buffer<T>::read( T& val_ )
 	// collect write event if write throughput monitoring has been enabled
 
 #ifdef _REPORT_SYSTEM_COMMUNICATION_READ_ACCESSES
-	if(this->role==SYSTEM_COMMSYNCH ) {
-		report_channel_event("Internal READ ACCESS");
+	if(global_verbosity) {
+		if(this->role==SYSTEM_COMMSYNCH ) {
+			report_channel_event("Internal READ ACCESS");
+		}
 	}
 #endif
 
 #ifdef _REPORT_IO_READ_ACCESS
-	if( this->role==IO_COMMSYNCH ) {
-		if(this->io_sense==INPUT ) {
-			report_channel_event("IO INPUT READ ACCESS");
-		} else if (this->io_sense==OUTPUT ) {
-			report_channel_event("IO OUTPUT READ ACCESS");
-		}
-	} // no report for environment channels (internal to the environment)		
+	if(global_verbosity) {
+		if( this->role==IO_COMMSYNCH ) {
+			if(this->io_sense==INPUT ) {
+				report_channel_event("IO INPUT READ ACCESS");
+			} else if (this->io_sense==OUTPUT ) {
+				report_channel_event("IO OUTPUT READ ACCESS");
+			}
+		} // no report for environment channels (internal to the environment)		
+	}
 #endif
 	
 	if (this->role==SYSTEM_COMMSYNCH) {
@@ -419,9 +423,8 @@ fifo_buffer<T>::read( T& val_ )
 			// and if the write is delegated to a network inteface or not,
 			// the read is releases when the transfer is completed
 			
-			// Since it might happen that the transfer is completed before 
-			// the reader task is accessing, the wait call has to be called
-			// only if the reader has arrived at this point before a transfer is completed
+			// The wait call to the completed_transactions semaphore has to be done
+			// for the case the reader  arrives at this point before at least one transfer is completed
 			
 			// That requires that the logic link has associated not only an event,
 			// but a storage variable which nows if one transfer has been completed
@@ -484,16 +487,20 @@ fifo_buffer<T>::read( T& val_ )
 	}
 
 #ifdef _REPORT_SYSTEM_COMMUNICATION_READ_COMPLETION
-	if (this->role==SYSTEM_COMMSYNCH) {
-		report_channel_event("READ COMPLETION");
+	if(global_verbosity) {
+		if (this->role==SYSTEM_COMMSYNCH) {
+			report_channel_event("READ COMPLETION");
+		}
 	}
 #endif	
 #ifdef _REPORT_IO_READ_COMPLETION
-	if( this->role==IO_COMMSYNCH ) {
-		if(this->io_sense==INPUT ) {
-			report_channel_event("IO INPUT READ COMPLETION");
-		} else if (this->io_sense==OUTPUT ) {
-			report_channel_event("IO OUTPUT READ COMPLETION");
+	if(global_verbosity) {
+		if( this->role==IO_COMMSYNCH ) {
+			if(this->io_sense==INPUT ) {
+				report_channel_event("IO INPUT READ COMPLETION");
+			} else if (this->io_sense==OUTPUT ) {
+				report_channel_event("IO OUTPUT READ COMPLETION");
+			}
 		}
 	}
 #endif
@@ -547,11 +554,13 @@ fifo_buffer<T>::initial_write( const T& val_ )
 		if( assoc_plink.resolved() ) {
 			completed_transactions->post();
 		}	
-#ifdef _REPORT_INIT_TOKENS_INJECTION		
-		msg = "Initial write in channel ";
-		msg += this->name();
-		msg += " completed.";
-		SC_REPORT_INFO("KisTA",msg.c_str());
+#ifdef _REPORT_INIT_TOKENS_INJECTION
+		if(global_verbosity) {		
+			msg = "Initial write in channel ";
+			msg += this->name();
+			msg += " completed.";
+			SC_REPORT_INFO("KisTA",msg.c_str());
+		}
 #endif				
 	} else {
 		msg = "Injecting initial tokens in channel ";
@@ -592,22 +601,32 @@ fifo_buffer<T>::write( const T& val_ )
 	
 	sc_time				comm_delay;
 	
+	processing_element	*pe_src;
+	
 #ifdef _REPORT_SYSTEM_COMMUNICATION_WRITE_ACCESSES
-	if(this->role==SYSTEM_COMMSYNCH ) {
-		report_channel_event("WRITE ACCESS");
+	if(global_verbosity) {
+		if(this->role==SYSTEM_COMMSYNCH ) {
+			report_channel_event("WRITE ACCESS");
+		}
 	}
 #endif
 
 #ifdef _REPORT_IO_WRITE_ACCESS
-	if( this->role==IO_COMMSYNCH ) {
-		if(this->io_sense==INPUT ) {
-			report_channel_event("IO INPUT WRITE ACCESS");
-		} else if (this->io_sense==OUTPUT ) {
-			report_channel_event("IO OUTPUT WRITE ACCESS");
-		}		
-	} // no report for environment channels (internal to the environment)		
+	if(global_verbosity) {
+		if( this->role==IO_COMMSYNCH ) {
+			if(this->io_sense==INPUT ) {
+				report_channel_event("IO INPUT WRITE ACCESS");
+			} else if (this->io_sense==OUTPUT ) {
+				report_channel_event("IO OUTPUT WRITE ACCESS");
+			}		
+		} // no report for environment channels (internal to the environment)		
+	}
 #endif
+
+
+	// for scheduling simulation in case it is a system communication
 	
+		
 	if(this->role==SYSTEM_COMMSYNCH) {		
 		 // it is a system channel
 		current_task=sc_get_current_process_handle();
@@ -644,48 +663,85 @@ fifo_buffer<T>::write( const T& val_ )
 #ifdef _CONSIDER_COMMUNICATION_DELAYS
 
 #ifdef _REPORT_COMMUNICATION_DELAYS
-		// now access the communication resource (which could require schedulable)
-		rpt_msg = "Channel: ";
-		rpt_msg += this->name();
-		rpt_msg += " WRITE access ";
-		// by now uses the physical link
-		rpt_msg += "(msg. size : ";
-		rpt_msg += std::to_string(message_size);
-		rpt_msg += " bits)\n";
+		if(global_verbosity) {
+			// now access the communication resource (which could require schedulable)
+			rpt_msg = "Channel: ";
+			rpt_msg += this->name();
+			rpt_msg += " WRITE access ";
+			// by now uses the physical link
+			rpt_msg += "(msg. size : ";
+			rpt_msg += std::to_string(message_size);
+			rpt_msg += " bits)\n";
+		}
 #endif
 
 		// Only if there is a resolved physical link associated to the system level channel a delay will be associated to it		
 		if( assoc_plink.resolved() ) {
-			if( assoc_plink.is_intracomm() ) { // is_intracomm function is provided by link class, for the physical link, it means an intranode comm
-											// constant delay can be configured, but this method can be configured
-											// to support more complex models of intra-node delay depending on the PE architecture
-				comm_delay = assoc_plink.src->getIntraComMaxP2Pdelay(message_size);
+			if( is_PE_intracomm(assoc_plink) ) {
+				if(assoc_plink.src->get_type()!=PROCESSING_ELEMENT) {
+					rpt_msg = "Channel: ";
+					rpt_msg += this->name();
+					rpt_msg += " WRITE access ";
+					// by now uses the physical link
+					rpt_msg += "(msg. size : ";
+					rpt_msg += std::to_string(message_size);
+					rpt_msg += " bits)\n";
+					rpt_msg += ". Internal communication not associated to a processing element";
+					SC_REPORT_ERROR("KisTA",rpt_msg.c_str());
+				}
+				
+				 // communicattion within the PE
+				 // is_PE_intracomm function is provided by link class, for the physical link, it means an intranode comm
+				 // constant delay can be configured, but this method can be configured
+				 // to support more complex models of intra-node delay depending on the PE architecture
+				//comm_delay = assoc_plink.src->getIntraComMaxP2Pdelay(message_size);
+				pe_src = static_cast<processing_element *>(assoc_plink.src);
+				comm_delay = pe_src->getIntraComMaxP2Pdelay(message_size);
 				
 #ifdef _REPORT_COMMUNICATION_DELAYS
-				rpt_msg += "\tinvolves intracomunication in PE ";
-				rpt_msg +=  assoc_plink.src->name();
-				rpt_msg += ", associated delay: ";
-				rpt_msg +=  comm_delay.to_string();
-				rpt_msg += "\n";
+				if(global_verbosity) {
+					rpt_msg += "\tinvolves intracomunication in PE ";
+					rpt_msg +=  assoc_plink.src->name();
+					rpt_msg += ", associated delay: ";
+					rpt_msg +=  comm_delay.to_string();
+					rpt_msg += "\n";
+				}
 #endif
 				wait( comm_delay );
 				completed_transactions->post();
-			} else {
-
+			} else if(is_PE_PE_comm(assoc_plink)) {
+				// the logic fifo communication is supported by a direct PE to PE link (e.g. TDMA channel, fast link, ...)
 #ifdef _REPORT_COMMUNICATION_DELAYS
-				rpt_msg += "\tinvolves communication over the physical link (";
-				rpt_msg += assoc_plink.src->name();
-				rpt_msg += ",";
-				rpt_msg +=  assoc_plink.dest->name();
-				rpt_msg += ")";
+				if(global_verbosity) {
+					rpt_msg += "\tinvolves communication over the physical link (";
+					rpt_msg += assoc_plink.src->name();
+					rpt_msg += ",";
+					rpt_msg +=  assoc_plink.dest->name();
+					rpt_msg += ")";
+				}
 #endif	
 				
-				if(assoc_plink.src->has_netif()) {
+				//if(assoc_plink.src->has_netif()) {
+				if(assoc_plink.src->get_type()!=PROCESSING_ELEMENT) {
+					rpt_msg = "Channel: ";
+					rpt_msg += this->name();
+					rpt_msg += " WRITE access ";
+					// by now uses the physical link
+					rpt_msg += "(msg. size : ";
+					rpt_msg += std::to_string(message_size);
+					rpt_msg += " bits)\n";
+					rpt_msg += ". PE-PE communication. Source PE not associated to a processing element";
+					SC_REPORT_ERROR("KisTA",rpt_msg.c_str());
+				}					
+				pe_src=static_cast<processing_element *>(assoc_plink.src);
+				if(pe_src->has_netif()) {
 #ifdef _REPORT_COMMUNICATION_DELAYS
+				if(global_verbosity) {
 					rpt_msg += "Communication delegated to network interface.\n";
+				}
 #endif
 
-					// note: this declaration and at least three of the followin assignatiosn can be likely moved
+					// note: this declaration and at least three of the following assignatiosn can be likely moved
 					//       to improve efficiency
 					send_message_request_t send_message_request;
 					
@@ -698,7 +754,8 @@ fifo_buffer<T>::write( const T& val_ )
 
 					// The source processing element (src physical address) has network interface
 					// Then, the processing resources of the PE, and so the task can get released from the communication delay
-					assoc_plink.src->get_netif()->request_sending(send_message_request);
+					//assoc_plink.src->get_netif()->request_sending(send_message_request);
+					pe_src->get_netif()->request_sending(send_message_request);
 
 					// now, for the reader side the delay is 0 (infinite buffer) or some delay depending the buffer capability
 					// and the number of requests
@@ -717,20 +774,29 @@ fifo_buffer<T>::write( const T& val_ )
 					}
 
 #ifdef _REPORT_COMMUNICATION_DELAYS
-					rpt_msg += "Communication performed by PE.\n";
-					if(worst_case_communication_enabled) {
-						rpt_msg += " with maximum associated delay: ";
-						rpt_msg += comm_delay.to_string();
-						rpt_msg += "\n";
-					} else {
-						rpt_msg += " with current associated delay: ";
-						rpt_msg += comm_delay.to_string();
-						rpt_msg += "\n";						
+					if(global_verbosity) {
+						rpt_msg += "Communication performed by PE.\n";
+						if(worst_case_communication_enabled) {
+							rpt_msg += " with maximum associated delay: ";
+							rpt_msg += comm_delay.to_string();
+							rpt_msg += "\n";
+						} else {
+							rpt_msg += " with current associated delay: ";
+							rpt_msg += comm_delay.to_string();
+							rpt_msg += "\n";						
+						}
 					}
 #endif					
 					wait( comm_delay );
 					completed_transactions->post();
 				}
+			} else {
+				rpt_msg = "Channel: ";
+				rpt_msg += this->name();
+				rpt_msg += " in WRITE access .";
+				// by now uses the physical link
+				rpt_msg += " The channel is associated to a physical link currently not supported for a fifo channel type.\n";
+				SC_REPORT_ERROR("KisTA",rpt_msg.c_str());
 			}
 		}		
 		
@@ -738,7 +804,9 @@ fifo_buffer<T>::write( const T& val_ )
 		else {
 			rpt_msg += "\tAssociated physical link not resolved. No delay will be associated to the transaction.";
 		}
-		SC_REPORT_INFO("KisTA",rpt_msg.c_str());
+		if(global_verbosity) {		
+			SC_REPORT_INFO("KisTA",rpt_msg.c_str());
+		}
 #endif
 
 #endif
@@ -768,16 +836,20 @@ fifo_buffer<T>::write( const T& val_ )
 	}
 	
 #ifdef _REPORT_SYSTEM_COMMUNICATION_WRITE_COMPLETION
-	if (this->role==SYSTEM_COMMSYNCH) {
-		report_channel_event("WRITE COMPLETION");
+	if(global_verbosity) {
+		if (this->role==SYSTEM_COMMSYNCH) {
+			report_channel_event("WRITE COMPLETION");
+		}
 	}
 #endif	
 #ifdef _REPORT_IO_WRITE_COMPLETION
-	if( this->role==IO_COMMSYNCH ) {
-		if(this->io_sense==INPUT ) {
-			report_channel_event("IO INPUT WRITE COMPLETION");
-		} else if (this->io_sense==OUTPUT ) {
-			report_channel_event("IO OUTPUT WRITE COMPLETION");
+	if(global_verbosity) {
+		if( this->role==IO_COMMSYNCH ) {
+			if(this->io_sense==INPUT ) {
+				report_channel_event("IO INPUT WRITE COMPLETION");
+			} else if (this->io_sense==OUTPUT ) {
+				report_channel_event("IO OUTPUT WRITE COMPLETION");
+			}
 		}
 	}
 #endif
@@ -832,6 +904,8 @@ template <class T>
 void fifo_buffer<T>::end_of_elaboration() {
 	
 	std::string rpt_msg;
+	processing_element *pe_src;
+	
 	
 	// Calculate (if required) message size associated to tokens...
 	rpt_msg = "Channel ";
@@ -875,31 +949,32 @@ void fifo_buffer<T>::end_of_elaboration() {
 		// if at least one has been declared in the model and if there is not association yet...
 		//
 		if(phy_commres_by_name.size()>0) {
-			
-			if(assoc_comm_res_p==NULL) {			
-				auto_map();
-			}
-
 			// Only if the user has declared some instance of communication resource
 			// the KisTA library will try to resolve the binding of the logical link
 			// associated to the system-level channel to the physical link mapped to
 			// an associated communication resource, which is then tried to be extracted
 			// at the end of elaboration phase as a last chance
-			if(assoc_comm_res_p == NULL) {
-				rpt_msg = "Automatic mapping from channel ";
-				rpt_msg += this->name();
-				rpt_msg += " to a communication resource failed.";
-				SC_REPORT_ERROR("KisTA",rpt_msg.c_str());
-			}
+			if(assoc_comm_res_p==NULL) {			
+				auto_map();
+				
+				if(assoc_comm_res_p == NULL) {
+					rpt_msg = "No mapping of the channel ";
+					rpt_msg += this->name();
+					rpt_msg += " to a communication resource was specified and automatic mapping failed.";
+					SC_REPORT_ERROR("KisTA",rpt_msg.c_str());
+				}
 #ifdef _REPORT_AUTOMATIC_CHANNEL_MAPPINGS
-			else {
-				rpt_msg = "Automatic association (-auto map- call) of channel ";
-				rpt_msg += this->name();				
-				rpt_msg += " to communication resource ";
-				rpt_msg += assoc_comm_res_p->name();
-				SC_REPORT_INFO("KisTA",rpt_msg.c_str());
-			}	
-		
+				else {
+					rpt_msg = "Automatic association (-auto map- call) of channel ";
+					rpt_msg += this->name();				
+					rpt_msg += " to communication resource ";
+					rpt_msg += assoc_comm_res_p->name();
+					SC_REPORT_INFO("KisTA",rpt_msg.c_str());
+				}
+#endif							
+			}
+
+#ifdef _REPORT_CHANNEL_MAPPINGS		
 			// ... and report the final state of the association
 			// system-level channel (logic-link) - communication resource (physical link)
 			rpt_msg = "Channel ";
@@ -934,10 +1009,22 @@ void fifo_buffer<T>::end_of_elaboration() {
 			// which will handle a static message size in its transaction, so
 			// specially if the physical channel is time invariant, this will let cache
 			// this data and speed up simulation
-			if( assoc_plink.is_intracomm() ) { 
-				assoc_comm_res_p->set_MaxP2Pdelay(assoc_plink,assoc_plink.src->getIntraComMaxP2Pdelay(message_size),message_size);
-			} else {
+			if( is_PE_intracomm(assoc_plink) ) { 
+				if(assoc_plink.src->get_type()!=PROCESSING_ELEMENT) {
+					rpt_msg += ". Internal communication not associated to a processing element (at end of elaboration)";
+					SC_REPORT_ERROR("KisTA",rpt_msg.c_str());
+				}
+				pe_src=static_cast<processing_element *>(assoc_plink.src);
+				assoc_comm_res_p->set_MaxP2Pdelay(assoc_plink,pe_src->getIntraComMaxP2Pdelay(message_size),message_size);
+				//assoc_comm_res_p->set_MaxP2Pdelay(assoc_plink,assoc_plink.src->getIntraComMaxP2Pdelay(message_size),message_size);
+			} else if ( is_PE_PE_comm(assoc_plink) ) {
+				//	While Debugging comment: it seems this calls the virtual method of the base comm_res and not of the 
+				//  tdma bus : Why!!!			
+				//assoc_comm_res_p->set_MaxP2Pdelay(assoc_plink,message_size);
 				assoc_comm_res_p->set_MaxP2Pdelay(assoc_plink,message_size);
+				 // This still sets not time, but only creates the info for this link
+			} else {								
+				// no kind of association
 			}
 						
 			// Register the logic link association to the physical link
@@ -956,16 +1043,25 @@ void fifo_buffer<T>::end_of_elaboration() {
 
 		//
 		if(assoc_plink.src!=NULL) { // if there is PE (a src phy. address on the associated phy link
-			if(assoc_plink.src->has_netif()) {
+			if(assoc_plink.src->get_type()!=PROCESSING_ELEMENT) {
+				rpt_msg += ". At end of elaboration";
+				SC_REPORT_ERROR("KisTA",rpt_msg.c_str());
+			}
+			pe_src=static_cast<processing_element *>(assoc_plink.src);
+
+			//if(assoc_plink.src->has_netif()) {
+			if(pe_src->has_netif()) {
 #ifdef _REPORT_FIFO_BUFFER_NETIF_DETECT_WRITER_PE
 				rpt_msg = "The fifo_buffer system-level channel ";
 				rpt_msg += this->name();
 				rpt_msg += " is associated to a physical link where the source physical address is  PE ";
 				rpt_msg += assoc_plink.src->name();
 				rpt_msg += ", which has a network interface ";
-				if(assoc_plink.src->get_netif()->finite_tx_buffer()) {
+				//if(assoc_plink.src->get_netif()->finite_tx_buffer()) {
+				if(pe_src->get_netif()->finite_tx_buffer()) {
 					rpt_msg += "with a TX buffer of ";
-					rpt_msg += std::to_string(assoc_plink.src->get_netif()->get_tx_buffer_size());
+					//rpt_msg += std::to_string(assoc_plink.src->get_netif()->get_tx_buffer_size());
+					rpt_msg += std::to_string(pe_src->get_netif()->get_tx_buffer_size());
 					rpt_msg += " bits. This means that the channel can eventually block in the writing side,";
 					rpt_msg += " as long as there are other tasks writting in the same procesor and the buffer gets full.";
 				} else {
@@ -1144,6 +1240,8 @@ void fifo_buffer<T>::auto_map() {
 	
 	std::string rpt_msg;
 	
+	processing_element *pe_src;
+	
 //	phy_address phy_src, phy_dest;
 
 	// For a direct allocation of resources
@@ -1161,7 +1259,19 @@ void fifo_buffer<T>::auto_map() {
 		if(assoc_plink.resolved()) {
 		// same as
 		// if((assoc_plink.src!=NULL) && (assoc_plink.dest==NULL)) {
-			assoc_comm_res_p = assoc_plink.src->get_connected_comm_res();
+			//assoc_comm_res_p = assoc_plink.src->get_connected_comm_res();
+			// no instead
+			if(assoc_plink.src->get_type()!=PROCESSING_ELEMENT) {
+				rpt_msg = "Automap for fifo_buffer channel \"";
+				rpt_msg += this->name();
+				rpt_msg += "\" provocked failure, despite the associated physical link is resolved, the source HW resource \"";
+				rpt_msg += assoc_plink.src->name();
+				rpt_msg += "\" is not a processing element (at auto map)";
+				SC_REPORT_ERROR("KisTA",rpt_msg.c_str());
+			}
+			pe_src=static_cast<processing_element *>(assoc_plink.src);
+			assoc_comm_res_p = pe_src->get_connected_comm_res();
+			
 		} else  {
 #ifdef _REPORT_FIFO_BUFFER_AUTOMAP_FAILURE		
 			rpt_msg = "Automap for channel ";
@@ -1237,12 +1347,12 @@ void fifo_buffer<T>::report_channel_event(std::string event_description) {
 	std::string rpt_msg;
 	if (this->role==SYSTEM_COMMSYNCH) {
 		// now access the communication resource (which could require schedulable)
-		rpt_msg = "INTERNAL Channel: ";
+		rpt_msg = "INTERNAL Channel \"";
 	} else if (this->role==IO_COMMSYNCH) {
-		rpt_msg = "I/O Channel: ";
+		rpt_msg = "I/O Channel \"";
 	}
 	rpt_msg += this->name();
-	rpt_msg += " ";
+	rpt_msg += "\": ";
 	rpt_msg += event_description;
 	rpt_msg += " at ";
 	rpt_msg += sc_time_stamp().to_string();

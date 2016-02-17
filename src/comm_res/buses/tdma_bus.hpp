@@ -36,7 +36,7 @@
 #include "defaults.hpp"
 #include "types.hpp"
 
-#include "comm_res/phy_link.hpp"
+#include "comm_res/phy_link_t.hpp"
 #include "comm_res/phy_comm_res.hpp"
 
 #include <list>
@@ -159,7 +159,7 @@ public:
 	             // it can be the case of the TDMA buses.
 	
 	// Overload of setters independent on the specific value
-	using phy_comm_res_t::set_MaxP2Pdelay; // this is required to enable the use of the non-overloaded methods with the same function name
+	//using phy_comm_res_t::set_MaxP2Pdelay; // this is required to enable the use of the non-overloaded methods with the same function name
 	
 	void set_MaxP2Pdelay(phy_address src, phy_address dest, unsigned int msg_size=1);
 	void set_MaxP2Pdelay(phy_link_t &link, unsigned int msg_size=1);

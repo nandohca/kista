@@ -168,11 +168,13 @@ void Liu_and_Layland_bound(const taskset_by_name_t *assigned_tasks) {
 
 void precise_bound(const taskset_by_name_t *assigned_tasks) {
 		std::string msg;
-	double assigned_tasks_utilization;
+	/*
+	 * double assigned_tasks_utilization;
 	unsigned int N_int;
 	double N;
 	
 	double bound;
+	*/
 	
 	msg = "Precise schedulability_analysis ...";
 

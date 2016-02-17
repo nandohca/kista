@@ -16,7 +16,7 @@
 #define MAPPED_LINKS_T_HPP
 
 #include "logic_link.hpp"
-#include "comm_res/phy_link.hpp"
+#include "comm_res/phy_link_t.hpp"
 
 namespace kista {
 

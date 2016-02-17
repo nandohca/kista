@@ -19,6 +19,8 @@
 
 #include "logic_link.hpp"
 
+#include "task_info_t.hpp"
+
 namespace kista {
 
 
@@ -78,14 +80,14 @@ logic_address get_address_by_elem_name<logic_address>(std::string elem_name) {
 	task_info_it = task_info_by_name.find(elem_name);
 	
 	// if found, it returns the logic address of the system task
-	if(task_info_it != task_info_by_name.end()) return (logic_address)task_info_it->second;
+	if(task_info_it != task_info_by_name.end()) return task_info_it->second->get_address();
 	
 	// Reaching this point means that no task with such a name is found in the system task set,
 	// so it tries to find it in the environment set
 	
 	task_info_it = env_tasks_by_name.find(elem_name);
 	
-	if(task_info_it != env_tasks_by_name.end()) return task_info_it->second; // logic_address is task_base_t pointer
+	if(task_info_it != env_tasks_by_name.end()) return task_info_it->second->get_address(); // logic_address is task_base_t pointer
 	else {
 		msg = "Logic address (task info pointer) could not be obtained for task ";
 		msg += elem_name;

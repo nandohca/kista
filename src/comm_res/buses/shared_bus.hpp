@@ -31,7 +31,7 @@
 #include "defaults.hpp"
 #include "types.hpp"
 
-#include "comm_res/phy_link.hpp"
+#include "comm_res/phy_link_t.hpp"
 #include "comm_res/phy_comm_res.hpp"
 
 #include <list>

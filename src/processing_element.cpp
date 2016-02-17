@@ -28,7 +28,7 @@
 namespace kista {
 
 // constructor
-processing_element::processing_element(sc_module_name name) : sc_module(name) {
+processing_element::processing_element(sc_module_name name) : hw_resource(name, PROCESSING_ELEMENT) {
 //	std::string busy_sig_name= this->name();
 //	busy_sig_name += "busy_sig";
 	
@@ -52,7 +52,7 @@ processing_element::processing_element(sc_module_name name) : sc_module(name) {
 	PEref_by_name[PE_name]=this;
 	
 	bound_comm_res_p = NULL;
-};
+}
 
 void processing_element::set_clock_period_ns(unsigned int cloc_period_ns_var) {
 	std::string rpt_msg;
@@ -113,6 +113,7 @@ network_interface* processing_element::get_netif() {
 }
 	
 void processing_element::connect(phy_comm_res_t *bound_comm_res_par) {	//
+	std::string msg;
 	if((bound_comm_res_p != NULL) &&
 		(bound_comm_res_par != bound_comm_res_p)
 	  ) {

@@ -20,11 +20,12 @@
 #include "defaults.hpp"
 
 #include "comm_res/phy_comm_res.hpp"
+#include "hw_resource.hpp"
 #include "network_interface.hpp"
 
 namespace kista {
 
-class processing_element : public sc_module {
+class processing_element :  public hw_resource {
 	// advanced declarations:
 //	class phy_comm_res_t; 
 

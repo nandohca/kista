@@ -28,7 +28,7 @@
 namespace kista {
 
 // constructor
-memory_resource::memory_resource(sc_module_name name) : sc_module(name)
+memory_resource::memory_resource(sc_module_name name) : hw_resource(name, MEMORY_RESOURCE)
 {
 	std::string mem_name;
 	mem_name = this->name();
@@ -67,7 +67,7 @@ phy_comm_res_t* memory_resource::get_connected_comm_res()
 
 	
 // This is to fix the delay (latency) , modelled as independent from message size
-void memory_resource::set_access_time(sc_time access_time = SC_ZERO_TIME ) // current delay, message size in bits
+void memory_resource::set_access_time(sc_time access_time) // current delay, message size in bits
 {
 	latency = access_time;
 }
@@ -79,15 +79,15 @@ sc_time	memory_resource::get_access_time()
 	
 void memory_resource::set_bandwidth(double bps)
 {
-	bandwidth = bps;
+	bandwidth_bps = bps;
 }
 
-double memory_resource::get_bandwidth()
+double memory_resource::get_bandwidth_bps()
 {
-	return bandwidth;
+	return bandwidth_bps;
 }
 
-void processing_element::before_end_of_elaboration()  {
+void memory_resource::before_end_of_elaboration()  {
 	// allows drawing it
 	sketch_report.draw(this);
 }

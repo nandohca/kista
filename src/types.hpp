@@ -21,6 +21,10 @@
 
 #include "systemc.h"
 
+//#include "app_element.hpp"
+// forward declaration
+
+
 namespace kista {
 
 // forward declarations
@@ -28,14 +32,32 @@ namespace kista {
 class sketch_report_t;
 class application_t;
 class task_info_t;
-typedef task_info_t* logic_address;  		// let define task links
+class app_element;
+ 
+//typedef task_info_t* logic_address;  	// let define task links
+typedef app_element* logic_address;  	// let define links between application elements, 
+										// that is on abstract model/application elements
+										// It is not an address of a logical memory map
+										// but an univoque identifier of a logica
+										// processing unit of an application model, e.g. task
+											
 template<class address_type> class link_t;
 typedef link_t<logic_address> logic_link_t;
 class logic_link_info_t;
+
+class hw_resource;
 class processing_element;
 class memory_resource;
-typedef processing_element*	  phy_address;	// let define PE links 
+
+typedef hw_resource* phy_address;	// let define links among resources, i.e.
+											// PE-PE or PE-MEM
+											// It is not an address of a physical memory map
+											// but an univoque identifier of a hardware resource
+// now a phy_address class with its own class definition
 typedef link_t<phy_address>   phy_link_t;
+// now, associated functions in phy_link_t.hpp, specialization in phy_link.h /cpp
+//class phy_link_t;
+
 class scheduler;
 class phy_comm_res_t;
 class tdma_bus;
@@ -95,7 +117,8 @@ typedef std::map<std::string, scheduler*> 			sched_set_by_name_t;
 
 typedef std::vector<processing_element*> 			pe_set_t;
 typedef std::vector<phy_comm_res_t*> 				phy_commres_set_t;
-typedef std::vector<tdma_bus*> 					tdma_bus_set_t;
+typedef std::vector<tdma_bus*> 						tdma_bus_set_t;
+typedef std::vector<memory_resource*> 				mem_set_t;
 
 
 // typedefs for channel types
@@ -140,7 +163,7 @@ typedef std::map<std::string, fifo_buffer<message_t> *>           fifo_buffer_me
 class send_message_request_t {
 public:
 
-// the request id is defined bcomes with the destination PE,
+// the destination PE take as request id
 	logic_link_info_t	*logic_link;
 	phy_comm_res_t		*comm_res;
 	phy_link_t			*phy_link;

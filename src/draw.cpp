@@ -15,7 +15,9 @@
 #include "application_t.hpp"
 #include "scheduler.hpp"
 #include "processing_element.hpp"
+#include "memory_resource.hpp"
 #include "comm_res/buses/tdma_bus.hpp"
+#include "app_element.hpp"
 
 namespace kista {
 
@@ -186,13 +188,16 @@ void sketch_report_t::write_header() {
      // processing element style
    *sketch_file << "\\tikzstyle{pe_style} = [rectangle, draw=blue!50, fill=blue!20, thick]" << endl;
 
-     // generic communication resource
+     // communication resource style
    *sketch_file << "\\tikzstyle{phy_commres_style} = [cloud, draw=blue!50, fill=blue!10, thick]" << endl;
-     // specific communication resources
+     // tdma bus style
    *sketch_file << "\\tikzstyle{tdma_bus_style} = [rectangle, draw=blue!50, fill=blue!10, thick]" << endl;
    
-     // generic communication resource
+     // platform communication connection style
    *sketch_file << "\\tikzstyle{platform_conn_style} = [blue!50, >=latex', shorten >=1pt]" << endl;
+   
+     // memory resource style
+   *sketch_file << "\\tikzstyle{mem_style} = [rectangle, draw=blue!50,  fill=blue!5, thick]" << endl;
 
    // Styles for highlighting boxes
    // ----------------------------------
@@ -273,6 +278,10 @@ void sketch_report_t::draw(processing_element *pe) {
 	pes.push_back(pe);
 }
 
+void sketch_report_t::draw(memory_resource *me) {
+	mems.push_back(me);
+}
+
 void sketch_report_t::draw(logic_link_t ll, std::string channel_type) {
 	sys_conn_types[ll]=channel_type;
 }
@@ -313,6 +322,7 @@ void sketch_report_t::actual_draw() {
 	std::string	last_task_id_name;
 	std::string sched_id_name, sched_prev_id_name;
 	std::string pe_id_name, pe_prev_id_name;
+	std::string mem_id_name, mem_prev_id_name;
 	std::string commres_id_name, commres_prev_id_name;
 	
 	// to iterate assigned taskets
@@ -387,6 +397,7 @@ void sketch_report_t::actual_draw() {
 		}
 
 		env_task_id_name = env_tasks_by_name.begin()->first; // reference for lower layer
+		dot_by_slash(env_task_prev_id_name);
 	}
 	
 	// draw system tasks
@@ -394,7 +405,6 @@ void sketch_report_t::actual_draw() {
 	if(task_info_by_name.size()>0) {	
 		task_it = task_info_by_name.begin();
 		task_id_name = task_it->first;
-
 		task_position[task_id_name] = 0;
 		dot_by_slash(task_id_name); // (2) for node identifiers, "." are substituted by "/", to avoid drawing issues in tikz	
 		
@@ -429,6 +439,7 @@ void sketch_report_t::actual_draw() {
 		last_task_id_name = task_id_name; // to be used later with application boxes
 		
 		task_id_name = task_info_by_name.begin()->first; // reference for lower layer
+		dot_by_slash(task_id_name);
 
 	} else {
 		rpt_msg = "While generating sketch. There are no system tasks.";
@@ -438,9 +449,9 @@ void sketch_report_t::actual_draw() {
 	// draw schedulers
 	// ---------------------------------
 	if(scheds.size()>0) {
-		sched_id_name = tasks[0]->name();
+		sched_id_name = scheds[0]->name();
 		dot_by_slash(sched_id_name);
-		sched_id_name = scheds[0]->name() ;
+	
 		// location of first sched (always below tasks)
 		if(tasks.size()>0) {
 			*sketch_file << "\\node (" << sched_id_name << ") [sched_style, below=of " << task_id_name<< "] {$" << scheds[0]->name() << "$};" << endl;	
@@ -456,11 +467,11 @@ void sketch_report_t::actual_draw() {
 			*sketch_file <<  sched_prev_id_name;
 			*sketch_file << "] {$" << scheds[i]->name() << "$};" << endl;	
 		}
+		
+		sched_id_name = scheds[0]->name(); // reference for lower layer
 	}
 	
 	*sketch_file << endl;
-	
-	sched_id_name = scheds[0]->name(); // reference for lower layer
 	
 	// draw processing elements
 	// ---------------------------------
@@ -485,11 +496,12 @@ void sketch_report_t::actual_draw() {
 			*sketch_file << pe_prev_id_name;
 			*sketch_file << "] {$" << pes[i]->name() << "$};" << endl;	
 		}
+		
+		pe_id_name = pes[0]->name(); // reference for lower layer
+		dot_by_slash(pe_id_name);
 	}
 	
 	*sketch_file << endl;
-	
-	pe_id_name = pes[0]->name(); // reference for lower layer
 	
 	// draw communication resources
 	// ---------------------------------
@@ -520,6 +532,10 @@ void sketch_report_t::actual_draw() {
 			*sketch_file <<  commres_prev_id_name;
 			*sketch_file << "] {$" << phy_commres_set[i]->name() << "$};" << endl;	
 		}
+		
+		// reference for lower layer
+		commres_id_name = phy_commres_set[0]->name(); // reference for lower layer
+		dot_by_slash(commres_id_name);
 	}
 	
 	// draw tdma buses
@@ -551,7 +567,34 @@ void sketch_report_t::actual_draw() {
 			*sketch_file <<  commres_prev_id_name;
 			*sketch_file << "] {$" << tdma_buses[i]->name() << "$};" << endl;	
 		}
+		
+		commres_id_name = tdma_buses[0]->name();
+		dot_by_slash(commres_id_name);
 	}
+	
+	// draw memory elements
+	// ---------------------------------
+	if(mems.size()>0) {
+		mem_id_name = mems[0]->name();
+		dot_by_slash(mem_id_name);	
+		// location of first memoery element (always below communication resource)
+		if((phy_commres_set.size()>0)||(tdma_buses.size()>0)) {
+			// first, it tries to place it below first scheduler
+			*sketch_file << "\\node (" << mem_id_name << ") [mem_style, below=of " << commres_id_name << "] {$" << mems[0]->name() << "$};" << endl;	
+		} else {
+			*sketch_file << "\\node (" << mem_id_name << ") [mem_style] {$" << mems[0]->name() << "$};" << endl;	
+		}
+		for(i=1; i<mems.size(); i++) {
+			mem_id_name = mems[i]->name();
+			dot_by_slash(mem_id_name);
+			mem_prev_id_name = mems[i-1]->name();
+			*sketch_file << "\\node (" << mem_id_name << ") [mem_style, right=of ";
+			*sketch_file << mem_prev_id_name;
+			*sketch_file << "] {$" << mems[i]->name() << "$};" << endl;	
+		}
+	}
+	
+	*sketch_file << endl;
 	
 	// draw system-level (PIM/application) connections
 	// ------------------------------------------------	
@@ -612,14 +655,16 @@ void sketch_report_t::actual_draw() {
 	
 	*sketch_file << endl;
 
-	// draw connections between processing elements and communication resources
-	// --------------------------------------------------------------------------
+	
 	if((phy_commres_set.size()>0) || (tdma_buses.size()>0)) { 
 		// KisTA library can model abstract models where no communication resources are involved.
 		// (in such a case a 0 penalty is assumed for PE-PE communications)
 		// Then, the sketch can be exported, since no communication resources are sketched.
 		// In coherence with it, under such situation, no platform connection between PEs and communication resoruces
 		// need to be done)
+		
+		// draw connections between processing elements and the communication resources
+		// --------------------------------------------------------------------------
 		for(i=0; i < pes.size();i++) {
 			pe_id_name = pes[i]->name();
 			commres_id_name = pes[i]->get_connected_comm_res()->name();
@@ -631,8 +676,23 @@ void sketch_report_t::actual_draw() {
 			*sketch_file << commres_id_name;		
 			*sketch_file << ".north);" << endl;
 		}
-	}
+		
+		// draw connections between memory resources and the communication resource
+		// --------------------------------------------------------------------------
+		for(i=0; i < mems.size();i++) {
+			mem_id_name = mems[i]->name();
+			commres_id_name = mems[i]->get_connected_comm_res()->name();
+			dot_by_slash(mem_id_name);
+			dot_by_slash(commres_id_name);
+			*sketch_file << "\\draw (";
+			*sketch_file << mem_id_name;
+			*sketch_file << ".south) [platform_conn_style] -- (";
+			*sketch_file << commres_id_name;		
+			*sketch_file << ".north);" << endl;
+		}
 	
+	}
+		
 	// draw hilighting boxes
 	// ---------------------------------
 	if(environment_box) {
@@ -680,7 +740,13 @@ void sketch_report_t::actual_draw() {
 			*sketch_file << "(";
 			*sketch_file << commres_id_name;
 			*sketch_file << ")";				
-		}		
+		}
+		for(i=0;i<mems.size();i++) {
+			mem_id_name = mems[i]->name();
+			*sketch_file << "(";
+			*sketch_file << mem_id_name;
+			*sketch_file << ")";				
+		}			
 		*sketch_file << "] (sys_box) {};" << endl;
 		*sketch_file << "\\end{scope}" << endl;
 		*sketch_file << "\\node [right=of sys_box] {$System$};" << endl;
@@ -760,7 +826,13 @@ void sketch_report_t::actual_draw() {
 				*sketch_file << "(";
 				*sketch_file << commres_id_name;
 				*sketch_file << ")";				
-			}			
+			}
+			for(i=0;i<mems.size();i++) {
+				mem_id_name = mems[i]->name();
+				*sketch_file << "(";
+				*sketch_file << mem_id_name;
+				*sketch_file << ")";				
+			}				
 			*sketch_file << "] (plat_box) {};" << endl;
 			*sketch_file << "\\end{scope}" << endl;
 			*sketch_file << "\\node [right=of plat_box] {$Platform$};" << endl;			

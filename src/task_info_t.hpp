@@ -20,6 +20,8 @@
 
 #include "types.hpp"
 
+#include "app_element.hpp"
+
 #include "sched_types.hpp"
 
 #include "user_task_constructs.hpp"
@@ -35,7 +37,8 @@ class registered_event;
 // forward declaration required to break circular dependency in declarations
 class scheduler;
 
-class task_info_t : public sc_module  {
+//class task_info_t : public sc_module  {
+class task_info_t : public app_element  {
 	friend class application;
 	friend class scheduler;
 	friend void consume(sc_time comp_time);
@@ -68,8 +71,12 @@ public:
 
 	application_t*		get_application(); // returns the associated application
 
-	void                set_scheduler(scheduler *scheduler_p); 
-	scheduler		    *get_scheduler();	
+	// instead being implemented here, the implementation of
+	// the base class () is used 
+//	using app_element::set_scheduler;
+//	using app_element::get_scheduler;
+//	void                set_scheduler(scheduler *scheduler_p); 
+//	scheduler		    *get_scheduler();	
 
 	// returns the funtion poitner where task functionality is
 	VOIDFPTR& 	get_functionality(); 
@@ -134,6 +141,7 @@ public:
 	sc_time						std_dev_response_time(); // TBC
 
 	unsigned int				kista_id; // assign an unsigned id to the task
+	std::string					name();
 	
 private:
 	// auxiliary method for initializaiton after stablishing task-app link in the constructors

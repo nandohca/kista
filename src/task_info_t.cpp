@@ -50,7 +50,8 @@ namespace kista {
 	//   to declare a task which is assigned to the default application
 
 	task_info_t::task_info_t(sc_module_name name, VOIDFPTR f, task_role_t role_par)
-													: sc_module(name)
+													: app_element(name,TASK_ELEMENT)
+//													: sc_module(name)
 	{
 		std::string rpt_msg;
 		if(role_par==SYSTEM_TASK) {	// stating the application visibility only refer to system tasks		
@@ -91,7 +92,8 @@ namespace kista {
 
 
 	task_info_t::task_info_t(sc_module_name name, VOIDFPTR f, std::string app_name, task_role_t role_par)
-													: sc_module(name)
+													: app_element(name)
+													//: sc_module(name)
 	{
 		std::string rpt_msg;
 		if(role_par==SYSTEM_TASK) {	// stating the application visibility only refer to system tasks		
@@ -202,6 +204,10 @@ namespace kista {
 		}
 	}
 
+	std::string task_info_t::name() {
+		return app_element::name();
+	}
+
 	application_t* task_info_t::get_application() {
 		return app_p;
 	}
@@ -213,9 +219,10 @@ namespace kista {
 	void 				task_info_t::set_task_process_handler(sc_process_handle phandler) { this_task_handler = phandler; } 
 	sc_process_handle	&task_info_t::get_task_process_handler()	 { return this_task_handler; } 
 
+/*
 	void				task_info_t::set_scheduler(scheduler *scheduler_p)  { sched_p = scheduler_p; } 
 	scheduler          *task_info_t::get_scheduler() { return sched_p; }
-
+*/
 
 	task_role_t& task_info_t::get_role() {
 		return this->role;

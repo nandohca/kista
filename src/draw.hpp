@@ -38,7 +38,7 @@
 
 #include "task_info_t.hpp"
 #include "logic_link.hpp"
-#include "comm_res/phy_link.hpp"
+#include "comm_res/phy_link_t.hpp"
 
 namespace kista {
 
@@ -81,6 +81,7 @@ public:
 	void draw(scheduler *sched);
 	// draw method for processing elements
 	void draw(processing_element *pe);
+	void draw(memory_resource *me);
 	// draw method for generic and specific resources
 	void draw(phy_comm_res_t *phy_commres_par);
 	void draw(tdma_bus *bus_par);

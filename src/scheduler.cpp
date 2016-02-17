@@ -1276,7 +1276,7 @@ cout << "Checking task " << it->first << " with user priority " << it->second->g
 				
 			created_process_handle = sc_spawn(
 								sc_bind( it->second->get_functionality() ),
-								it->second->name(),
+								it->second->name().c_str(),
 								&spawn_options // all tasks created with the same options (basically, not initialization)
 									);
 										

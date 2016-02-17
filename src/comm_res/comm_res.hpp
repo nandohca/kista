@@ -49,7 +49,7 @@
 #include "link_t.hpp"
 #include "link_info_t.hpp"
 #include "mapped_links_t.hpp"
-#include "comm_res/phy_link.hpp"
+#include "comm_res/phy_link_t.hpp"
 
 namespace kista {
 
@@ -431,7 +431,7 @@ void comm_res<address_type>::set_properties(link_t<address_type> &link, link_inf
 	}
 	
 	//cout << "Setting Properties (AFTER):" << endl;
-	// print_links_table()	;
+	//print_links_table()	;
 	
 }
 
@@ -443,8 +443,8 @@ void comm_res<address_type>::set_properties(address_type src, address_type dest,
 	this->set_properties(link,link_info,msg_size);
 }	
 
-// methods to state link characteristics (either statically or dynamically)
-// (These methods let either extract all the properties at once, individually)
+// methods to get link characteristics (either statically or dynamically)
+// (These methods let  extract all the properties at once)
 template<class address_type>
 link_info_t *comm_res<address_type>::get_properties(link_t<address_type> &link, unsigned int msg_size){
 	
