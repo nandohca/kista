@@ -11,7 +11,7 @@ KisTA : KTH Infrastructure for SystemC Static and Simulation-based Time Analysis
 Numbering in the reports below correspond to commits on the GIT server svn server
 -----------------------------------------------------------------------------
 
-R70:
+R74:
 ------
   - First version working on the VAD example after a re-work of the underlying
     structure of the KisTA library to support a base application element and a
