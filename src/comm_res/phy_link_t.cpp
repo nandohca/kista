@@ -18,7 +18,7 @@
 
 #include "global_elements.hpp"
 
-#include "phy_link.hpp"
+#include "phy_link_t.hpp"
 
 #include "processing_element.hpp"
 #include "memory_resource.hpp"
@@ -34,12 +34,67 @@ phy_address get_phy_address(logic_address laddress) {
 	laddress->get_scheduler()->get_PE();
 }
 
-// implementaton of methods for the phy_link_t class speciazlization
-template<>
-void phy_link_t<phy_address>::is_PE_PE() { // return true if the link is done between 2 processing elements
-	cout << "CALLIN is_PE_PE" << endl;
+/*
+phy_link_t::phy_link_t(): link_t<phy_address>()
+ { }
+
+phy_link_t::phy_link_t(const char *name_par): link_t<phy_address>(name_par)
+ { }
+
+
+phy_link_t::phy_link_t(const char *name_par, phy_address src_par, phy_address dest_par): link_t<phy_address>(name_par,src_par,dest_par)
+ { }
+
+phy_link_t::phy_link_t(const char *name_par, const char  *src_name_par, const char *dest_name_par): link_t<phy_address>(name_par,src_name_par,dest_name_par)
+ { }
+
+ 
+bool phy_link_t::is_PE_intracomm() { // return true if the link is done between 2 processing elements
+	if ( this->is_intracomm() && (src->get_type()==PROCESSING_ELEMENT)) // in this case, dest is obviously also a processing element
+		return true;
+	else
+		return false;
 };
 
+// return true if the link is done between 2 processing elements
+bool phy_link_t::is_PE_PE_comm() { 
+	if ( (src->get_type()==PROCESSING_ELEMENT) && (dest->get_type()==PROCESSING_ELEMENT) )
+		return true;
+	else
+		return false;
+};
+
+// return true if the link is done between 1 processing element and a memory resource
+bool phy_link_t::is_PE_MEM_comm() { 
+	if ( (src->get_type()==PROCESSING_ELEMENT) && (dest->get_type()==MEMORY_RESOURCE) )
+		return true;
+	else
+		return false;
+};
+ */
+ 
+bool is_PE_intracomm(phy_link_t &plink) { // return true if the link is done between 2 processing elements
+	if ( plink.is_intracomm() && (plink.src->get_type()==PROCESSING_ELEMENT)) // in this case, dest is obviously also a processing element
+		return true;
+	else
+		return false;
+};
+
+// return true if the link is done between 2 processing elements
+bool is_PE_PE_comm(phy_link_t &plink) { 
+	if ( (plink.src->get_type()==PROCESSING_ELEMENT) && (plink.dest->get_type()==PROCESSING_ELEMENT) )
+		return true;
+	else
+		return false;
+};
+
+// return true if the link is done between 1 processing element and a memory resource
+bool is_PE_MEM_comm(phy_link_t &plink) { 
+	if ( (plink.src->get_type()==PROCESSING_ELEMENT) && (plink.dest->get_type()==MEMORY_RESOURCE) )
+		return true;
+	else
+		return false;
+};
 											
 // Specialized function to get physical address by elem name
 template<>
