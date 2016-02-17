@@ -51,6 +51,7 @@ SRC=$(SRCDIR)/src
 INC_INSTALLDIR = $(INSTALLDIR)/include
 LIB_INSTALLDIR = $(INSTALLDIR)/lib
 TOOL_INSTALLDIR = $(INSTALLDIR)/bin
+UTILS_INSTALLDIR = $(INSTALLDIR)/utils
 
 export INC_INSTALLDIR
 export LIB_INSTALLDIR
@@ -58,7 +59,8 @@ export TOOL_INSTALLDIR
 
 TARGET_SYS=ubuntu_14.04L_64b
 
-DISTRO_DIR = $(INSTALLDIR)/kista_R$(KISTA_REVISION)_$(TARGET_SYS)
+DISTRO_NAME = kista_R$(KISTA_REVISION)_$(TARGET_SYS)
+DISTRO_DIR = $(INSTALLDIR)/$(DISTRO_NAME)
 
 #if no INSTALLDIR variable is settled, the current path 
 
@@ -111,9 +113,13 @@ ultraclean: clean
 tools:$(LIB_INSTALLDIR)
 	make -C ./src/xml_if
 
+# install kista tools (xml-kista front-end and xml kista checker) 
+# and also scope compilation utils (the public opcost)
 tools_install:
 	mkdir -p $(TOOL_INSTALLDIR)
 	make -C ./src/xml_if install
+	ln -s $(UTILS_INSTALLDIR)/SCoPE-v1.1.5_64/bin/opcost $(TOOL_INSTALLDIR)/opcost
+	ln -s $(UTILS_INSTALLDIR)/SCoPE-v1.1.5_64/bin/scope-g++ $(TOOL_INSTALLDIR)/scope-g++
 
 tools_clean:
 	make -C ./src/xml_if clean
@@ -128,8 +134,10 @@ distro: ultraclean tools_ultraclean all install tools tools_install
 	cp -r $(LIB_INSTALLDIR) $(DISTRO_DIR)
 	cp -r $(TOOL_INSTALLDIR) $(DISTRO_DIR)	
 	cp -r $(EX) $(DISTRO_DIR)
+	cp -r $(UTILS_INSTALLDIR) $(DISTRO_DIR)	
 	rsync -av --exclude=".*" $(EX) $(DISTRO_DIR)
-	tar czf $(DISTRO_DIR).tar.gz $(DISTRO_DIR)
+	cd $(DISTRO_DIR)
+	tar czf $(DISTRO_NAME).tar.gz $(DISTRO_DIR)
 #	cp -r $(TOOL_INSTALLDIR) $(DISTRO_DIR)
 # for distro, cp tries to copy everything, including hidden files
 

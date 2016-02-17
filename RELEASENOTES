@@ -11,8 +11,14 @@ KisTA : KTH Infrastructure for SystemC Static and Simulation-based Time Analysis
 Numbering in the reports below correspond to commits on the GIT server svn server
 -----------------------------------------------------------------------------
 
-R74:
+R75:
 ------
+  - Improved distro generation. 64 bits distro independent compilation
+    of the SCoPE compiler and annotation tools(scope-g++ and opcost)
+    made available in the tools folder (/bin) to avoit that piece of work
+    to the KisTA user, and check how it work in some examples when using
+    dynamic annotation (vs simulation with worst-case times)
+    
   - First version working on the VAD example after a re-work of the underlying
     structure of the KisTA library to support a base application element and a
     basic hw_resource.
