@@ -137,7 +137,7 @@ distro: ultraclean tools_ultraclean all install tools tools_install
 	cp -r $(UTILS_INSTALLDIR) $(DISTRO_DIR)	
 	rsync -av --exclude=".*" $(EX) $(DISTRO_DIR)
 	cd $(DISTRO_DIR)
-	tar czf $(DISTRO_NAME).tar.gz $(DISTRO_DIR)
+	tar czf $(DISTRO_NAME).tar.gz $(DISTRO_NAME)
 #	cp -r $(TOOL_INSTALLDIR) $(DISTRO_DIR)
 # for distro, cp tries to copy everything, including hidden files
 
