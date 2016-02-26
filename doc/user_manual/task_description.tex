@@ -1,0 +1,98 @@
+In KisTA, a task is described as a function plus an addociated \emph{task information}.
+
+It is reflected in the following code excerpt:
+
+Listing~\ref{list:kista_task} shows a code excerpt capturing a task named \"task1\".
+
+%\begin{table}[t]
+\begin{lstlisting}[style=KistaCodeStyle,caption={Declaration and description of a task in KisTA under it C++ API front-emd.},label=list:kista_task]
+ // finite task
+ void task1()
+ {			
+  cout << "task 1 " << " t_begin=" << sc_time_stamp() << endl;
+  consume(sc_time(100,SC_MS));	
+ }
+     
+ void starving_task()
+ {
+   while(true) {		
+	cout << "task 1 " << " t_begin=" << sc_time_stamp() << endl;
+	consume(sc_time(100,SC_MS));
+    yield();
+   }		
+ }  
+
+ // infinite task, can be preempted during consumption
+ void task2()
+ {
+    while(true) {		
+	  cout << "task 2 " << " t_begin=" << sc_time_stamp() << endl;
+	  consume(sc_time(100,SC_MS));
+	}		
+ } 
+     
+ // infinite task, executes in 0 time (inifinitely fast),
+ // but grants control to the scheduler at each iteration
+ // and let the scheduler grant access to other tasks
+ void task3()
+ {
+    while(true) {		
+	  cout << "task 3 " << " t_begin=" << sc_time_stamp() << endl;
+      yield();
+	}		
+ }            
+
+int sc_main (int, char *[]) {
+   
+   // declaration and instantiation of 3 tasks
+   task_info_t task_info_t1("task1",task1);
+   task_info_t task_info_t2("task2",task2);
+   task_info_t task_info_t1("task3",task3);
+
+   ...
+    
+}
+
+\end{lstlisting}
+%\end{table}
+
+The KisTA \texttt{task\_info\_t} class enables the declaration of a task.
+The constructor is passed the task name as a first parameter and 
+a pointer to the function (of type \emph{void ()} ) containing the
+behaviour of the task.
+
+Listing~\ref{list:kista_task} example, illustrates a possible 
+skeleton describing the task.
+
+If the internal functionality contains an infinite loop, the task
+will never yield. 
+This will lead to an starvation problem in the simulation, as once
+the tasks gets the simulator it will never return the control to other tasks
+(even an scheduler modelled in KisTA).
+
+However, KisTA provides several constructs which enable to model several
+circunstamces where a real application either yields the control or
+looses it.
+
+The \texttt{yield()} function enables to model a yield of control from the
+own tasks.
+This type of statement is typical in thread libraries.
+A yield will be also usually invoked by higher level blocking synchronization
+services provided by operative systems.
+
+The \texttt{consume(sc\_time)} function enables to model a delay associated
+to a piece of computation within the task. 
+A main difference with respect invoking the SystemC \texttt{wait(sc\_time)}
+statement is that the consume call will notify the associated KisTA scheduler 
+object, such it enables to model the contention of several tasks executing
+over the same computational resource, i.e. a processing element.
+
+Therefore, the task executing a \texttt{consume($t_{\delta}$)} statement at 
+SystemC time $t_1$ can expect that after the completion of the 
+\texttt{consume($t_{\delta}$)} statement, the time  $t_2$ fulfils
+ $t_2 \ge t_1$+$t_{\delta}$.
+Notice that in the case of executing a \texttt{wait($t_{\delta}$)},
+$t_2$ = $t_1$+$t_{\delta}$.
+
+
+ 
