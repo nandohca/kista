@@ -20,9 +20,8 @@ DEBUG  = -g
 ## not needed for debianized package
 SYSDIR = -I$(SYSTEMC)/include
           
-#INCDIR = -I. -I.. -I$(SFF)
-## not needed for debianized package
-INCDIR = -I. -I.. $(SYSDIR) -I$(KISTA)/src
+#INCDIR = -I. -I.. $(SYSDIR) -I$(KISTA)/src
+INCDIR = -I. -I.. $(SYSDIR) -I$(KISTA)/include
 ##INCDIR = -I. -I.. $(SYSDIR) -I$(KISTA)/src -I$(ADD_INCLUDE_DIRS)
 
 #LIBDIR = -L. -L..

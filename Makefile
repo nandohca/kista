@@ -46,6 +46,7 @@ BRT_EX=$(EX)/basic_real_time/brt_ex
 SYN_EX=$(EX)/synch_comm/synch_ex
 COMRES_EX=$(EX)/comm_res/comres_ex
 SRC=$(SRCDIR)/src
+UTILS=$(SRCDIR)/utils
 
 
 INC_INSTALLDIR = $(INSTALLDIR)/include
@@ -118,8 +119,8 @@ tools:$(LIB_INSTALLDIR)
 tools_install:
 	mkdir -p $(TOOL_INSTALLDIR)
 	make -C ./src/xml_if install
-	ln -s $(UTILS_INSTALLDIR)/SCoPE-v1.1.5_64/bin/opcost $(TOOL_INSTALLDIR)/opcost
-	ln -s $(UTILS_INSTALLDIR)/SCoPE-v1.1.5_64/bin/scope-g++ $(TOOL_INSTALLDIR)/scope-g++
+	cd $(TOOL_INSTALLDIR); ln -s ../utils/SCoPE-v1.1.5_64/bin/opcost opcost; cd -;
+	cd $(TOOL_INSTALLDIR); ln -s ../utils/SCoPE-v1.1.5_64/bin/scope-g++ scope-g++; cd -;
 
 tools_clean:
 	make -C ./src/xml_if clean
@@ -135,6 +136,7 @@ distro: ultraclean tools_ultraclean all install tools tools_install
 	cp -r $(TOOL_INSTALLDIR) $(DISTRO_DIR)	
 	cp -r $(EX) $(DISTRO_DIR)
 	cp -r $(UTILS_INSTALLDIR) $(DISTRO_DIR)	
+	cp -f $(UTILS)/set_kista_env.sh $(DISTRO_DIR)
 	rsync -av --exclude=".*" $(EX) $(DISTRO_DIR)
 	cd $(DISTRO_DIR)
 	tar czf $(DISTRO_NAME).tar.gz $(DISTRO_NAME)

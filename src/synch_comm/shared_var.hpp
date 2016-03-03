@@ -28,13 +28,24 @@ namespace kista {
 	
 template<class T>
 class shared_var {
-	// NOTICE THAT shared var does not inherit logic_link_info_T
-	//     because a shared var can have associate several tasks, and thus logic links!!
+	// NOTICE THAT
+	//
+	//     a shared var can have actually several lo logic links
+	//      of equivalently, the dest and the src can be several
+	//
 	
 	public:
 	  shared_var(); // constructor without initialization
+	  shared_var(const char* _name);
 	  shared_var(T &val_par); // constructor with initialization (requires the "=" operator)
 	  
+/*
+ * 	explicit fifo_buffer( int _size);
+	fifo_buffer( const char* _name, int _size);
+	fifo_buffer( const char* _name);    // using the same default for size as in SystemC
+	fifo_buffer( const char* _name, int _size, task_info_t* src_par, task_info_t* dest_par);
+    fifo_buffer( const char* _name, int _size, const char *src_name_par, const char *dest_name_par);
+  */  
 	  void write(const T &par);
 	  
 	  virtual void read(T&);
@@ -93,6 +104,20 @@ template <class T>
 shared_var<T>::shared_var()
 {
 	
+	assoc_comm_res_p = NULL;
+	message_size = 0;
+	write_th_mon = NULL;
+    read_th_mon = NULL;
+    role = SYSTEM_COMMSYNCH;
+    io_sense = UNSET_IO_SENSE;
+	
+}
+
+	// for the moment does nothing with _name because
+	// shared var does not inherit the logic link
+template <class T>
+shared_var<T>::shared_var(const char* _name)
+{
 	assoc_comm_res_p = NULL;
 	message_size = 0;
 	write_th_mon = NULL;

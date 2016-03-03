@@ -11,7 +11,7 @@ KisTA : KTH Infrastructure for SystemC Static and Simulation-based Time Analysis
 Numbering in the reports below correspond to commits on the GIT server svn server
 -----------------------------------------------------------------------------
 
-R75:
+R84:
 ------
   - Improved distro generation. 64 bits distro independent compilation
     of the SCoPE compiler and annotation tools(scope-g++ and opcost)
