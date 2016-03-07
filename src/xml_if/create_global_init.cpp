@@ -81,7 +81,8 @@ VOIDFPTR get_function(xmlDocPtr doc,xmlNodePtr currNode, std::string function_pu
 		rpt_msg += (const char *)fun_name;
 		rpt_msg += "' for ";
 		rpt_msg += function_purpose;
-		rpt_msg += " could not be opened.";
+		rpt_msg = " could not be opened. Try by adding a path attribute or setting LD_LIBRARY_PATH";
+		
 		SC_REPORT_ERROR("KisTA-XML",rpt_msg.c_str());
     }
     

@@ -52,6 +52,8 @@ processing_element::processing_element(sc_module_name name) : hw_resource(name, 
 	PEref_by_name[PE_name]=this;
 	
 	bound_comm_res_p = NULL;
+	
+	init_energy_power_vars();
 }
 
 void processing_element::set_clock_period_ns(unsigned int cloc_period_ns_var) {
@@ -75,6 +77,29 @@ void processing_element::set_CPI(unsigned int cpi_var) {	// set Cycles per instr
 	}
 	cpi = cpi_var;
 }
+
+    // implementation of set static instantaneous power consumption in Watt
+void processing_element::set_static_power_consumption(double static_power_cons_watt_par)
+{
+	check_call_before_sim_start("set_static_power_consumption");
+	static_power_cons_watt = static_power_cons_watt_par;
+}
+
+   // implementation nof set energystatic instantaneous power consumption in Watt
+void processing_element::set_energy_consumption_per_instruction(double jules_per_instruction_par)
+{
+	check_call_before_sim_start("set_energy_consumption_per_instruction");
+	jules_per_instruction = jules_per_instruction_par;
+}
+
+double &processing_element::get_static_power_consumption() {
+	return static_power_cons_watt;
+}
+	
+double &processing_element::get_energy_consumption_per_instruction() {
+	return jules_per_instruction;
+}
+
 
 void processing_element::set_has_netif() {
 	std::string rpt_msg;
@@ -158,6 +183,38 @@ void processing_element::before_end_of_elaboration()  {
 	// allows drawing it
 	sketch_report.draw(this);
 }
+
+void processing_element::init_energy_power_vars() {
+	do_energy_and_power_measurement = false;
+	total_energy_J = 0.0;
+	average_power_watts = 0.0;
+	
+	av_power_watts = 0.0;
+	max_power_watts = 0.0;
+	
+	power_averaging_time = sc_time(1,SC_SEC);			
+}
+
+void processing_element::enable_energy_and_power_measurement() {
+	check_call_before_sim_start("enable_energy_and_power_measurement");
+	do_energy_and_power_measurement = true;
+}
+
+void processing_element::set_power_averaging_time(sc_time avg_time) {
+	check_call_before_sim_start("set_power_averaging_time");
+	power_averaging_time = avg_time;
+}
+
+// to be called at end of elaboration
+void processing_element::calculate_static_outputs() {
+	peak_power_time = sc_time(cpi*clock_period_ns,SC_NS); // cycles per instruction * clock period (assumes homogeneous instructions)
+	peak_power_watts = (jules_per_instruction*1E9)/(cpi*clock_period_ns); // Watts
+}
+
+void processing_element::end_of_elaboration() {
+	calculate_static_outputs();
+}
+
 
 
 } // namespace kista

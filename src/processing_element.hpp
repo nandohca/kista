@@ -39,12 +39,32 @@ public:
 	void set_clock_period_ns(unsigned int clock_period_ns_var);            // set PE frequency default 20ns (50MHz)
 	inline unsigned int &get_clock_period_ns() {	return clock_period_ns; }    // get PE frequency
 	
+	// binding to hardware communication resources
+	void connect(phy_comm_res_t *bound_comm_res_par);
+	phy_comm_res_t* get_connected_comm_res();
+
+    //
+	// performance characterizations
+	//
 	// set CPI
 	void set_CPI(unsigned int cpi_var);	                 // set Cycles per instruction (default =1)
 	inline unsigned int &get_CPI() { return cpi; }		 // get cycles per instruction
 	
-	void connect(phy_comm_res_t *bound_comm_res_par);
-	phy_comm_res_t* get_connected_comm_res();
+	// basic power&energy consumption input variables
+	    // set static instantaneous power consumption in Watt
+	void set_static_power_consumption(double static_power_cons_watt_par);
+	    // set energystatic instantaneous power consumption in Watt
+	void set_energy_consumption_per_instruction(double jules_per_instruction_par);	
+	// corresponding getters
+	inline double &get_static_power_consumption();
+	inline double &get_energy_consumption_per_instruction();
+
+	// to control power measurement
+	void enable_energy_and_power_measurement();
+	void set_power_averaging_time(sc_time avg_time);
+              // time period for which average power is calculated
+	          //    default value = 1s
+	          //    (if settled to 0 average is done on total simulated time)
 
 	// time characterizations for communication within the processing element
 	sc_time getIntraComP2Pdelay(unsigned int message_size = 1 ); 		// current delay, message size in bits
@@ -80,14 +100,44 @@ private:
 	sc_time IntraComDelay_bit;
 	sc_time MaxIntraCommDelay_bit;
 	
-	void before_end_of_elaboration();
-	
+	// energy and power characterization
+	double static_power_cons_watt;
+	double jules_per_instruction;
+		
 	// network interface variables
 	network_interface *netif_p;
 	
+	// Processor related energy and power counters
+	bool do_energy_and_power_measurement;
+	
+	double total_energy_J;
+	double average_power_watts;
+	
+	  // the processor is notified every bunch of instructions that
+	  // it is continuously executed
+	double av_power_watts;               // current averaged power
+	double max_power_watts;              // maximum value of averaged power
+								   // minimum value of averaged power (after getting the first value of average power)
+	
+	sc_time power_averaging_time;  // time period for average power
+	                               // default value = 1s
+	                               // (if settled to 0 average is done on total simulated time)
+	
+	double peak_power_watts; // statically calculated (at elab time, as energy per instruction / frequency) (shall consider CPI)
+	sc_time peak_power_time; // inverse of frequency (shall consider CPI)
+	
+	void init_energy_power_vars();
+	// to be called before simulation start, at end of elaboration
+	void calculate_static_outputs();
+                             
+	void before_end_of_elaboration();
+	
+	void end_of_elaboration();
+
 };
 
 
 } // namespace kista
 
 #endif
+
