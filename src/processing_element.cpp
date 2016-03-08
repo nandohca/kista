@@ -187,10 +187,10 @@ void processing_element::before_end_of_elaboration()  {
 void processing_element::init_energy_power_vars() {
 	do_energy_and_power_measurement = false;
 	total_energy_J = 0.0;
-	average_power_watts = 0.0;
+	total_average_power_watts = 0.0;
 	
 	av_power_watts = 0.0;
-	max_power_watts = 0.0;
+	max_av_power_watts = 0.0;
 	
 	power_averaging_time = sc_time(1,SC_SEC);			
 }
@@ -207,12 +207,20 @@ void processing_element::set_power_averaging_time(sc_time avg_time) {
 
 // to be called at end of elaboration
 void processing_element::calculate_static_outputs() {
-	peak_power_time = sc_time(cpi*clock_period_ns,SC_NS); // cycles per instruction * clock period (assumes homogeneous instructions)
-	peak_power_watts = (jules_per_instruction*1E9)/(cpi*clock_period_ns); // Watts
+	peak_dyn_power_time = sc_time(cpi*clock_period_ns,SC_NS); // cycles per instruction * clock period (assumes homogeneous instructions)
+	peak_dyn_power_watts = (jules_per_instruction*1E9)/(cpi*clock_period_ns); // Watts
 }
 
 void processing_element::end_of_elaboration() {
 	calculate_static_outputs();
+}
+
+
+void processing_element::power_accounter_proc() {
+	
+	while(true) {
+			wait(power_averaging_time);
+	}
 }
 
 
