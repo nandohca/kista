@@ -117,6 +117,9 @@ static_analysis_table_t	static_analysis_table;
 // global flags for the control of analysis
 //-------------------------------------------
 
+// global flag for energy and power measurement
+bool energy_and_power_measurement_enabled = true;
+
 // global flag to set or not worst case communication
 bool worst_case_communication_enabled = true; // Enabled by default
 

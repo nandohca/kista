@@ -70,28 +70,51 @@ public:
 	network_interface* get_netif();
 	// ------------------------------------------------------------------------------------------
 	
+	// maps a scheduler to this processing element
+	void map_scheduler(scheduler *sched);
+	
+	// return an scheduler associated to this PE
+	// shall be called at simulation time
+	// returns NULL if not mapped scheduler 
+	scheduler *get_scheduler();
+	
+	//------------------------------------------------------------------------------------------
+	//
+	// Reports from PE side
+	//
+	
+	// returns normalized (0-1) utilization of PE element
+	// (currenrly, equivalent to call get_platform_utilization for the
+	//  corresponding scheduler)
+	double get_utilization();
+	
+	// energy and power reports
+	
 		// basic power&energy consumption input variables
 	    // set static instantaneous power consumption in Watt
 	void set_static_power_consumption(double static_power_cons_watt_par);
 	    // set energystatic instantaneous power consumption in Watt
 	void set_energy_consumption_per_instruction(double jules_per_instruction_par);	
-		// corresponding getters
+		// corresponding getters (for the user input values)
 	inline double &get_static_power_consumption();
 	inline double &get_energy_consumption_per_instruction();
 
 	// to control power measurement
-	void enable_energy_and_power_measurement();
 	void set_power_averaging_time(sc_time avg_time);
               // time period for which average power is calculated
 	          //    default value = 1s
 	          //    (if settled to 0 average is done on total simulated time)
 
 	// getters for the estimations done
-	  // total energy consumed by this PE (computation) along the whole simulation time (in Jules)
-	const double &get_total_energy_J();
-	  // static and dynamic components of total energy consumed by this PE (computation) along the whole simulation time (in Jules)
-	const double &get_total_static_energy_J(); 
-	const double &get_total_dynamic_energy_J();
+	  // total energy consumed by this PE (computation) until the current simulation time
+	  // (or the final time, if the simulation is ended) in Jules
+	const double &get_consumed_energy_J();
+	
+	  // static and dynamic components of total energy (in Jules) consumed by this PE
+	  // (computation), for the current simulation time, 
+	  // or the last simulation time (if simulation is ended)
+	const double &get_consumed_static_energy_J(); 
+	const double &get_consumed_dynamic_energy_J();
 	
 	   // Average power as a result of total energy/simulated time
 	const double &get_total_average_power_W();
@@ -101,13 +124,15 @@ public:
 	const double &get_peak_av_power_W();
 
 		// Maximum value of power, statically determined by CPI, PE frequency and static+instruction energy
+		// it is als the power per instruction
 	const double &get_peak_dyn_power_W();
 
 private:
     // getter for the total amount of tasks
 	sc_signal<bool>  *PE_busy_sig;
-	sc_process_handle scheduler; 
-	sc_process_handle current_task;
+	scheduler *mapped_scheduler; // link to the scheduler mapped to this PE
+	//sc_process_handle scheduler; // not used so far 
+	//sc_process_handle current_task;
 	unsigned int clock_period_ns;
 	unsigned int cpi;
 		
@@ -124,9 +149,6 @@ private:
 	// network interface variables
 	network_interface *netif_p;
 	
-	// Processor related energy and power counters
-	bool do_energy_and_power_measurement;
-	
 	double total_energy_J;
 	double total_average_power_watts;
 	
@@ -140,20 +162,21 @@ private:
 	                               // default value = 1s
 	                               // (if settled to 0 average is done on total simulated time)
 	
-	double peak_dyn_power_watts; // peak dynamic power consumption:
+	double peak_dyn_power_watts; // peak dynamic power consumption, as the energy consumed per instruction time
 	                             //    statically calculated (at elab time, as energy per instruction / frequency) (shall consider CPI)
-	sc_time peak_dyn_power_time; // minimum time resolution for peaky dynamic power:
+	sc_time instruction_time; // minimum time resolution of the instrumentation, which measures instruction
+	                             // and thus  for peak dynamic power:
 	                             //    inverse of frequency (shall consider CPI)
 	
 	void init_energy_power_vars();
 	// to be called before simulation start, at end of elaboration
-	void calculate_static_outputs();
+	void calculate_instruction_values();
                              
 	void before_end_of_elaboration();
 	
 	void end_of_elaboration();
 	
-	void add_energy(); // method for enabling tasks add energy to
+	//void add_energy(); // method for enabling tasks add energy to
 	// periodic process accounting energy and power
 	void power_accounter_proc();
 

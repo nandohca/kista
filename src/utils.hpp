@@ -27,8 +27,14 @@ namespace kista {
 // 
 // Control of analysis
 //
+
+// worst-case vs actual performance estimation
 void enable_worst_case_communication(); // not required, set by default
 void disable_worst_case_communication();
+
+// global flag for energy and power measurement
+void enable_energy_and_power_measurement();
+void disable_energy_and_power_measurement();
 
 // --------------------------------------------------
 // class for reporting functional validation results

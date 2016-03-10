@@ -36,6 +36,18 @@ void disable_worst_case_communication() {
 	worst_case_communication_enabled = false;
 }
 
+// global flag for energy and power measurement
+void enable_energy_and_power_measurement() {
+	check_call_before_sim_start("enable_energy_and_power_measurement");
+	energy_and_power_measurement_enabled = true;
+}
+
+void disable_energy_and_power_measurement() {
+	check_call_before_sim_start("enable_energy_and_power_measurement");	
+	energy_and_power_measurement_enabled = false;
+}
+
+
 void check_call_before_sim_start(std::string call_name) {
 	std::string rpt_msg;
 	if ( sc_get_status()&(SC_START_OF_SIMULATION|SC_RUNNING|SC_STOPPED|SC_PAUSED|SC_END_OF_SIMULATION) ) {

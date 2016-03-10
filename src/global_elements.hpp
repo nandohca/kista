@@ -110,6 +110,8 @@ extern static_analysis_table_t	static_analysis_table;
 //------------------------------------------------------------
 // global flags for the control of simulation-based analysis
 //------------------------------------------------------------
+// global flag for energy and power measurement
+extern bool energy_and_power_measurement_enabled;
 
 // global flag to set or not worst case communication
 extern bool worst_case_communication_enabled;

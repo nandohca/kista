@@ -42,6 +42,7 @@ class scheduler : public sc_module {
 	friend void wait_period();
 	friend class task_info_t;
 	friend class sketch_report_t;
+	friend class processing_element; // has to access private element "tasks_assigned"
 public:
 	SC_HAS_PROCESS(scheduler); 
 	
@@ -186,6 +187,7 @@ public:
     //     if called at the beginning of the simulation they will return 0.0
     double get_tasks_utilization();                   // occupation of all the tasks wrt time (the "useful")
     double get_platform_utilization();                // tasks occupation plus scheduler occupation (excludes waiting: synchronization and communication times)
+                                       // currently, equivalent to PE utilization as this class model a local scheduler, i.e. 1 scheduler -> 1 PE
 	double get_scheduler_utilization();               // resource time consumed by the scheduler
 	double get_task_utilization(const char *name);   // resource time consumed by a task assiged to the scheduler
 	
@@ -244,6 +246,8 @@ public:
 	// methods to facilitate external development of static analysis
 	taskset_by_name_t *gets_tasks_assigned();  // to be called at the end of elaboration
 
+	// returns the currently consumed (dynamic) energy by the scheduler task in Jules;
+	const double &get_consumed_energy_J();
 
 private:
 
@@ -278,9 +282,9 @@ private:
 
 	tasks_by_priority_t tasks_by_priority; // unlike tasks assigned, this structure is internal and created by KisTA at the end of elaboration
 
-	sc_time sched_comp_time; // computation time required by the scheduler task
-	unsigned long long n_schedulings;		// number of schedulings
-	unsigned long long n_context_changes;	// number of context changes
+	sc_time sched_comp_time; // computation time required or consumed by the scheduler task up to the current simuation time
+	unsigned long long n_schedulings;		// number of schedulings up to the current simuation time
+	unsigned long long n_context_changes;	// number of context changes up to the current simuation time
 	
 	sc_time last_simulation_time;
 
@@ -336,11 +340,14 @@ private:
 	bool 	   		scheduling_time_set_flag;
 		
 	// processing elements
-	// for the moment experiment with a single one
+	// for the moment mapping only to a single one (local scheduler)
 	processing_element *PE;
 		
 	// hook for adding static analysis
 	void static_analysis();
+	
+	// energy accounter
+	double consumed_energy_J;
 	
 };
 

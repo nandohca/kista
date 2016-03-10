@@ -169,6 +169,8 @@ namespace kista {
 			state_signal.write(READY);
 			occupation_time = SC_ZERO_TIME;
 			occupation_interval_start_time = SC_ZERO_TIME;
+			occupation_time = SC_ZERO_TIME;
+			consumed_energy_J = 0.0;
 				
 			SC_HAS_PROCESS(task_info_t);
 			
@@ -388,6 +390,12 @@ namespace kista {
 	// for accounting consumption times
 	//  SC_METHOD implementation
 	void task_info_t::account_occupation_time_proc() {
+		processing_element *PE = NULL;
+		
+		if(this->is_system_task()) {
+			PE = this->get_scheduler()->get_PE();		
+		}
+		
 		if(state_signal.read()=='E') { // executing, the task wants to execute (computation signal)
 		                               // and as well, one CPU is granted
 			occupation_interval_start_time = sc_time_stamp();
@@ -399,6 +407,10 @@ namespace kista {
 			prev_inc_state = EXECUTING;
 		} else { // stops execution
 		    if(prev_inc_state==EXECUTING) {
+			  //
+			  // Updates the occupation time of the task 
+			  // at the end of a PE occupation interval
+			  //
 			  occupation_time += (sc_time_stamp() - occupation_interval_start_time);
 #ifdef _PRINT_ACCUMULATION_OF_CONSUMPTION_TIMES
 			  cout << "Ocupation Account Task for " << name();
@@ -406,6 +418,13 @@ namespace kista {
 			  cout << " for a total of " << occupation_time;
 			  cout << " at " << sc_time_stamp() << endl;			  
 #endif
+			  //
+			  // Updates the consumed energy
+			  // at the end of a PE occupation interval
+			  //
+			  consumed_energy_J += occupation_time.to_seconds() * PE->get_peak_dyn_power_W();
+			                     // remind that get_peak_dyn_power_W is the power consumption
+			                     // calculated for the instruction time (modelled as constant in KisTA)
 			}
 		    prev_inc_state = state_signal.read();
 		}
@@ -890,6 +909,10 @@ cout << " Release event " << i << " (task " << name() << ") : at time "	<< sc_ti
 		}
 	}	
 	
+	const double &task_info_t::get_consumed_energy_J() {
+		check_call_after_sim_start("get_consumed_energy_J");
+		return consumed_energy_J;
+	}
 	
 	// Implementation of comparison functions for task vector structure (that is vector of task info pointers)
 	// ... for ordering by user priority

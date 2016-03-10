@@ -142,6 +142,9 @@ public:
 
 	unsigned int				kista_id; // assign an unsigned id to the task
 	std::string					name();
+
+	// returns the currently consumed (dynamic) energy (at the current simulation time) in Jules
+	const double &get_consumed_energy_J();
 	
 private:
 	// auxiliary method for initializaiton after stablishing task-app link in the constructors
@@ -181,6 +184,9 @@ private:
 	sc_time max_response_time_var;
 	sc_time location_of_max_response_time_var;
 	sc_time avg_response_time_var, dev_typ_response_time_var;
+
+	// Internal data for the accounting of energy and power
+	double consumed_energy_J;
 		
 	// internal data for triggering of periodic tasks
 	bool is_periodic_flag;

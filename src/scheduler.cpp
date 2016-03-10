@@ -103,6 +103,9 @@ namespace kista {
 
 		// default common static analysis
 		common_static_analysis = full_utilization_bound;
+		
+		// init account of consumed energy
+		consumed_energy_J = 0.0;
 
 	}
 	
@@ -181,7 +184,10 @@ namespace kista {
 		scheds_by_name[sched_name_std_str]=this;
 		
 		// default common static analysis
-		common_static_analysis = full_utilization_bound;		
+		common_static_analysis = full_utilization_bound;	
+		
+		// init account of consumed energy
+		consumed_energy_J = 0.0;
 	}
 
 	 // -----------------------------------------------------------
@@ -1725,7 +1731,10 @@ cout << " Tick " << i << " (scheduler " << name() << ") : at time "	<< sc_time_s
 		msg += ": ";
 		
 		if(sc_get_status()&SC_ELABORATION) {
+			// performs the link in the PE side
 			PE = PE_var;
+			// performs a double link, enabling accessing this scheduler from the PE side
+			PE->map_scheduler(this);
 		} else {
 			msg += "map_to() has to be called at elaboration time (before the sc_start).";
 			SC_REPORT_ERROR("KisTA", msg.c_str());	
@@ -1809,6 +1818,13 @@ void scheduler::static_analysis() {
 taskset_by_name_t* scheduler::gets_tasks_assigned() {
 	return tasks_assigned;
 } 
+
+// returns the currently consumed energy by the scheduler task in Jules;
+const double &scheduler::get_consumed_energy_J() {
+	check_call_after_sim_start("get_consumed_energy_J");
+	consumed_energy_J = sched_comp_time.to_seconds()*this->get_PE()->get_peak_dyn_power_W();
+	return consumed_energy_J;
+}
 
 } // namespace KisTA
 
