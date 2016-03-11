@@ -422,9 +422,14 @@ namespace kista {
 			  // Updates the consumed energy
 			  // at the end of a PE occupation interval
 			  //
-			  consumed_energy_J += occupation_time.to_seconds() * PE->get_peak_dyn_power_W();
+			  consumed_energy_J = occupation_time.to_seconds() * PE->get_peak_dyn_power_W();
 			                     // remind that get_peak_dyn_power_W is the power consumption
 			                     // calculated for the instruction time (modelled as constant in KisTA)
+#ifdef _PRINT_TASK_ENERGY_ACCOUNTING
+			  cout << "\t Task \"" << name();
+			  cout << "\" consuming " << consumed_energy_J ;
+			  cout << " J at " << sc_time_stamp() << endl;			  
+#endif		                     
 			}
 		    prev_inc_state = state_signal.read();
 		}
@@ -803,6 +808,11 @@ else cout << "finished_flag = FALSE" << endl;
 	}
 
 	void task_info_t::end_of_simulation() {
+		processing_element *PE = NULL;
+		
+		if(this->is_system_task()) {
+			PE = this->get_scheduler()->get_PE();		
+		}		
 		// If the task ends on Executing state, the last piece of execution
 		// has not been accounted (since the accounting takes place from the
 		// transition of Exection state to other state)
@@ -827,15 +837,29 @@ else cout << "finished_flag = FALSE" << endl;
 			// from Execution was about to be done now.
 			( (state_signal.read()==READY) && (prev_inc_state==EXECUTING) && (get_scheduler()->state_signal.read()==SCHEDULING) )
 		) { 
-		  occupation_time += (sc_time_stamp() - occupation_interval_start_time);
+			   // Last update of occupation time
+			  occupation_time += (sc_time_stamp() - occupation_interval_start_time);
 #ifdef _PRINT_ACCUMULATION_OF_CONSUMPTION_TIMES
 			  cout << "Task " << sc_get_current_process_handle().name();
 			  cout << " accumulates " << (sc_time_stamp() - occupation_interval_start_time);
 			  cout << " for a total of " << occupation_time;
-			  cout << " at " << sc_time_stamp() << endl;
+			  cout << " at " << sc_time_stamp() << " (last update at end of simulation) " << endl;
 			  
 			  cout << "Estado previo: " << prev_inc_state << endl;
 #endif
+
+			  //
+			  // Updates the consumed energy
+			  // at the end of a PE occupation interval
+			  //
+			  consumed_energy_J = occupation_time.to_seconds() * PE->get_peak_dyn_power_W();
+			                     // remind that get_peak_dyn_power_W is the power consumption
+			                     // calculated for the instruction time (modelled as constant in KisTA)
+#ifdef _PRINT_TASK_ENERGY_ACCOUNTING
+			  cout << "\t Task \"" << name();
+			  cout << "\" consuming " << consumed_energy_J ;
+			  cout << " J at " << sc_time_stamp() << " (last update at end of simulation) " << endl;			  
+#endif	
 		}
 	}
 	

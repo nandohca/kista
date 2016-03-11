@@ -59,6 +59,14 @@ processing_element::processing_element(sc_module_name name) : hw_resource(name, 
 	bound_comm_res_p = NULL;
 	
 	init_energy_power_vars();
+	
+	// active accounter process
+	if(energy_and_power_measurement_enabled) {
+		// if the global flag enabling energy and power measurement is activated
+		// (actually only controls power enable/disabling currently)
+		SC_HAS_PROCESS(processing_element);
+		SC_THREAD(power_accounter_proc);
+	}
 }
 
 void processing_element::set_clock_period_ns(unsigned int cloc_period_ns_var) {
@@ -190,13 +198,27 @@ void processing_element::before_end_of_elaboration()  {
 }
 
 void processing_element::init_energy_power_vars() {
-	total_energy_J = 0.0;
-	total_average_power_watts = 0.0;
+	// input (Defaults)
+	//static_power_cons_watt = 0.0;
+	//jules_per_instruction = 0.0;
+	static_power_cons_watt = 1.0;
+	jules_per_instruction = 0.00000005; // 50nJ
+	power_averaging_time = sc_time(1,SC_SEC);			
 	
+	// outputs
+	// autocalculated at elaboration time
+	//double peak_dyn_power_watts; 
+	//sc_time instruction_time;
+		
+	// calculated at sim time and readable at sim time and at end of sim
+	static_energy_J = 0.0;
+	dynamic_energy_J = 0.0;
+	total_energy_J = 0.0;
+	
+	total_average_power_watts = 0.0;
 	av_power_watts = 0.0;
 	max_av_power_watts = 0.0;
-	
-	power_averaging_time = sc_time(1,SC_SEC);			
+
 }
 
 
@@ -257,7 +279,7 @@ double processing_element::get_utilization() {
 }
 
 const double& processing_element::get_consumed_dynamic_energy_J() {
-	check_call_after_sim_start("get_utilization");
+	check_call_after_sim_start("get_consumed_dynamic_energy_J");
 	
 	// updates total_energy_J, and internal variable for the class
 	
@@ -269,56 +291,122 @@ const double& processing_element::get_consumed_dynamic_energy_J() {
 	if(mapped_scheduler==NULL) {
 		// If neither an scheduler nor any task assigned to this
 		// PE, then it is assumed a 0 consumption
-		return total_energy_J; // total_energy_J shall have the initialized value =0.0 here
+		return dynamic_energy_J; // dyamic_energy_J should be 0.0 here
 	} else {
 		// energy currently consumed by the scheduler
-		total_energy_J = mapped_scheduler->get_consumed_energy_J();
+		dynamic_energy_J = mapped_scheduler->get_consumed_energy_J();
 		// adds energy currently consumed by each of the assigned tasks
-
 		for( taskset_by_name_t::iterator it = mapped_scheduler->tasks_assigned->begin(); it != mapped_scheduler->tasks_assigned->end(); ++it ) {
-			total_energy_J += it->second->get_consumed_energy_J();
+			dynamic_energy_J += it->second->get_consumed_energy_J();
 		}
 	}
 	
 	// return the value of that internal variable
-	return total_energy_J; 
+	return dynamic_energy_J; 
 }
 
+const double& processing_element::get_consumed_static_energy_J() {
+	check_call_after_sim_start("get_consumed_static_energy_J");
+	if(sc_get_status()&SC_STOPPED) {	
+		// IEEE Std 1666-2011 does not state what sc_time_stamps returns
+		// after SystemC simulation as expired. Therefore, we detect
+		// if simulation has finished, so them we use the last time stamp
+		// at the end of the simulation.
+		// This way, this report function can be safely used at the
+		// end of the SystemC simulation
+		//cout << "Last simulation time: " << sc_time_stamp() << endl;
+		//static_energy_J = get_static_power_consumption() * last_simulation_time;
+		static_energy_J = get_static_power_consumption() * mapped_scheduler->last_simulation_time.to_seconds();
+	} else {	
+		if(sc_is_running())  {				
+			if(sc_time_stamp()>SC_ZERO_TIME) {					
+				// this way, this method can be call at any time during the simulation
+				static_energy_J = get_static_power_consumption() * sc_time_stamp().to_seconds();
+			} else {
+				static_energy_J = 0.0;			
+				SC_REPORT_WARNING("KisTA", "No time advance yet. get_consumed_static_energy_J wil return 0.0 J.");
+			}
+		} else {
+			static_energy_J = 0.0;		
+			SC_REPORT_WARNING("KisTA", "get_consumed_static_energy_J  called before simulation start. 0.0 J returned.");
+		}		
+	}
+	return static_energy_J;
+}
 
-/* 
- * Remind this type of struture for power report, either current or lat time average
- * 
-		if(sc_get_status()&SC_STOPPED) {	
-			// IEEE Std 1666-2011 does not state waht sc_time_stamps returns
-			// after SystemC simulation as expired. Therefore, we detect
-			// if simulation has finished, so them we use the last time stamp
-			// at the end of the simulation.
-			// This way, this report function can be safely used at the
-			// end of the SystemC simulation
-			//cout << "Last simulation time: " << sc_time_stamp() << endl;
-			return all_tasks_utilization_time / last_simulation_time;
-		} else {	
-			if(sc_is_running())  {				
-				if(sc_time_stamp()>SC_ZERO_TIME) {					
-					// this way, this method can be call at any time during the simulation
-					return all_tasks_utilization_time / sc_time_stamp();
-				} else {					
-					SC_REPORT_WARNING("KisTA", "No time advance yet. 0.0 will be reported for all tasks utilization.");
-				}
-			} else {				
-				SC_REPORT_WARNING("KisTA", "All tasks utilization retrieved before simulation start");
-			}	
-			return 0.0;			
-		}	
-		
-		*/
+const double& processing_element::get_consumed_energy_J() {
+	total_energy_J = this->get_consumed_dynamic_energy_J() + this->get_consumed_static_energy_J();
+	return total_energy_J;
+}
 
 void processing_element::power_accounter_proc() {
+	double previous_total_consumed_energy_J;
+	
+	previous_total_consumed_energy_J = get_consumed_energy_J();
 	
 	while(true) {
-			wait(power_averaging_time);
+		wait(power_averaging_time);
+		// calculates power for the configured power averaging time
+		av_power_watts = (this->get_consumed_energy_J() - previous_total_consumed_energy_J) / power_averaging_time.to_seconds();
+		
+		// updates the maximum power (for the power averaging time)
+		if(av_power_watts>max_av_power_watts) {
+			max_av_power_watts = av_power_watts;
+		}
 	}
 }
+
+		// Maximum value of power, statically determined by CPI, PE frequency and static+instruction energy
+		// it is als the power per instruction
+const double& processing_element::get_peak_dyn_power_W()  {
+	check_call_after_sim_start("get_peak_dyn_power_W");
+	return peak_dyn_power_watts;
+	
+}
+	
+		
+	   // Average power as a result of total energy/simulated time
+	   //   (can be called during simulation and at the end of the simulation)
+const double& processing_element::get_total_average_power_W() {
+	check_call_after_sim_start("get_total_average_power_W");	
+	if(sc_get_status()&SC_STOPPED) {	
+		// IEEE Std 1666-2011 does not state what sc_time_stamps returns
+		// after SystemC simulation as expired. Therefore, we detect
+		// if simulation has finished, so them we use the last time stamp
+		// at the end of the simulation.
+		// This way, this report function can be safely used at the
+		// end of the SystemC simulation
+		//cout << "Last simulation time: " << sc_time_stamp() << endl;
+		total_average_power_watts = get_consumed_energy_J() / mapped_scheduler->last_simulation_time.to_seconds();
+	} else {	
+		if(sc_is_running())  {				
+			if(sc_time_stamp()>SC_ZERO_TIME) {					
+				// this way, this method can be call at any time during the simulation
+				total_average_power_watts = get_consumed_energy_J() / sc_time_stamp().to_seconds();
+			} else {
+				total_average_power_watts = 0.0;			
+				SC_REPORT_WARNING("KisTA", "No time advance yet. get_total_average_power_W wil return 0W.");
+			}
+		} else {
+			total_average_power_watts = 0.0;		
+			SC_REPORT_WARNING("KisTA", "total_average_power_watts  called before simulation start. 0.0W returned.");
+		}		
+	}
+	return total_average_power_watts;
+}
+	
+		// Get current average power (energy/averaging time, 1s or the value settled by set_power_averaging_time)
+const double& processing_element::get_curr_average_power_W() {
+	check_call_after_sim_start("get_curr_average_power_W");
+	return av_power_watts;
+}
+
+		// Maximum value of current average power (similar to find the maximum load at average intervals and multiply by the peak power
+const double& processing_element::get_peak_av_power_W(){
+	check_call_after_sim_start("get_peak_av_power_W");
+	return max_av_power_watts;
+}
+
 } // namespace kista
 
 #endif

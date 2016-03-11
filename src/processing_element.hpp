@@ -32,6 +32,9 @@ class processing_element :  public hw_resource {
 //  typedef comm_res<phy_address>	phy_comm_res_t;
 
 public:
+	//SC_HAS_PROCESS(scheduler); //directly in the constructor implementation
+		// required when accounting processes are used
+	
 	// constructor
 	processing_element(sc_module_name name = sc_gen_unique_name("PE"));
 	
@@ -93,11 +96,11 @@ public:
 		// basic power&energy consumption input variables
 	    // set static instantaneous power consumption in Watt
 	void set_static_power_consumption(double static_power_cons_watt_par);
-	    // set energystatic instantaneous power consumption in Watt
+	    // set energy static instantaneous power consumption in J
 	void set_energy_consumption_per_instruction(double jules_per_instruction_par);	
 		// corresponding getters (for the user input values)
-	inline double &get_static_power_consumption();
-	inline double &get_energy_consumption_per_instruction();
+	inline double &get_static_power_consumption(); // return Watts
+	inline double &get_energy_consumption_per_instruction(); // in J
 
 	// to control power measurement
 	void set_power_averaging_time(sc_time avg_time);
@@ -115,18 +118,19 @@ public:
 	  // or the last simulation time (if simulation is ended)
 	const double &get_consumed_static_energy_J(); 
 	const double &get_consumed_dynamic_energy_J();
-	
-	   // Average power as a result of total energy/simulated time
-	const double &get_total_average_power_W();
-		// Get current average power (energy/averaging time, 1s or the value settled by set_power_averaging_time)
-	const double &get_average_power_W();
-		// Maximum value of current average power (similar to find the maximum load at average intervals and multiply by the peak power
-	const double &get_peak_av_power_W();
 
 		// Maximum value of power, statically determined by CPI, PE frequency and static+instruction energy
 		// it is als the power per instruction
 	const double &get_peak_dyn_power_W();
-
+	
+	   // Average power as a result of total energy/simulated time
+	   //   (can be called during simulation and at the end of the simulation)
+	const double &get_total_average_power_W();
+	
+		// Get current average power (energy/averaging time, 1s or the value settled by set_power_averaging_time)
+	const double &get_curr_average_power_W();
+		// Maximum value of current average power (similar to find the maximum load at average intervals and multiply by the peak power
+	const double &get_peak_av_power_W();
 private:
     // getter for the total amount of tasks
 	sc_signal<bool>  *PE_busy_sig;
@@ -142,31 +146,34 @@ private:
 	sc_time IntraComDelay_bit;
 	sc_time MaxIntraCommDelay_bit;
 	
-	// energy and power characterization
-	double static_power_cons_watt;
-	double jules_per_instruction;
-		
 	// network interface variables
 	network_interface *netif_p;
-	
-	double total_energy_J;
-	double total_average_power_watts;
-	
-	  // the processor is notified every bunch of instructions that
-	  // it is continuously executed
-	double av_power_watts;               // current averaged power
-	double max_av_power_watts;              // maximum value of averaged power
-								   // minimum value of averaged power (after getting the first value of average power)
-	
-	sc_time power_averaging_time;  // time period for average power
-	                               // default value = 1s
-	                               // (if settled to 0 average is done on total simulated time)
-	
+
+	// energy and power characterization (input)
+	double static_power_cons_watt;
+	double jules_per_instruction;
+
+	// autocalculated at elaboration time		
 	double peak_dyn_power_watts; // peak dynamic power consumption, as the energy consumed per instruction time
 	                             //    statically calculated (at elab time, as energy per instruction / frequency) (shall consider CPI)
 	sc_time instruction_time; // minimum time resolution of the instrumentation, which measures instruction
 	                             // and thus  for peak dynamic power:
 	                             //    inverse of frequency (shall consider CPI)
+
+    // calculated at sim time and readable at sim time and at end of sim
+	double dynamic_energy_J;
+	double static_energy_J;
+	double total_energy_J;
+	
+	double total_average_power_watts;
+
+	sc_time power_averaging_time;  // time period for average power
+	                               // default value = 1s
+	                               // (if settled to 0 average is done on total simulated time)
+	double av_power_watts;               // current averaged power
+	double max_av_power_watts;              // maximum value of averaged power
+								   // minimum value of averaged power (after getting the first value of average power)
+	
 	
 	void init_energy_power_vars();
 	// to be called before simulation start, at end of elaboration
@@ -175,7 +182,7 @@ private:
 	void before_end_of_elaboration();
 	
 	void end_of_elaboration();
-	
+		
 	//void add_energy(); // method for enabling tasks add energy to
 	// periodic process accounting energy and power
 	void power_accounter_proc();
