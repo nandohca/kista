@@ -10,7 +10,7 @@ EXAMPLE_DIR=$(CURDIR)
 
 ADD_INCLUDE_DIRS= 
 
-include ../../../Makefile.defs
+include ../../Makefile.defs
 
 #CFLAGS += 
 CFLAGS +=  -DSC_INCLUDE_DYNAMIC_PROCESSES

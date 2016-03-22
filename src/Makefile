@@ -18,6 +18,7 @@ all: $(OBJS)
 	make -C ./system_level_bypass
 	make -C ./annotation_plugin
 	make -C ./load_analysis
+	make -C ./energy_power
 	cp -f *.o $(BUILDIR)
 	
 %.o : %.cpp
@@ -33,6 +34,7 @@ clean:
 	make -C ./system_level_bypass clean
 	make -C ./annotation_plugin clean
 	make -C ./load_analysis clean
+	make -C ./energy_power clean
 	
 ultraclean: clean
 	make -C ./synch_comm ultraclean
@@ -40,3 +42,4 @@ ultraclean: clean
 	make -C ./system_level_bypass ultraclean
 	make -C ./annotation_plugin ultraclean
 	make -C ./load_analysis ultraclean
+	make -C ./energy_power ultraclean

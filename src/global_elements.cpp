@@ -136,6 +136,9 @@ scheduling_time_calculator_table_t	scheduling_time_calculator_table;
 // a scheduling time calculator, or a specific scheduling time
 sc_time global_scheduling_time = sc_time(DEFAULT_SCHED_TIME_NS,SC_NS);
 
+// global power averaging time
+sc_time global_power_averaging_time = sc_time(DEFAULT_POWER_AVERAGING_TIME_S,SC_SEC);
+
 //----------------------------------------------
 // global flags for the control of exploration
 //----------------------------------------------

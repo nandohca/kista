@@ -100,7 +100,9 @@ install:
 	cp -rf $(SRCDIR)/src/annotation_plugin/*.hpp $(INC_INSTALLDIR)/annotation_plugin
 	mkdir -p $(INC_INSTALLDIR)/load_analysis
 	cp -rf $(SRCDIR)/src/load_analysis/*.hpp $(INC_INSTALLDIR)/load_analysis
-	
+	mkdir -p $(INC_INSTALLDIR)/energy_power
+	cp -rf $(SRCDIR)/src/energy_power/*.hpp $(INC_INSTALLDIR)/energy_power
+		
 clean:
 	make -C ./src clean
 	rm -rf $(BUILDIR)
@@ -150,6 +152,7 @@ src_lines:
 	   $(SRC)/comm_res/buses/*.hpp $(SRC)/comm_res/buses/*.cpp\
 	   $(SRC)/system_level_bypass/*.hpp $(SRC)/system_level_bypass/*.cpp\
 	   $(SRC)/annotation_plugin/*.hpp $(SRC)/annotation_plugin/*.cpp\
+	   $(SRC)/energy_power/*.hpp $(SRC)/energy_power/*.cpp\
        $(SRC)/xml_if/*.cpp\
        $(SRC)/load_analysis/*.cpp       
        
@@ -162,5 +165,8 @@ ex_lines:
 	 $(COMRES_EX)1/*.cpp\
 	 $(EX)/fdl2013_ex/*.cpp $(EX)/fdl2013_ex/*.h\
 	 $(EX)/VAD/*.cpp $(EX)/VAD/*.h $(EX)/VAD/*.hpp $(EX)/VAD/env_fun/*.cpp\
-	 $(EX)/vad_jpeg/env/*.cpp $(EX)/vad_jpeg/vad/*.cpp $(EX)/vad_jpeg/vad/*.hpp $(EX)/vad_jpeg/jpeg/*.cpp
+	 $(EX)/vad_jpeg/env/*.cpp $(EX)/vad_jpeg/vad/*.cpp $(EX)/vad_jpeg/vad/*.hpp $(EX)/vad_jpeg/jpeg/*.cpp\
+	 $(EX)/energy_power/brt_ex5_energ_power/*.hpp  $(EX)/energy_power/brt_ex5_energ_power/*.cpp\
+	 $(EX)/energy_power/brt_ex6_energ_power/*.hpp  $(EX)/energy_power/brt_ex6_energ_power/*.cpp
+
 #	 $(EX)/VAD/*.cpp $(EX)/VAD/*.h $(EX)/VAD/*.hpp $(EX)/VAD/fun/*.h $(EX)/VAD/fun/*.cpp $(EX)/VAD/env_fun/*.cpp

@@ -90,6 +90,10 @@
 // analysis utilities
 #include "load_analysis/load_analysis.hpp"
 
+// generig power probes and global energy and power metrics
+#include "energy_power/power_measurement_probe.hpp"
+#include "energy_power/global_energy_power_metrics.hpp"
+
 // -------------------------------------------------------------------------------
 // SYNCHRONIZATION
 // -------------------------------------------------------------------------------

@@ -129,6 +129,9 @@ extern scheduling_time_calculator_table_t	scheduling_time_calculator_table;
 // a scheduling time calculator, or a specific scheduling time
 extern sc_time global_scheduling_time;
 
+// global power averaging time
+extern sc_time global_power_averaging_time;
+
 //----------------------------------------------
 // global flags for the control of exploration
 //----------------------------------------------

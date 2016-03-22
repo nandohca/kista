@@ -110,6 +110,8 @@ namespace kista {
 // The current implementation is a simple one which, actually, only compares two lags,
 // (that is, the minimum required)
 
+#define DEFAULT_POWER_AVERAGING_TIME_S 1
+
 // *****************************************************
 // Code Instrumentation configuration
 // *****************************************************
@@ -186,6 +188,7 @@ namespace kista {
 
 #define _PRINT_ACCUMULATION_OF_CONSUMPTION_TIMES
 #define _PRINT_TASK_ENERGY_ACCOUNTING
+#define _PRINT_POWER_ACCOUNTING_MESSAGES
 
 #define _REPORT_CONFIGURATION_COMPLETION_TDMA_BUS
 #define _WARN_POSSIBLE_ACCURACY_INCONSISTENCIES_FOR_TDMA_BUS
@@ -277,6 +280,7 @@ namespace kista {
 
 //#define _PRINT_ACCUMULATION_OF_CONSUMPTION_TIMES
 #define _PRINT_TASK_ENERGY_ACCOUNTING
+#define _PRINT_POWER_ACCOUNTING_MESSAGES
 
 #define _REPORT_CONFIGURATION_COMPLETION_TDMA_BUS
 #define _WARN_POSSIBLE_ACCURACY_INCONSISTENCIES_FOR_TDMA_BUS
