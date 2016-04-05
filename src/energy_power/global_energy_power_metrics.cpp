@@ -29,8 +29,8 @@ namespace kista {
 
 // global power measurement probes created for global power accounting
 // this global power probes are created always (whenenver energy&power analysis is enabled)
-power_measurement_probe *global_power_probe;
-power_measurement_probe *global_dynamic_power_probe;
+power_measurement_probe *global_power_probe = NULL;
+power_measurement_probe *global_dynamic_power_probe = NULL;
 	
 // global flag for energy and power measurement
 void enable_energy_and_power_measurement() {
@@ -122,6 +122,14 @@ double get_total_dynamic_consumed_energy_J(){
 // (not necessarily synchronized with PE average calculators)
 void set_global_power_averaging_time(sc_time avg_time){
 	global_power_averaging_time = avg_time;
+	// if the global power probes have been already created, their average times
+	// are updated
+	if (global_power_probe!=NULL) {
+		global_power_probe->set_averaging_time(avg_time);
+	}
+	if (global_dynamic_power_probe!=NULL) {
+		global_dynamic_power_probe->set_averaging_time(avg_time);
+	}	
 #ifdef _PRINT_POWER_ACCOUNTING_MESSAGES
 	string rpt_msg;
 	rpt_msg = "Global power averaging time settled to ";
@@ -142,7 +150,7 @@ double get_peak_dyn_power_W(){
 
 
   // get the maximum power (static+dynamic), where dynamic power is computed every global power averaging time
-double get_peak_av_power_W(){
+double get_peak_avg_power_W(){
 	return global_power_probe->get_peak_av_power_W();
 }
 
@@ -153,6 +161,6 @@ double get_total_average_power_W(){
 }
 
 
-}
+} // end namespace kista
 
 #endif

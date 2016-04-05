@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Design space definition file for VAD example (considering connection with A-DSE and MOST) -->
+
+<design_space xmlns="http://www.multicube.eu/" version="1.4">
+	<simulator> 
+		<simulator_executable path="kista-xml" />
+	</simulator>
+	
+	<parameters>
+		
+		<!-- Processing resources -->
+		<!--
+		<parameter name="PE_NODES" description ="" type="string" min="1" max="2"/>
+			-->	
+			<!-- Mapping -->
+<!--			
+		<parameter name="T1_MAP" description ="Mapping of the first task" type="integer" min="1" max="2"/>
+
+		<parameter name="T2_MAP" description ="Mapping of the second task" type="string">
+			<item value="PE1" />
+			<item value="PE2" />
+		</parameter>
+
+		<parameter name="T3_MAP" description ="Mapping of the third task" type="string">
+			<item value="PE1" />
+			<item value="PE2" />
+		</parameter>
+		
+		<parameter name="PE_FREQ_1" description ="Frequency of the first processor" type="string">
+			<item value="50" />
+			<item value="100" />			
+		</parameter>
+-->
+				<!-- Communication resources -->
+<!--				
+		<parameter name="SLOTS_PE0" description ="Number of TX slots assigned to PE0" type="unsigned" min="0" max="2"/>
+		<parameter name="SLOTS_PE1" description ="Number of TX slots assigned to PE1" type="unsigned" min="0" max="2"/>
+-->
+	</parameters>
+	
+	<system_metrics> 
+	
+	    <!-- Feasible metric names in KisTA -->
+	  <!-- name="rtos/sched_name/plat_utilization"-->
+	  <!-- name="rtos/sched_name/number_of_schedulings"-->
+	  <!-- name="rtos/sched_name/starvation" -->
+	  <!-- name="rtos/sched_name/miss_deadlines"-->
+	  <!-- name="rtos/sched_name/sched_utilization"-->
+	  <!-- name="task/task_name/utilization"-->
+	  <!-- name="task/task_name/miss_deadline" -->
+	  
+
+	  
+	  <!-- metrics for an environment channel -->
+	  <!-- normalized  -->
+
+	  <system_metric name="comm_synch/E19/normalized_write_throughput" type="short" unit="GHz" />
+	  <system_metric name="comm_synch/E19/normalized_write_stationary_throughput" type="short" unit="GHz" />
+
+	  <system_metric name="comm_synch/E19/read_period" type="float" unit="ns" />
+	  <system_metric name="comm_synch/E19/write_period" type="float" unit="ns" />
+	  
+	  <system_metric name="comm_synch/E5/normalized_write_stationary_throughput" type="short" unit="GHz" />
+ 	  <system_metric name="comm_synch/E5/normalized_read_stationary_throughput" type="short" unit="GHz" />	 
+ 	  
+		<!-- throughput reported in GHz, because A-DSE is reporting throughput in GHz too, because workloads are provided in ns to the tool -->
+
+	  <system_metric name="rtos/sched1/tasks_utilization" type="float" />
+	  <system_metric name="rtos/sched2/tasks_utilization" type="float" />
+	  <system_metric name="rtos/sched3/tasks_utilization" type="float" />
+	  <system_metric name="rtos/sched4/tasks_utilization" type="float" />
+	  <system_metric name="rtos/sched5/tasks_utilization" type="float" />
+      <system_metric name="rtos/sched6/tasks_utilization" type="float" />
+	  
+	  
+	  <!-- other metrics (as an example of some supported metrics) -->
+	  
+	  <!-- non-normalized  thorughput
+	  <system_metric name="comm_synch/E19/write_throughput" type="short" unit="bps" />
+	  <system_metric name="comm_synch/E19/write_stationary_throughput" type="short" unit="bps" />
+	   -->
+	   
+	  <!-- metrics for an internal channel -->
+	  <!-- normalized 
+	  <system_metric name="comm_synch/E1/normalized_write_throughput" type="voidp" unit="Hz" />
+	  <system_metric name="comm_synch/E1/normalized_write_stationary_throughput" type="voidp" unit="Hz" />	  
+      -->
+      
+	  <!-- non-normalized
+	  <system_metric name="comm_synch/E1/write_throughput" type="voidp" unit="bps" />
+	  <system_metric name="comm_synch/E1/write_stationary_throughput" type="voidp" unit="bps" />	  
+       -->
+
+	  <!-- some other metrics hanging from each RTOS
+	  <system_metric name="rtos/sched1/sched_utilization" type="float" />
+  	  <system_metric name="rtos/sched2/plat_utilization" type="float" />
+  	     -->
+  	     
+  	 <!-- Energy and Power performance metrics definition-->    
+  	 <!-- report task consumed energies   
+  	 <system_metric name="app/A1/task/T1/consumed_energy" type="float" unit="J" />
+  	 <system_metric name="app/A1/task/T2/consumed_energy" type="float" unit="J" />
+  	 <system_metric name="app/A1/task/T3/consumed_energy" type="float" unit="J" />
+  	 <system_metric name="app/A1/task/T4/consumed_energy" type="float" unit="J" />
+  	 <system_metric name="app/A1/task/T5/consumed_energy" type="float" unit="J" />
+  	 <system_metric name="app/A1/task/T6/consumed_energy" type="float" unit="J" />
+  	 <system_metric name="app/A1/task/T7/consumed_energy" type="float" unit="J" />
+  	 <system_metric name="app/A1/task/T8/consumed_energy" type="float" unit="J" />
+  	  --> 
+  	     
+  	 <!-- report scheduler consumed energies    
+	 <system_metric name="rtos/sched1/consumed_energy" type="float"  unit="J" />
+	 <system_metric name="rtos/sched2/consumed_energy" type="float"  unit="J" />
+	 <system_metric name="rtos/sched3/consumed_energy" type="float"  unit="J" />
+	 <system_metric name="rtos/sched4/consumed_energy" type="float"  unit="J" />
+	 <system_metric name="rtos/sched5/consumed_energy" type="float"  unit="J" />
+     <system_metric name="rtos/sched6/consumed_energy" type="float"  unit="J" />
+  	 -->
+  	 
+  	 <!-- report PE consumed energies 
+  	 <system_metric name="PE/PE1/consumed_energy" type="float" unit="J" />
+  	 <system_metric name="PE/PE1/consumed_static_energy" type="float" unit="J" />
+  	 <system_metric name="PE/PE1/consumed_dynamic_energy" type="float" unit="J" />
+  	 
+  	 <system_metric name="PE/PE2/consumed_energy" type="float" unit="J" />
+  	 <system_metric name="PE/PE2/consumed_static_energy" type="float" unit="J" />
+  	 <system_metric name="PE/PE2/consumed_dynamic_energy" type="float" unit="J" />
+  	 
+  	 <system_metric name="PE/PE3/consumed_energy" type="float" unit="J" />
+  	 <system_metric name="PE/PE3/consumed_static_energy" type="float" unit="J" />
+  	 <system_metric name="PE/PE3/consumed_dynamic_energy" type="float" unit="J" />
+  	 
+  	 <system_metric name="PE/PE4/consumed_energy" type="float" unit="J" />
+  	 <system_metric name="PE/PE4/consumed_static_energy" type="float" unit="J" />
+  	 <system_metric name="PE/PE4/consumed_dynamic_energy" type="float" unit="J" />
+  	 
+  	 <system_metric name="PE/PE5/consumed_energy" type="float" unit="J" />
+  	 <system_metric name="PE/PE5/consumed_static_energy" type="float" unit="J" />
+  	 <system_metric name="PE/PE5/consumed_dynamic_energy" type="float" unit="J" />
+  	 
+  	 <system_metric name="PE/PE6/consumed_energy" type="float" unit="J" />
+  	 <system_metric name="PE/PE6/consumed_static_energy" type="float" unit="J" />
+  	 <system_metric name="PE/PE6/consumed_dynamic_energy" type="float" unit="J" />
+  	 
+  	 <system_metric name="PE/PE1/peak_dyn_power" type="float" unit="J" />
+  	 <system_metric name="PE/PE2/peak_dyn_power" type="float" unit="J" />
+  	 <system_metric name="PE/PE3/peak_dyn_power" type="float" unit="J" />
+  	 <system_metric name="PE/PE4/peak_dyn_power" type="float" unit="J" />
+  	 <system_metric name="PE/PE5/peak_dyn_power" type="float" unit="J" />
+  	 <system_metric name="PE/PE6/peak_dyn_power" type="float" unit="J" />
+  	 
+  	 <system_metric name="PE/PE1/peak_av_power" type="float" unit="J" />
+  	 <system_metric name="PE/PE2/peak_av_power" type="float" unit="J" />
+  	 <system_metric name="PE/PE3/peak_av_power" type="float" unit="J" />
+  	 <system_metric name="PE/PE4/peak_av_power" type="float" unit="J" />
+  	 <system_metric name="PE/PE5/peak_av_power" type="float" unit="J" />
+  	 <system_metric name="PE/PE6/peak_av_power" type="float" unit="J" />
+  	 
+   	 <system_metric name="PE/PE1/total_average_power" type="float" unit="J" />
+  	 <system_metric name="PE/PE2/total_average_power" type="float" unit="J" />
+  	 <system_metric name="PE/PE3/total_average_power" type="float" unit="J" />
+  	 <system_metric name="PE/PE4/total_average_power" type="float" unit="J" />
+  	 <system_metric name="PE/PE5/total_average_power" type="float" unit="J" />
+  	 <system_metric name="PE/PE6/total_average_power" type="float" unit="J" />
+  	  	--> 
+  	  	 
+  	 <!-- TOTAL Energy and Power Reports --> 
+  	 <system_metric name="global/total_consumed_energy" type="float" unit="J" />
+	 <system_metric name="global/total_static_consumed_energy" type="float" unit="J" />
+	 <system_metric name="global/total_dynamic_consumed_energy" type="float" unit="J" />
+	 <system_metric name="global/peak_dynamic_power" type="float" unit="J" />
+  	 <system_metric name="global/peak_average_power" type="float" unit="J" />
+  	 <system_metric name="global/total_average_power" type="float" unit="J" />
+  	 
+  	 
+<!-- To Be supported
+  	  <system_metric name="PE/PE1/mem usage" type="unsigned" unit="byte" />
+  	  <system_metric name="PE/PE2/mem usage" type="unsigned" unit="byte" />
+	  <system_metric name="throughput" type="float" unit="bps" />
+ -->	  
+	</system_metrics>
+	
+	<!-- This section should comprise those input given to the A-DSE tool which are actually constraints -->
+	
+	<rules>
+
+		<!-- rules for T MAPs (TBD) --> 
+
+
+		<!-- A-DSE input: MAX_PE_NODES constraint -->
+		<!-- Rules on the number of processing elements, given the MAX_PE_NODES constraint -->
+<!--		
+		<rule name="Maximum and minimum Number of Nodes">
+		<and>
+			<less-equal>
+				<parameter name="PE_NODES"/>
+				<parameter name="2"/>
+			</less-equal>
+			<greater-equal>
+				<parameter name="PE_NODES"/>
+				<parameter name="1"/>
+			</greater-equal>
+		</and>				
+		</rule>
+-->
+
+	</rules>
+	
+	
+</design_space>

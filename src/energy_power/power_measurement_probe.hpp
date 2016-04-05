@@ -52,6 +52,8 @@ public:
 	                        sc_time av_period_par = sc_time(1,SC_SEC)
 	                        );
 
+	void set_averaging_time(sc_time av_time);
+
 	   // Average power as a result of total energy/simulated time
 	   //   (can be called during simulation and at the end of the simulation)
 	const double &get_total_average_power_W();

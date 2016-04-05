@@ -292,6 +292,70 @@ void create_MULTICUBE_full_output(char *xml_out_file, vector<scheduler*> &RTOS, 
 	}
 	*/
 
+    //
+    // ENERGY AND POWER RELATED METRICS
+    //
+    
+    // TODO:
+    //
+    //	 Energy and Power metrics per task and scheduler element
+    //   Energy and Power metrics per processing element
+    //
+    
+	// Global Energy metrics
+	
+	if(was_energy_and_power_measurement_enabled()) 
+	{
+		// total consumed energy
+		node = xmlNewChild(root_node, NULL, (xmlChar *)"system_metric", NULL);
+		metric_name = "total_consumed_energy";
+		xmlNewProp(node,(xmlChar *)"name", (xmlChar *)metric_name.c_str());	
+		value_string = ext_to_string(get_total_consumed_energy_J());
+		xmlNewProp(node,(xmlChar *)"value",(xmlChar *)value_string);
+		xmlNewProp(node,(xmlChar *)"unit",(xmlChar *)"J");
+			
+		// total static consumed energy
+		node = xmlNewChild(root_node, NULL, (xmlChar *)"system_metric", NULL);
+		metric_name = "total_static_consumed_energy";
+		xmlNewProp(node,(xmlChar *)"name", (xmlChar *)metric_name.c_str());	
+		value_string = ext_to_string(get_total_static_consumed_energy_J());
+		xmlNewProp(node,(xmlChar *)"value",(xmlChar *)value_string);
+		xmlNewProp(node,(xmlChar *)"unit",(xmlChar *)"J");
+				
+		// total dynamic consumed energy
+		node = xmlNewChild(root_node, NULL, (xmlChar *)"system_metric", NULL);
+		metric_name = "total_dynamic_consumed_energy";
+		xmlNewProp(node,(xmlChar *)"name", (xmlChar *)metric_name.c_str());	
+		value_string = ext_to_string(get_total_dynamic_consumed_energy_J());
+		xmlNewProp(node,(xmlChar *)"value",(xmlChar *)value_string);
+		xmlNewProp(node,(xmlChar *)"unit",(xmlChar *)"J");
+		
+		// Global Power metrics
+		// Peak dynamic power
+		node = xmlNewChild(root_node, NULL, (xmlChar *)"system_metric", NULL);
+		metric_name = "peak_dynamic_power";
+		xmlNewProp(node,(xmlChar *)"name", (xmlChar *)metric_name.c_str());	
+		value_string = ext_to_string(get_peak_dyn_power_W());
+		xmlNewProp(node,(xmlChar *)"value",(xmlChar *)value_string);
+		xmlNewProp(node,(xmlChar *)"unit",(xmlChar *)"W");
+			
+		// Peak average power
+		node = xmlNewChild(root_node, NULL, (xmlChar *)"system_metric", NULL);
+		metric_name = "peak_average_power";
+		xmlNewProp(node,(xmlChar *)"name", (xmlChar *)metric_name.c_str());	
+		value_string = ext_to_string(get_peak_avg_power_W());
+		xmlNewProp(node,(xmlChar *)"value",(xmlChar *)value_string);
+		xmlNewProp(node,(xmlChar *)"unit",(xmlChar *)"W");
+				
+		// Total Average power
+		node = xmlNewChild(root_node, NULL, (xmlChar *)"system_metric", NULL);
+		metric_name = "total_average_power";
+		xmlNewProp(node,(xmlChar *)"name", (xmlChar *)metric_name.c_str());	
+		value_string = ext_to_string(get_total_average_power_W());
+		xmlNewProp(node,(xmlChar *)"value",(xmlChar *)value_string);
+		xmlNewProp(node,(xmlChar *)"unit",(xmlChar *)"W");
+	}
+	
     // Dumping document to file
     xmlSaveFormatFileEnc(xml_out_file, doc, "UTF-8", 1);
     
@@ -303,6 +367,13 @@ void create_MULTICUBE_full_output(char *xml_out_file, vector<scheduler*> &RTOS, 
 }
 
 
+
+    // TODO:
+    //
+    //	 Energy and Power metrics per task and scheduler element
+    //   Energy and Power metrics per processing element
+    //
+    
 void create_MULTICUBE_selected_output(char *xml_out_file, char *smd_file_name,
                                       vector<scheduler*> &RTOS,
                                       vector<task_info_t*> &app_task,
@@ -923,14 +994,98 @@ void create_MULTICUBE_selected_output(char *xml_out_file, char *smd_file_name,
 				rpt_msg += " Current supported rtos metrics are: sched_utilization, plat_utilization, number_of_schedulings , number_of_context_switches, starvation and miss_deadlines.";
 				SC_REPORT_ERROR("KisTA-XML",rpt_msg.c_str());
 			}
+			
+		} else if ( (!strcmp("system",curr_tok)) || (!strcmp("global",curr_tok)))
+		{
+			// reporting a SYSTEM METRICS (i.e. a metric related to the overal system, not dependent on the model)
+		
+			// get the name of the sytem/global metric
+			curr_tok = strtok(NULL,"/");
+			curr_tok_string = curr_tok;
+		
+			// Global Energy metrics
+		
+			if(!strcmp(curr_tok,"total_consumed_energy")) {
+				double_value = get_total_consumed_energy_J();
+				value_string = ext_to_string(double_value);
+				xmlNewProp(node,(xmlChar *)"value", (xmlChar *)value_string);
+				xmlNewProp(node,(xmlChar *)"unit",(xmlChar *)"J");
+			}
+			else if(!strcmp(curr_tok,"total_static_consumed_energy"))
+			{
+				double_value = get_total_static_consumed_energy_J();
+				value_string = ext_to_string(double_value);
+				xmlNewProp(node,(xmlChar *)"value",(xmlChar *)value_string);
+				xmlNewProp(node,(xmlChar *)"unit",(xmlChar *)"J");			
+			}
+			else if(!strcmp(curr_tok,"total_dynamic_consumed_energy"))
+			{
+				double_value = get_total_dynamic_consumed_energy_J();
+				value_string = ext_to_string(double_value);
+				xmlNewProp(node,(xmlChar *)"value",(xmlChar *)value_string);
+				xmlNewProp(node,(xmlChar *)"unit",(xmlChar *)"J");			
+			}
+			
+			// Global Energy metrics
+					
+			else if(!strcmp(curr_tok,"peak_dynamic_power")) {
+				// check if the metrics 
+				if(was_energy_and_power_measurement_enabled())  {
+					double_value = get_peak_dyn_power_W();
+					value_string = ext_to_string(double_value);
+					xmlNewProp(node,(xmlChar *)"value",(xmlChar *)value_string);
+					xmlNewProp(node,(xmlChar *)"unit",(xmlChar *)"W");			
+				}
+				else {	
+					rpt_msg = "Report of metric \"";
+					rpt_msg += curr_tok_string;
+					rpt_msg += "\" requires enabling power measurement. The metric is not reported.";
+					SC_REPORT_WARNING("KisTA-XML",rpt_msg.c_str());
+				}
+			}
+			else if(!strcmp(curr_tok,"peak_average_power")) {
+				// check if the metrics 
+				if(was_energy_and_power_measurement_enabled())  {
+					double_value = get_peak_avg_power_W();
+					value_string = ext_to_string(double_value);
+					xmlNewProp(node,(xmlChar *)"value",(xmlChar *)value_string);
+					xmlNewProp(node,(xmlChar *)"unit",(xmlChar *)"W");				
+				}
+				else {	
+					rpt_msg = "Report of metric \"";
+					rpt_msg += curr_tok_string;
+					rpt_msg += "\" requires enabling power measurement. The metric is not reported.";
+					SC_REPORT_WARNING("KisTA-XML",rpt_msg.c_str());
+				}
+			}
+			else if(!strcmp(curr_tok,"total_average_power")) {
+				// check if the metrics 
+				//if(was_energy_and_power_measurement_enabled())  {
+					double_value = get_total_average_power_W();
+					value_string = ext_to_string(double_value);
+					xmlNewProp(node,(xmlChar *)"value",(xmlChar *)value_string);
+					xmlNewProp(node,(xmlChar *)"unit",(xmlChar *)"W");				
+				//}
+				/*else {	
+					rpt_msg = "Report of metric \"";
+					rpt_msg +=  to_string(curr_tok);
+					rpt_msg + = "\" requires enabling power measurement. The metric is not reported.";
+					SC_REPORT_WARNING("KisTA-XML",rpt_msg.c_str());
+				}*/
+			} else {
+				rpt_msg = "Global metric \"";
+				rpt_msg += curr_tok;
+				rpt_msg += "\" not recognized.";
+				SC_REPORT_ERROR("Kista-XML",rpt_msg.c_str());
+			}	
 		} else {
 			rpt_msg = "Element ";
 			rpt_msg += curr_tok;
 			rpt_msg += " not recognized as base element with metric.";
 			SC_REPORT_ERROR("Kista-XML",rpt_msg.c_str());
 		}
-	}
-    
+	} 
+
     // Dumping document to file
     xmlSaveFormatFileEnc(xml_out_file, doc, "UTF-8", 1);
     

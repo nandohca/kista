@@ -66,7 +66,7 @@ double get_peak_dyn_power_W();
 
   // get the maximum power (static+dynamic), where dynamic power is computed every global power averaging time
  //  (callable during and at the end of the simulation)  
-double get_peak_av_power_W();
+double get_peak_avg_power_W();
 
   // get average power as the division of total consumed energy and last simulated time
  //  (callable during and at the end of the simulation)  

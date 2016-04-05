@@ -50,22 +50,36 @@ power_measurement_probe::power_measurement_probe(
 	SC_THREAD(power_accounter_proc);
 }
 
+void power_measurement_probe::set_averaging_time(sc_time av_time) {
+	check_call_before_sim_start("set_averaging_time");
+	averaging_time = av_time;
+}
+
 void power_measurement_probe::power_accounter_proc()
 {
 	double previous_total_consumed_energy_J;
-	
+	double consumed_energy_J_f;
+cout << "power_measurement_probe \"" << name() << "\" (av. time=" << averaging_time << "): START at " << sc_time_stamp() << endl;	
+
 	previous_total_consumed_energy_J = get_consumed_energy_J_f();
 	peak_av_power_W = 0;
 	
 	while(true) {
 		wait(averaging_time);
+cout << "power_measurement_probe \"" << name() << "\": executing at " << sc_time_stamp() << endl;		
 		// calculates power for the configured power averaging time
-		curr_av_power_W = (get_consumed_energy_J_f() - previous_total_consumed_energy_J) / averaging_time.to_seconds();
-		
+		consumed_energy_J_f = get_consumed_energy_J_f();
+		curr_av_power_W = (consumed_energy_J_f - previous_total_consumed_energy_J) / averaging_time.to_seconds();
+cout << "power_measurement_probe \"" << name() << "\": consumed_energy (J) = " <<  get_consumed_energy_J_f() << endl;				
+cout << "power_measurement_probe \"" << name() << "\": previous_total_consumed_energy (J) = " << previous_total_consumed_energy_J  << endl;				
+cout << "power_measurement_probe \"" << name() << "\": averaging time (s) = " << averaging_time.to_seconds() << endl;
+cout << "power_measurement_probe \"" << name() << "\": curr_av_power (W) = " <<  curr_av_power_W << endl;				
 		// updates the maximum power (for the power averaging time)
 		if(curr_av_power_W>peak_av_power_W) {
 			peak_av_power_W = curr_av_power_W;
-		}		
+		}
+		previous_total_consumed_energy_J = consumed_energy_J_f;
+cout << "power_measurement_probe \"" << name() << "\": peak_av_power_W (W) = " <<  peak_av_power_W << endl;						
 	}
 }
 

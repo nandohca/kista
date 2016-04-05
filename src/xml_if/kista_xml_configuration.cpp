@@ -36,7 +36,7 @@
 
 #include <kista.hpp>
 
-// If a simulation time configuration is fould, it creates an sc_time object and returns true
+// If a simulation time configuration is configured, it creates an sc_time object and returns true
 // return false otherwise
 bool get_configured_sim_time(xmlDocPtr doc, // the XML "handler"
 							  sc_time &sim_time
@@ -191,6 +191,58 @@ bool get_configured_error_fatality_for_exploration(xmlDocPtr doc) {
 								"error fatality for exploration", // description of the boolean property
 								false // default value if not found in XML system description
 								);
+}
+
+bool get_configured_energy_power_analysis(xmlDocPtr doc) {
+	
+	get_configured_boolean_option(doc,
+								"/system/kista_configuration/analysis/energy_power", // where to find boolean property
+								"energy power analysis enabled", // description of the boolean property
+								false // default value if not found in XML system description
+								);
+}
+
+// If an average time for power configuration is provided
+// it an sc_time object and returns true
+// return false otherwise
+bool get_configured_global_power_averaging_time(xmlDocPtr doc, // the XML "handler"
+							  sc_time &averaging_time
+							) {	
+	xmlNodeSetPtr global_power_averaging_time_nodes;
+	xmlXPathObjectPtr  XPathObjectPtr;
+	
+	std::string msg_rpt;
+	
+	// get the set of simulation_time configurations
+	XPathObjectPtr = getNodeSet(doc,(xmlChar *)"/system/kista_configuration/analysis/energy_power/power_averaging_time");
+	if(XPathObjectPtr==NULL) {
+		if(global_kista_xml_verbosity) {
+			msg_rpt = "No global averaging time was configured. Taking the default: ";
+			msg_rpt += averaging_time.to_string();
+			msg_rpt += " s.";
+			SC_REPORT_WARNING("Kista-XML",msg_rpt.c_str());
+		}
+		return false;
+	} else {
+		global_power_averaging_time_nodes = XPathObjectPtr->nodesetval;
+		
+		if(global_kista_xml_verbosity) {
+			if(global_power_averaging_time_nodes->nodeNr>1) {
+				SC_REPORT_WARNING("Kista-XML","More than one setting of averaging time for power measurement detected. KisTA-XML will take the former one.");
+			}
+		}
+
+		if(global_power_averaging_time_nodes->nodeNr<1) {
+			SC_REPORT_ERROR("Kista-XML","Unexpected situation on configuration of averaging time for power measurement.");
+		}
+		averaging_time = readTime(global_power_averaging_time_nodes->nodeTab[0]);	
+
+		if(global_kista_xml_verbosity) {
+			cout << "kista-XML INFO: Configuring avaraging time for global power measurement: " << averaging_time << endl;
+		}
+		
+		return true;
+	}
 }
 
 #endif

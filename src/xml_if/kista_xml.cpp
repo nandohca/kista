@@ -179,20 +179,9 @@ int sc_main(int argc, char **argv) {
 	char xsd_path_name[PATH_NAME_SIZE] = "";
 	char smd_path_name[PATH_NAME_SIZE] = "";
 	
-    parse_command_line(argc,argv, xmlFileName, sc_path_name, sm_path_name, xsd_path_name, smd_path_name);
+	// variables for analysis
+	sc_time global_power_averaging_time = sc_time(1,SC_SEC);
 
-//	char xmlFileName[PATH_NAME_SIZE] = "./examples/ex3/sample3.xml";
-//	char sc_path_name[PATH_NAME_SIZE] = "./examples/ex3/sample3_params.xml";
-//	char sm_path_name[PATH_NAME_SIZE] = "output.xml";
-//	char xsd_path_name[PATH_NAME_SIZE] = "";
-//	char smd_path_name[PATH_NAME_SIZE] = "./examples/ex3/sample3_design_space_def.xml";
-//
-//cout << "*************************************" << endl;
-//cout << sc_path_name << endl;
-//cout << sm_path_name << endl;
-//cout << smd_path_name << endl;
-//cout << "*************************************" << endl;	
-	
 	// Create persistent variables for the system description
 	vector<application_t*>		apps;
 	vector<task_info_t*>		app_task;
@@ -218,6 +207,22 @@ int sc_main(int argc, char **argv) {
 	  //    thus, the following would not work as we desired
 //	std::map<const char*, taskset_by_name_t*> taskset_map;
 	
+	// PARSING OF THE COMMAND LINE
+    parse_command_line(argc,argv, xmlFileName, sc_path_name, sm_path_name, xsd_path_name, smd_path_name);
+
+//	char xmlFileName[PATH_NAME_SIZE] = "./examples/ex3/sample3.xml";
+//	char sc_path_name[PATH_NAME_SIZE] = "./examples/ex3/sample3_params.xml";
+//	char sm_path_name[PATH_NAME_SIZE] = "output.xml";
+//	char xsd_path_name[PATH_NAME_SIZE] = "";
+//	char smd_path_name[PATH_NAME_SIZE] = "./examples/ex3/sample3_design_space_def.xml";
+//
+//cout << "*************************************" << endl;
+//cout << sc_path_name << endl;
+//cout << sm_path_name << endl;
+//cout << smd_path_name << endl;
+//cout << "*************************************" << endl;	
+	
+
 	doc = xmlParseFile(xmlFileName);
 	
 	if (doc == NULL ) {
@@ -446,7 +451,26 @@ int sc_main(int argc, char **argv) {
 		} else {
 			set_error_does_not_stop_exploration();
 		}
-
+		
+		// if (global) energy power analysis is configured
+		if(get_configured_energy_power_analysis(doc)) 
+		{
+			// creates the averager process for power measurement
+			enable_energy_and_power_measurement();
+			
+			// dumps on the global_power_averaging_time variable
+			// either a user configured averaging time for power analysis (if there is any)
+			// or the default value
+			if(get_configured_global_power_averaging_time(doc,global_power_averaging_time)) 
+			{
+				// set the global power averaging time
+				set_global_power_averaging_time(global_power_averaging_time);
+			}
+			// else, apply the default power averaging time
+			
+			
+		}
+		
 #ifdef _VERBOSE_KISTA_XML
 		if(global_kista_xml_verbosity) {
 			printf("kista-XML INFO: Anaylsis and Report configuration completed.\n");
@@ -493,7 +517,7 @@ int sc_main(int argc, char **argv) {
 
 #ifdef _VERBOSE_KISTA_XML
 		if(global_kista_xml_verbosity) {
-			rpt_msg = "EDumping output to file ";
+			rpt_msg = "Dumping output to file ";
 			rpt_msg += sm_path_name;
 			rpt_msg = "\n";
 			SC_REPORT_INFO("KisTA-XML", rpt_msg.c_str());
