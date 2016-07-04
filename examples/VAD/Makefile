@@ -18,7 +18,7 @@ export LIB_FUN_NAME
 
 # Enable the following variable definition for enable code annotation
 # In case it is not enabled, KisTA will use directly the WCET
-#DEFINES = -D_USE_AUTOMATIC_CODE_ANNOTATION
+DEFINES = -D_USE_AUTOMATIC_CODE_ANNOTATION
 
 # For compiling all the source files of the folder
 #INSTR_SRCS = $(wildcard ./fun/*.cpp)
