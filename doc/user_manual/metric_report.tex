@@ -1,0 +1,89 @@
+KisTA enables the report of \textbf{different types of time metrics} associated both to the application and to the 
+the platfom resources.
+Kista enables the reporting of metrics offline (at the end of the simulation) and 
+during the simulation.
+In addition, KisTA-XML front end enables to report metrics \textbf{in a XML file, supporting
+the \emph{Multicube}} interface for DSE.
+
+In its latest version, a capability for reporting basic \textbf{energy and power} metrics has been also added.
+
+\subsubsection{Wors-Case and Actual Case measurements}
+An important consideration is that KisTA is a tool oriented to the assessment of predictable systems.
+Because of that, the tool, bu default, employs worst-case annotations both for computational loads
+and for communication loads by default.
+%
+This means that the assessemnts obtained refer to worst-case situations.
+%
+In addition, KisTA can provide assessments for annotations based on the actual computational and communicaiton
+load, and the time-dependent state of the system.
+This enable more accurate assessemnts, either related to specific scenario or to the average case
+(this is exploited for instance in the joint-analytical and simulation based DSE methodology proposed
+by KTH, PoliMi and UC partners in the FP7 CONTREX project).
+
+\subsubsection{Estimating Actual Computation times}
+The user can configure the KisTA tool to consider \emph{actual computational} loads
+(instead the worst-case computational loads captured in the model via the WCET and/or WCEI annotations).
+%
+These actual times have to be provided by an annotation mechanism integrated in the functional code
+employed by the KisTA model.
+%
+Then, for estimating actual computation times, the user needs to do two things:
+
+\begin{itemize}
+\item Compile the functional code to add the instrumentation
+\item Redefine the consumption macros, e.g. $CONSUME\_T$, in order to employ
+the time estimations from the instrumented code, instead from the WCEI/WCET annotations.
+\end{itemize}
+
+Currently, KisTA supports one annotation mechanisms, which serves as reference for introducing
+new annotations mechanisms in the library.
+%
+This annotation mechanism relies on the use of the \emph{scope-g++} compilation tool,
+provided by the SCoPE tool developed by the University of Cantabria (http://www.teisa.unican.es/scope).
+%
+SCoPE provide several annotation mechanism.
+Among them, the simples one, based on the annotation of the source code
+based on the source-levle operations found (opcost).
+This method is open and freely available, and therefore, it has been introduced in KisTA
+as a reference (without preventing that other more accurate methods, e.g. based on ASM analysis
+can be included).
+
+KisTA integrates a pre-compiled version of the SCOPE opcost compiler, which is
+installed in $\$KISTA\_HOME\\bin$ (executables \emph{opcost} and \emph{scope-g++}).
+
+This way, the compilation of the functional code can be done with \emph{scope-g++} instead with gcc.
+The user can find an example of how the functional code of the VAD is compiled in
+{\tt \$KISTA\_HOME/examples/VAD/fun/Makefile}, i.e. the \emph{Makefile} , used to compile
+the VAD functionality of the VAD example distributed in KisTA.
+
+The re-definiton of the $CONSUME\_T$ macros is done by including the headers of the annotation plugin.
+The simplest way to do so is to add the $-D\_USE\_AUTOMATIC\_CODE\_ANNOTATION$ flag in the 
+compilation command.
+The user finds an example in the
+{\tt \$KISTA\_HOME/examples/VAD/fun/Makefile}
+file of the
+VAD example (by simply uncommenting the line and re-compiling, the annotation is used).
+%
+Another alternative is to define the variable by means of a $\#define$ clause in the 
+functional code, right before the include of the kista header.
+
+The definition of the $\_USE\_AUTOMATIC\_CODE\_ANNOTATION$ includes the 
+$annotation\_plugin/annotation\_plugin.hpp$ generic header. 
+This header in turn, selects one among the available annotation headers.
+In this case, right the SCoPE annotation header:
+$annotation\_plugin/scope\_opcost.hpp$.
+%
+The SCoPE annotation header provide implementations for the time consumption
+macros, e.g. $CONSUME\_T$, which invoke code which computes from the instrumented
+code, the actual computational weight as a function of the instructions accounted from the instrumentation,
+and as a function of the configured frequency and cycles per instructions associated to the processing element
+where the task is running.
+
+\subsubsection{Time related reports}
+TBC
+
+\subsubsection{Energy and Power related output metrics}
+TBC
+
+
+
