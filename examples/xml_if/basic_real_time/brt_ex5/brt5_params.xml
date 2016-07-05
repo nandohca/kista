@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Example sample7.xml for XML front-end of the KisTA library -->
+ <parameters>
+	<parameter name="SCHED_POLICY" value="EarliestDeadlineFirst" />
+	<!--
+	<parameter name="SCHED_POLICY" value="EarliestDeadlineFirst" />
+	-->
+	</parameter>
+ </parameters>
+

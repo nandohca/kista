@@ -101,11 +101,13 @@ int sc_main (int, char *[]) {
 //   scheduler1.enable_time_slicing();
 
 #ifdef _EXPERIMENT_A
+   printf("Set EDF policy\n");
 // ANY of the following estatements is equivalent thanks to the default value and short style methods
 //   scheduler1.set_dispatch_policy(DYNAMIC_PRIORITIES);
 //   scheduler1.set_dynamic_dispatch_policy(EARLY_DEADLINE_FIRST);
    scheduler1.set_earliest_deadline_first();
 #else
+   printf("Set RM policy\n");
    scheduler1.set_rate_monotonic();
 #endif
 

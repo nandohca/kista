@@ -1,0 +1,83 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage[margin=15mm]{geometry}
+\usetikzlibrary{shapes,arrows,fit,calc,positioning}
+\makeatletter
+\tikzset{
+  through point/.style={
+    to path={%
+      \pgfextra{%
+        \tikz@scan@one@point\pgfutil@firstofone(\tikztostart)\relax
+        \pgfmathsetmacro{\pt@sx}{\pgf@x * 0.03514598035}%
+        \pgfmathsetmacro{\pt@sy}{\pgf@y * 0.03514598035}%
+        \tikz@scan@one@point\pgfutil@firstofone#1\relax
+        \pgfmathsetmacro{\pt@ax}{\pgf@x * 0.03514598035 - \pt@sx}%
+        \pgfmathsetmacro{\pt@ay}{\pgf@y * 0.03514598035 - \pt@sy}%
+        \tikz@scan@one@point\pgfutil@firstofone(\tikztotarget)\relax
+        \pgfmathsetmacro{\pt@ex}{\pgf@x * 0.03514598035 - \pt@sx}%
+        \pgfmathsetmacro{\pt@ey}{\pgf@y * 0.03514598035 - \pt@sy}%
+        \pgfmathsetmacro{\pt@len}{\pt@ex * \pt@ex + \pt@ey * \pt@ey}%
+        \pgfmathsetmacro{\pt@t}{(\pt@ax * \pt@ex + \pt@ay *           \pt@ey)/\pt@len}%
+        \pgfmathsetmacro{\pt@t}{(\pt@t > .5 ? 1 - \pt@t : \pt@t)}%
+        \pgfmathsetmacro{\pt@h}{(\pt@ax * \pt@ey - \pt@ay *           \pt@ex)/\pt@len}%
+        \pgfmathsetmacro{\pt@y}{\pt@h/(3 * \pt@t * (1 - \pt@t))}%
+      }
+      (\tikztostart) .. controls +(\pt@t * \pt@ex + \pt@y * \pt@ey, \pt@t * \pt@ey - \pt@y * \pt@ex) and +(-\pt@t * \pt@ex + \pt@y * \pt@ey, -\pt@t * \pt@ey - \pt@y * \pt@ex) .. (\tikztotarget)
+    }
+  }
+}
+\makeatother
+\begin{document}
+File created by KisTA library
+
+Author: F.Herrera
+
+Institution: KTH (2012-2014, Jul), Univ. of Cantabria (from 2014, Sept.)
+
+Rights reserved by the authors in the terms defined by the KisTA license.
+
+KisTA library compilation date: Jul  5 2016 at 13:24:36.
+
+
+
+Sketch Creation: Tue Jul  5 13:57:33 2016
+
+
+Sketch options enabled:
+scale = 1
+\hfill
+
+
+\tikzstyle{task_style}=[circle, thick, draw=orange!80, fill=orange!25]
+\tikzstyle{logic_link_style} = [->, >=latex', shorten >=1pt]
+\tikzstyle{fifo_buffer_style} = [->, >=latex', shorten >=1pt, thick]
+\tikzstyle{task_map_arrow} = [dashed, ->, draw=orange!80, fill=orange!80, >=latex', shorten >=1pt, thick]
+\tikzstyle{sched_style} = [rectangle, draw=red!80, fill=red!20, rounded corners, thick]
+\tikzstyle{sched_map_arrow} = [dashed, ->, draw=red!80, fill=red!80, >=latex', shorten >=1pt, thick]
+\tikzstyle{pe_style} = [rectangle, draw=blue!50, fill=blue!20, thick]
+\tikzstyle{phy_commres_style} = [cloud, draw=blue!50, fill=blue!10, thick]
+\tikzstyle{tdma_bus_style} = [rectangle, draw=blue!50, fill=blue!10, thick]
+\tikzstyle{platform_conn_style} = [blue!50, >=latex', shorten >=1pt]
+\tikzstyle{mem_style} = [rectangle, draw=blue!50,  fill=blue!5, thick]
+% Use the scale factor for changing the size of the figure and better export to png
+% You can set if from KisTA with set_scale method, or by editing this .tex file
+\begin{tikzpicture}[scale=1, transform shape]
+\node (T1) [task_style] {$T1$};
+\node (T2) [task_style, right=of T1] {$T2$};
+\node (T3) [task_style, right=of T2] {$T3$};
+\node (sched1) [sched_style, below=of T1] {$sched1$};
+
+\node (PE0) [pe_style, below=of sched1] {$PE0$};
+
+
+\draw (T1.south) [task_map_arrow] -- (sched1.north);
+\draw (T2.south) [task_map_arrow] -- (sched1.north);
+\draw (T3.south) [task_map_arrow] -- (sched1.north);
+
+\draw (sched1.south) [sched_map_arrow] -- (PE0.north);
+
+ 
+\end{tikzpicture}
+\end{document}
+

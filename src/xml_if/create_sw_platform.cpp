@@ -279,6 +279,43 @@ xmlNodePtr getSchedulerPolicyNode(xmlDocPtr doc,
 	return NULL;
 }
 
+//
+// method to parse the Dispatching policy when the dynamic priorities schedulign policy is configured
+//
+// Returns the dynamic priorit dispatching policy (currently only EARLIEST_DEADLINE_FIRST) out of the 
+// dispatching child node
+//
+dynamic_priorities_policy_t getDynamicPrioritiesDispatchingPolicy(xmlNodePtr cur)
+{
+	xmlNodePtr curChildNodePtr;
+	xmlChar *dispatching_value;
+	
+	dispatching_value = NULL;
+	curChildNodePtr = cur->xmlChildrenNode;
+	while (curChildNodePtr != NULL) {
+		if ((!xmlStrcmp(curChildNodePtr->name, (const xmlChar *)"dispatching"))) {
+			if (xmlHasProp(curChildNodePtr,(xmlChar*)"value")) {
+				dispatching_value = xmlGetProp(curChildNodePtr,(xmlChar*)"value");
+			}
+		}
+		curChildNodePtr=curChildNodePtr->next;
+	}
+	if(dispatching_value!=NULL) {
+		if(!xmlStrcmp(dispatching_value,(const xmlChar *)"EarliestDeadlineFirst")) {
+			return EARLIEST_DEADLINE_FIRST;
+		} else if(!xmlStrcmp(dispatching_value,(const xmlChar *)"User")) {
+			return USER_DYNAMIC_PRIORITY_POLICY;
+		} else {
+			SC_REPORT_ERROR("KisTA-XML","No recognized dispatching policy for dynamic priority settled. Currently supported values: EarliestDeadlineFirst, User.");
+			return UNKNOWN_DYNAMIC_PRIORITY_BASED_SCHED_POLICY;
+		}
+	} else {
+		SC_REPORT_ERROR("KisTA-XML","No dispatching policicy for dynamic priority settled. Currently supported values: EarliestDeadlineFirst, User.");
+	}
+	return UNKNOWN_DYNAMIC_PRIORITY_BASED_SCHED_POLICY;
+}
+
+
 // get all processing elements from the platform
 xmlNodeSetPtr getRTOS(xmlDocPtr doc) {
 	xmlNodeSetPtr nodeset;
@@ -367,7 +404,9 @@ void create_SW_platform(xmlDocPtr doc, std::vector<scheduler*> &RTOS_vec) {
 			
 #ifdef _VERBOSE_KISTA_XML
 				if(global_kista_xml_verbosity) {
-					rpt_msg = "Settled ";
+					rpt_msg = "Scheduler \"";
+					rpt_msg += (const char *)RTOSName;
+					rpt_msg += "\": Settled ";
 					switch(SchedTriggeringPolicy) {
 						case NON_PREEMPTIVE:
 							rpt_msg += "non_preemptive";
@@ -381,8 +420,7 @@ void create_SW_platform(xmlDocPtr doc, std::vector<scheduler*> &RTOS_vec) {
 						default:
 							rpt_msg += "unknown";
 					}
-					rpt_msg += " triggering policy for scheduler ";
-					rpt_msg += (const char*)RTOSName;
+					rpt_msg += " triggering policy.";
 					SC_REPORT_INFO("KisTA-XML",rpt_msg.c_str());
 				}
 #endif	
@@ -391,8 +429,11 @@ void create_SW_platform(xmlDocPtr doc, std::vector<scheduler*> &RTOS_vec) {
 
 			// Read if time slicing is enabled
 #ifdef _VERBOSE_KISTA_XML
-			if(global_kista_xml_verbosity) {			
-				rpt_msg = " Time slice ";
+			if(global_kista_xml_verbosity) {	
+				rpt_msg = "Scheduler \"";
+ 			    rpt_msg += (const char *)RTOSName;
+				rpt_msg += "\":"; 		
+				rpt_msg += " Time slice ";
 			}
 #endif			
 		    if(TimeSliceEnabled(doc,curr_node)) {
@@ -473,12 +514,42 @@ void create_SW_platform(xmlDocPtr doc, std::vector<scheduler*> &RTOS_vec) {
 				break;
 				
 			  case DYNAMIC_PRIORITIES:
-			    rpt_msg = "The \"dynamic priorities\" policy configured for the RTOS instance \"";
-				rpt_msg += (const char *)RTOSName;
-				rpt_msg += "\" is not currently supported.";
-				SC_REPORT_ERROR("KisTA-XML", rpt_msg.c_str());
+			    RTOS_ptr->set_policy(DYNAMIC_PRIORITIES);
+			    
+			    // Following, it parses the dispatching policy
+			  	
+			  	dynamic_priorities_policy_t dynamic_priorities_policy;
+		  	
+			  	dynamic_priorities_policy = getDynamicPrioritiesDispatchingPolicy(curr_node);
+			  	
+			  	switch(dynamic_priorities_policy) {
+					case EARLIEST_DEADLINE_FIRST:
+						RTOS_ptr->set_dynamic_priorities_policy(EARLIEST_DEADLINE_FIRST); // actually, in the C-API this is set by default
+						//RTOS_ptr->set_dynamic_priorities_policy(EARLIEST_DEADLINE_FIRST); // it is the same actually
+						break;
+					default:
+						rpt_msg = "Unsupported \"dynamic priority\" policy configured for the RTOS instance \"";
+						rpt_msg += (const char *)RTOSName;
+						rpt_msg += "\". Currently, \"EarliestDeadlineFirst\" dispatching policy is supported.";
+						SC_REPORT_ERROR("KisTA-XML", rpt_msg.c_str());
+				}
+#ifdef _VERBOSE_KISTA_XML
+					if(global_kista_xml_verbosity) {
+					  rpt_msg = "Scheduler \"";
+					  rpt_msg += (const char *)RTOSName;
+					  rpt_msg += "\": Configuring dynamic scheduling with \"";
+					  switch(dynamic_priorities_policy) {
+						case EARLIEST_DEADLINE_FIRST:
+							rpt_msg += "EarliestDeadlineFirst";
+							break;
+						default:
+							rpt_msg += "User";
+					  }
+					  rpt_msg += "\" dispatching policy.";
+					  SC_REPORT_INFO("KisTA-XML", rpt_msg.c_str());
+					}
+#endif
 				break;
-
 			  case CYCLE_EXECUTIVE:
 			    RTOS_ptr->set_policy(CYCLE_EXECUTIVE);
 			    /*
@@ -499,6 +570,9 @@ void create_SW_platform(xmlDocPtr doc, std::vector<scheduler*> &RTOS_vec) {
 			// Adding the recently created and configured RTOS to the created HW platform
 			RTOS_vec.push_back(RTOS_ptr);
 		}	
+				
+				
+				
 					
 	   // -------------------------------------------------------------------
        // Parses communication scheduling information associated to the RTOS

@@ -39,7 +39,8 @@ enum scheduler_policy_t {
 															// STATIC PRIORITIES use, by default USER priorities for the ordering
 															// set_rate_monotonic, and set_deadline_monotonic methods change and overide user priorities
                          DYNAMIC_PRIORITIES = 5,       // dispatch relies on dynamic priorities by updating a priority list
-                         USER_SCHEDULER_POLICY = 6
+                         USER_SCHEDULER_POLICY = 6,
+                         UNKNOWN_SCHED_POLICY
                          };
 
 typedef std::vector<std::string> scheduler_policy_name_table_t;
@@ -50,7 +51,8 @@ enum static_priorities_policy_t {
 						DEADLINE_MONOTONIC = 1,
 						RATE_MONOTONIC = 2,
 						DENSITY_MONOTONIC = 3,
-						USER_AUTOMATIC_STATIC_PRIORITIES = 4
+						USER_AUTOMATIC_STATIC_PRIORITIES = 4,
+						UNKNOWN_PRIORITY_BASED_SCHED_POLICY_
 };
 
 typedef std::vector<std::string> static_priorities_policy_name_table_t;
@@ -58,7 +60,8 @@ typedef std::vector<std::string> static_priorities_policy_name_table_t;
 
 enum dynamic_priorities_policy_t {
 	                     EARLIEST_DEADLINE_FIRST = 0,  
-	                     USER_DYNAMIC_PRIORITY_POLICY =1
+	                     USER_DYNAMIC_PRIORITY_POLICY =1,
+	                     UNKNOWN_DYNAMIC_PRIORITY_BASED_SCHED_POLICY
 };
 
 typedef std::vector<std::string> dynamic_priorities_policy_name_table_t;
@@ -67,7 +70,8 @@ typedef std::vector<std::string> dynamic_priorities_policy_name_table_t;
 enum scheduler_triggering_policy_t {
 						PREEMPTIVE = 0,
 						COOPERATIVE= 1,
-						NON_PREEMPTIVE = 2
+						NON_PREEMPTIVE = 2,
+						UNKNOWN_TRIGGERING_POLICY
 };
 
 typedef std::vector<std::string> scheduler_triggering_policy_name_table_t;
