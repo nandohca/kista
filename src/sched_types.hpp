@@ -40,6 +40,9 @@ enum scheduler_policy_t {
 															// set_rate_monotonic, and set_deadline_monotonic methods change and overide user priorities
                          DYNAMIC_PRIORITIES = 5,       // dispatch relies on dynamic priorities by updating a priority list
                          USER_SCHEDULER_POLICY = 6,
+                         SHORTCUT_RR = 7,
+                         SHORTCUT_EDF = 8,
+                         SHORTCUT_RMS = 9,
                          UNKNOWN_SCHED_POLICY
                          };
 

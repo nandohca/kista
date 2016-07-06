@@ -232,6 +232,12 @@ scheduler_policy_t getSchedulerPolicy(xmlDocPtr doc,
 	} 
 	 else if ( (!xmlStrcmp(SchedulerPolicy, (const xmlChar *)"dynamic_priorities")) ) {												
 		return DYNAMIC_PRIORITIES;
+	}
+	else if ( (!xmlStrcmp(SchedulerPolicy, (const xmlChar *)"RMS")) ) {
+		return SHORTCUT_RMS;
+	}
+	else if ( (!xmlStrcmp(SchedulerPolicy, (const xmlChar *)"EDF")) ) {
+		return SHORTCUT_EDF;
 	} else {
 		return USER_SCHEDULER_POLICY;
 	}
@@ -558,6 +564,21 @@ void create_SW_platform(xmlDocPtr doc, std::vector<scheduler*> &RTOS_vec) {
 				rpt_msg += "\" is not currently supported.";
 				SC_REPORT_ERROR("KisTA-XML", rpt_msg.c_str());
 			    */
+			    break;
+			    
+			  case SHORTCUT_RR:
+				RTOS_ptr->set_Round_Robin();
+			    break;			    
+
+			  case SHORTCUT_EDF:
+				RTOS_ptr->set_earliest_deadline_first();
+			    break;			    
+
+			  case SHORTCUT_RMS:
+			    rpt_msg = "The RMS policy shortcut confgured for the RTOS instance \"";
+				rpt_msg += (const char *)RTOSName;
+				rpt_msg += "\" is not currently supported.";
+				SC_REPORT_ERROR("KisTA-XML", rpt_msg.c_str());
 			    break;
 			    
 			  default:

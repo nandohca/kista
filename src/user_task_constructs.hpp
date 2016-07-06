@@ -40,9 +40,18 @@ void wait_period(); // Function which takes the Period from the task information
 
 class task_info_t; // forward declaration
 
+// Macro for consuming time
+// By default, it consumes WCET
+// If an annotation plugin is used, the CONSUME_T macro is redefined to consume the annotated time
+#define CONSUME_T						\
+			consume_WCET();
+			
 // convenience macros
-#define PERIODIC_TASK(task_name, task_fun)	\
-     void task_name()					\
+
+// define wrapper function for periodic task in a single macro
+// with implicit consumption of WCET
+#define PERIODIC_TASK(wrapper_fun_name, task_fun)	\
+     void wrapper_fun_name()						\
      {									\
 		while(true) {					\
 		  task_fun();					\
@@ -51,13 +60,34 @@ class task_info_t; // forward declaration
 		}								\
      }
 
-#define BEGIN_PERIODIC_TASK(task_name)	\
-     void task_name()					\
+// define wrapper function for periodic task in a single macro
+// where the time consumed by functionality can be 
+// either the WCET or the time estimated by means of annotation
+#define GENERIC_PERIODIC_TASK(wrapper_fun_name, task_fun)	\
+     void wrapper_fun_name()					\
+     {									\
+		while(true) {					\
+		  task_fun();					\
+		  consume_T;					\
+		  wait_period();				\
+		}								\
+     }
+
+#define BEGIN_PERIODIC_TASK(wrapper_fun_name)	\
+     void wrapper_fun_name()					\
      {									\
 		while(true) {
 
+// Macro for end of periodic task with implicit WCET consumption
 #define END_PERIODIC_TASK	\
 		  consume_WCET();				\
+		  wait_period();				\
+		}								\
+     }
+     
+// Macro for end of periodic task with implicit WCET consumption
+#define GENERIC_END_PERIODIC_TASK	\
+		  CONSUME_T;					\
 		  wait_period();				\
 		}								\
      }
@@ -95,12 +125,6 @@ class task_info_t; // forward declaration
 		init_sec;						\
 		while(true) {                  \
 			__VA_ARGS__
-			
-// Macro for consuming time
-// By default, it consumes WCET
-// If an annotation plugin is used, the CONSUME_T macro is redefined to consume the annotated time
-#define CONSUME_T						\
-			consume_WCET();
 			
 // Macro for ending the task functionality and yield
 #define END_TASK						\

@@ -2,17 +2,10 @@
 
   t2_fun.cpp
   
-  Task function for t1
+  Task function for t2
   
-  Task function contains the task functionality and also communication and
-  synchronization calls (therefore, it is not "pure" functionality)
+  Periodic task functionality attached to a XML description
  
-  Task function is a very generic mechanism for supporting any task
-  "processing and communication structure".
-  
-  From the XML interface, specific templates of "processing and communication structure"
-  can be used to automate the generation of this structure, so to hide this
-  from the user.
 
   Author: F. Herrera
   Institution: KTH
@@ -22,22 +15,18 @@
  *****************************************************************************/
     
 #include "kista.hpp"   
-  
+
+
+void t2_fun() {
+		cout << "T2: exec. at time " << sc_time_stamp() << endl;
+}
+
+extern "C" 
+PERIODIC_TASK(T2_periodic_task_wrapper,t2_fun);
+
+/*  
 extern "C"
-BEGIN_TASK_WITH_INIT(t2_fun,
-// --------------------------	
-// init and state section
-// --------------------------
-    // Declaration and initialization of internal variables
-
-)
-
-//--------------
-// Task code
-//--------------
-
-		cout << "T2: exec at time " << sc_time_stamp() << endl;
-		
-		CONSUME_T;
-		
-END_TASK
+BEGIN_PERIODIC_TASK(t2_fun)
+	cout << "T2: exec at time " << sc_time_stamp() << endl;
+END_PERIODIC_TASK
+*/

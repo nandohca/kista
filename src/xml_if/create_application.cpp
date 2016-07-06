@@ -817,9 +817,9 @@ unsigned int create_tasks(xmlDocPtr doc, std::vector<task_info_t*> &task_vec,
                                        		
 			if(task_fun_p!=NULL) {
 				if(n_applications>1) {
-					Task_info_ptr = new task_info_t((const char *)TaskName,task_fun_p,(const char*)OwnerAppName); // The default funtionality is used by default
+					Task_info_ptr = new task_info_t((const char *)TaskName,task_fun_p,(const char*)OwnerAppName);
 				} else {
-					Task_info_ptr = new task_info_t((const char *)TaskName,task_fun_p); // The default funtionality is used by default
+					Task_info_ptr = new task_info_t((const char *)TaskName,task_fun_p);
 				}
 			} else {
 				// if not read or provided, then a (void) default_collaborative functionality is used

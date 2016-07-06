@@ -11,7 +11,7 @@
 	 
 	<task name="T1">
 		
-		<function name="t1_fun" file="task_funcs.so">	
+		<function name="T1_periodic_task_wrapper" file="task_funcs.so">	
 		<!--
 		<function name="t1_fun" file="task_funcs.so" path="./">
 		-->
@@ -20,11 +20,11 @@
 	</task>
 	
 	<task name="T2">
-			<function name="t2_fun" file="task_funcs.so"/>
+			<function name="T2_periodic_task_wrapper" file="task_funcs.so"/>
 	</task>
 
 	<task name="T3">
-			<function name="t3_fun" file="task_funcs.so"/>
+			<function name="T3_periodic_task_wrapper" file="task_funcs.so"/>
 	</task>
 
 	<task_properties task_name="T1">
@@ -72,13 +72,20 @@ In shorcuts, "policy" value is equivalent to a combination of attributes, includ
 						
 				  -->
 
-				  <!--
+				  <!-- Short way to model a EDF scheduler 
 				  <scheduler_policy  policy="EDF"/>
 				  -->
-				  <!-- Equivalent to: -->
+				  <!-- Equivalent to: 
+				  <scheduler_policy policy="dynamic_priorities" triggering="non_preemptive" time_slice="no">
+						 <dispatching value="EarliestDeadlineFirst" />
+				  </scheduler_policy>
+				  -->
+				  
+				  <!-- Equivalent to example BRT5 which used the C/C++ API: -->
 				  <scheduler_policy policy="dynamic_priorities" triggering="preemptive" time_slice="no">
 						 <dispatching value="EarliestDeadlineFirst" />
 				  </scheduler_policy>
+
 				  
 			  </task_scheduler>
 			  <!--
@@ -125,6 +132,9 @@ In shorcuts, "policy" value is equivalent to a combination of attributes, includ
 	<export_sketch value="true">
 		<file_name value="brt5_sketch"/>
 	</export_sketch>
+	<analysis>
+		<trace_rtos name="sched1" file="sched1_trace"/>
+	</analysis>	
   </kista_configuration>
   
 </system>

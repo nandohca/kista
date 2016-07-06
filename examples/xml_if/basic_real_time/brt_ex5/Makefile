@@ -74,7 +74,7 @@ $(DYN_LIBRARY).so: $(TASK_OBJS)
 
 
 run: $(DYN_LIBRARY).so
-	kista-xml $(SD_FILE) --xml_system_metrics_definition=./$(SMD_FILE)
+	kista-xml $(SD_FILE) --xml_system_metrics_definition=./$(SMD_FILE) --xml_system_metrics=$(EX_NAME)_output.xml
 
 #	kista-xml $(SD_FILE)\
 # --xml_system_configuration=./$(SC_FILE)\
@@ -91,6 +91,9 @@ clean:
 ultraclean:clean
 #	make -C ./fun ultraclean
 	rm -f *.so
+	rm -f *.log
+	rm -f *.aux
+	rm -f *.vcd
 	rm -f $(EX_NAME)_output.xml
 	rm -f $(EX_NAME)_sketch.pdf
 		
