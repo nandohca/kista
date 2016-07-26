@@ -38,7 +38,7 @@ def get_scheds():
 				var = (elem.attrib.get('max'))
 				print (var)
 				for x in range(0, int(var)):
-					tmp = 'sched_{0}'.format(x+1)
+					tmp = (x+1)
 					print (tmp)
 					BE_vect.append(tmp)
 					
@@ -135,19 +135,32 @@ def main():
 	new_header+= header[splitting_column:]
 	
 	new_data = []
+	"""this loop is needed to call the inark with the desired configuration and check if feasible.
+	then if it is ok, the csv has to be modified adding and editing some columns.
+	the points to be modified are: adding BE mapping, N tasks, TASK_SCHED column (?) 
+	note that 1 row has to be attempted with all the final configuration map so the final line num of the csv is inizial line num * final_configurations_map - invalid configurations"""
+	matrice = "({0}-{1}-{2}-{3}-{4}-{5})"
 	for row in data:
-		#print (row[0:splitting_column])
-		temp = row[0:splitting_column]
-		temp.append( "dummy") #vanno messi uno per volta
-		
-		temp+=(row[splitting_column:])
-	#	print (temp)
-		new_data.append(temp)
-	#	print (len(new_data))
-
+		for value in final_configurations_map:
+			print(len(row))
+			temp = row[0:splitting_column]
+			for aaaa in final_configurations_map[value]:
+				x = []
+				for y in range (0, len (schedulers)):
+					x.append(0)
+				#print (aaaa,'value is: ', final_configurations_map[value][aaaa])
+			#print (row[0:splitting_column])
+				x[int(final_configurations_map[value][aaaa])-1] = 1
+				temp.append(matrice.format(*x)) #vanno messi uno per volta
+				
+			temp+=(row[splitting_column:])
+			#	print (temp)
+			new_data.append(temp)
+			print (len(temp), '###à####')
+	    
 
 	f2=open("esempio_out.csv", 'w')
-	write = csv.writer(f2, delimiter=';')
+	write = csv.writer(f2, delimiter=';',quoting=csv.QUOTE_ALL)
 	write.writerow(new_header)
 	for line in new_data:
 		write.writerow(line)
