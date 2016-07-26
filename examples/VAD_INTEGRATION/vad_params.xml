@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<simulator_input_interface xmlns="http://www.multicube.eu/" version="1.4">	
+
+	
+	
+	
+	<parameter name="T1_MAP" value="sched1" />
+	<parameter name="T2_MAP" value="sched1" />
+	<parameter name="T3_MAP" value="sched2" />
+	<parameter name="T4_MAP" value="sched2" />
+	<parameter name="T5_MAP" value="sched3" />
+	<parameter name="T6_MAP" value="sched3" />
+	<parameter name="T7_MAP" value="sched4" />
+	<parameter name="T8_MAP" value="sched4" />
+	
+	
+	
+	<parameter name="STATIC_COMM_SCHED1">
+		<item value="E6" />						  
+
+		<item value="E8" />	
+	</parameter>
+
+	<parameter name="STATIC_COMM_SCHED2">
+		<item value="E3" />
+		<item value="E4" />			
+	</parameter>
+
+	<parameter name="STATIC_COMM_SCHED3">
+		<item value="E7" />
+		<item value="E10" />		
+	</parameter>
+
+	<parameter name="STATIC_COMM_SCHED4">
+	</parameter>
+						
+	
+	
+	
+	<parameter name="PE1_SLOTS" value="1" />
+	<parameter name="PE2_SLOTS" value="1" />
+	<parameter name="PE3_SLOTS" value="1" />
+	<parameter name="PE4_SLOTS" value="0" />
+	<parameter name="PE5_SLOTS" value="0" />
+	<parameter name="PE6_SLOTS" value="0" />
+	
+<parameter name="T0_M" value="D1_IN" /><parameter name="T1_M" value="T1" /><parameter name="T2_M" value="T1" /><parameter name="T3_M" value="T2" /><parameter name="T4_M" value="T2" /><parameter name="T5_M" value="D1_OUT" /><parameter name="T6_M" value="D2_IN" /><parameter name="T7_M" value="T3" /><parameter name="T8_M" value="T3" /><parameter name="T9_M" value="T4" /><parameter name="T10_M" value="T4" /><parameter name="T11_M" value="D2_OUT" /><parameter name="T12_M" value="D3_IN" /><parameter name="T13_M" value="T5" /><parameter name="T14_M" value="T5" /><parameter name="T15_M" value="T6" /><parameter name="T16_M" value="T6" /><parameter name="T17_M" value="D3_OUT" /><parameter name="T18_M" value="D4_IN" /><parameter name="T19_M" value="T7" /><parameter name="T20_M" value="T7" /><parameter name="T21_M" value="T8" /><parameter name="T22_M" value="T8" /><parameter name="T23_M" value="D4_OUT" /><parameter name="T24_M" value="D5_IN" /><parameter name="T25_M" value="D5_OUT" /><parameter name="T26_M" value="D6_IN" /><parameter name="T27_M" value="D6_OUT" /></simulator_input_interface>

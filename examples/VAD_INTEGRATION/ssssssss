@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulator_output_interface xmlns="http://www.multicube.eu/" version="1.4">
+  <system_metric name="comm_synch/E19/normalized_write_stationary_throughput" value="1.111111e-07"/>
+  <system_metric name="comm_synch/E19/normalized_write_throughput" value="1.110661e-07"/>
+  <system_metric name="comm_synch/E19/read_period" value="9000000.000000"/>
+  <system_metric name="APP1_NORM_PERIOD" value="9000000.000000"/>
+  <system_metric name="comm_synch/E5/normalized_read_stationary_throughput" value="1.111111e-07"/>
+  <system_metric name="comm_synch/E5/normalized_write_stationary_throughput" value="1.111111e-07"/>
+  <system_metric name="PE1_USAGE" value="1.000000"/>
+  <system_metric name="PE2_USAGE" value="0.162563"/>
+  <system_metric name="PE3_USAGE" value="0.962700"/>
+  <system_metric name="PE4_USAGE" value="8.904430e-04"/>
+  <system_metric name="PE5_USAGE" value="2.240000e-07"/>
+  <system_metric name="PE6_USAGE" value="2.240000e-07"/>
+</simulator_output_interface>

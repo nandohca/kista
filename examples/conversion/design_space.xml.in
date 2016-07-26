@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<design_space xmlns="http://www.multicube.eu/" version="1.4">
+
+	<simulator>
+		<simulator_executable path="/usr/bin/python @prjdir@/tools/kistaWrapper/kista_stub.py --xml_system_description=@prjdir@/problemDescription/@appname@/sys.xml"/>
+	</simulator>
+
+	<parameters>
+
+		<parameter name="N_TASKS"  type="integer" description="number of tasks (constant)" min="8"  max="8" />
+		<parameter name="N_EDGES"  type="integer" description="number of edges (constant)" min="11" max="11"/>
+		<parameter name="N_PES"    type="integer" description="number of PEs (constant)"   min="6"  max="6" />
+		<parameter name="N_SLOTS"  type="integer" description="number of slots (constant)" min="20"  max="20" />
+		<parameter name="N_SCHEDS" type="integer" description="number of rtos (constant)"  min="6"  max="6" />
+<!--
+		<parameter name="PE1_MAP" type="on_off_mask" description="mapping of PE1 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
+		<parameter name="PE2_MAP" type="on_off_mask" description="mapping of PE2 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
+		<parameter name="PE3_MAP" type="on_off_mask" description="mapping of PE3 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
+		<parameter name="PE4_MAP" type="on_off_mask" description="mapping of PE4 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
+		<parameter name="PE5_MAP" type="on_off_mask" description="mapping of PE5 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
+		<parameter name="PE6_MAP" type="on_off_mask" description="mapping of PE6 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
+-->
+		<parameter name="PE1_MAP" type="string" description="mapping of PE1 to SCHEDs">
+			<item value="(1-0-0-0-0-0)"/>
+		</parameter>
+		<parameter name="PE2_MAP" type="string" description="mapping of PE2 to SCHEDs">
+			<item value="(0-1-0-0-0-0)"/>
+		</parameter>
+		<parameter name="PE3_MAP" type="string" description="mapping of PE3 to SCHEDs">
+			<item value="(0-0-1-0-0-0)"/>
+		</parameter>
+		<parameter name="PE4_MAP" type="string" description="mapping of PE4 to SCHEDs">
+			<item value="(0-0-0-1-0-0)"/>
+		</parameter>
+		<parameter name="PE5_MAP" type="string" description="mapping of PE5 to SCHEDs">
+			<item value="(0-0-0-0-1-0)"/>
+		</parameter>
+		<parameter name="PE6_MAP" type="string" description="mapping of PE6 to SCHEDs">
+			<item value="(0-0-0-0-0-1)"/>
+		</parameter>
+
+		<parameter name="PE1_FREQ" type="integer" description="frequency [MHz] of PE1" min="50" max="50"/>
+		<parameter name="PE2_FREQ" type="integer" description="frequency [MHz] of PE2" min="50" max="50"/>
+		<parameter name="PE3_FREQ" type="integer" description="frequency [MHz] of PE3" min="50" max="50"/>
+		<parameter name="PE4_FREQ" type="integer" description="frequency [MHz] of PE4" min="50" max="50"/>
+		<parameter name="PE5_FREQ" type="integer" description="frequency [MHz] of PE5" min="50" max="50"/>
+		<parameter name="PE6_FREQ" type="integer" description="frequency [MHz] of PE6" min="50" max="50"/>
+
+		<parameter name="PE1_MEM" type="integer" description="memory [KB] available on PE1" min="512000000" max="512000000"/>
+		<parameter name="PE2_MEM" type="integer" description="memory [KB] available on PE2" min="512000000" max="512000000"/>
+		<parameter name="PE3_MEM" type="integer" description="memory [KB] available on PE3" min="512000000" max="512000000"/>
+		<parameter name="PE4_MEM" type="integer" description="memory [KB] available on PE4" min="512000000" max="512000000"/>
+		<parameter name="PE5_MEM" type="integer" description="memory [KB] available on PE5" min="512000000" max="512000000"/>
+		<parameter name="PE6_MEM" type="integer" description="memory [KB] available on PE6" min="512000000" max="512000000"/>
+
+		<parameter name="PE1_SLOTS" type="integer" description="TDMA slots assigned to PE1" min="0" max="20"/>
+		<parameter name="PE2_SLOTS" type="integer" description="TDMA slots assigned to PE2" min="0" max="20"/>
+		<parameter name="PE3_SLOTS" type="integer" description="TDMA slots assigned to PE3" min="0" max="20"/>
+		<parameter name="PE4_SLOTS" type="integer" description="TDMA slots assigned to PE4" min="0" max="20"/>
+		<parameter name="PE5_SLOTS" type="integer" description="TDMA slots assigned to PE5" min="0" max="20"/>
+		<parameter name="PE6_SLOTS" type="integer" description="TDMA slots assigned to PE6" min="0" max="20"/>
+
+		<parameter name="T1_MAP" type="on_off_mask" description="mapping of task 1 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
+		<parameter name="T2_MAP" type="on_off_mask" description="mapping of task 2 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
+		<parameter name="T3_MAP" type="on_off_mask" description="mapping of task 3 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
+		<parameter name="T4_MAP" type="on_off_mask" description="mapping of task 4 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
+		<parameter name="T5_MAP" type="on_off_mask" description="mapping of task 5 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
+		<parameter name="T6_MAP" type="on_off_mask" description="mapping of task 6 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
+		<parameter name="T7_MAP" type="on_off_mask" description="mapping of task 7 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
+		<parameter name="T8_MAP" type="on_off_mask" description="mapping of task 8 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
+
+		<parameter name="BE1_MAP" type="on_off_mask" description="mapping of task 8 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
+		<parameter name="BE2_MAP" type="on_off_mask" description="mapping of task 8 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
+		<parameter name="BE3_MAP" type="on_off_mask" description="mapping of task 8 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
+		
+		<parameter name="TASK_SCHED" type="permutation" description="global task schedule" dimension="@N_TASKS"/>
+
+		<parameter name="COMM_SCHED" type="permutation" description="global comm schedule" dimension="@N_EDGES"/>
+
+	</parameters>
+
+	<system_metrics>
+
+		<system_metric name="PE1_MEMCONS" type="float" unit=""/>
+		<system_metric name="PE2_MEMCONS" type="float" unit=""/>
+		<system_metric name="PE3_MEMCONS" type="float" unit=""/>
+		<system_metric name="PE4_MEMCONS" type="float" unit=""/>
+		<system_metric name="PE5_MEMCONS" type="float" unit=""/>
+		<system_metric name="PE6_MEMCONS" type="float" unit=""/>
+
+		<system_metric name="PE1_USAGE" type="float" unit=""/>
+		<system_metric name="PE2_USAGE" type="float" unit=""/>
+		<system_metric name="PE3_USAGE" type="float" unit=""/>
+		<system_metric name="PE4_USAGE" type="float" unit=""/>
+		<system_metric name="PE5_USAGE" type="float" unit=""/>
+		<system_metric name="PE6_USAGE" type="float" unit=""/>
+
+		<system_metric name="APP1_NORM_PERIOD" type="integer" unit="ns"/>
+
+	</system_metrics>
+
+	<rules>
+		<rule>
+			<less-equal>
+				<expr operator="+">
+					<parameter name="PE1_SLOTS"/>
+					<expr operator="+">
+						<parameter name="PE2_SLOTS"/>
+						<expr operator="+">
+							<parameter name="PE3_SLOTS"/>
+							<expr operator="+">
+								<parameter name="PE4_SLOTS"/>
+								<expr operator="+">
+									<parameter name="PE5_SLOTS"/>
+									 <expr operator="+">
+										<parameter name="PE6_SLOTS"/>
+										<constant value="0"/>
+									</expr>
+								</expr>
+							</expr>
+						</expr>
+					</expr>
+				</expr>
+				<parameter name="N_SLOTS"/>
+			</less-equal>
+		</rule>
+	</rules>
+
+</design_space>

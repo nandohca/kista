@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Params file accomodated to the first solution of the -->
+
+<!--
+<simulator_input_interface>
+ -->
+
+<!--  Copy paste from pdf -> WRONG!!, CORRUPTED SYMBOLS!
+<simulator_input_interface xmlns=”http://www.multicube.eu/” version=”1.4”>	
+-->
+
+<!--  -->
+<simulator_input_interface xmlns="http://www.multicube.eu/" version="1.4">	
+
+	<!-- Allocated resouces 
+	<parameter name="N_PES" value="4"/>
+	-->
+	
+	<!-- application maping -->
+	<parameter name="T1_MAP" value="sched1"/>
+	<parameter name="T2_MAP" value="sched1"/>
+	<parameter name="T3_MAP" value="sched2"/>
+	<parameter name="T4_MAP" value="sched2"/>
+	<parameter name="T5_MAP" value="sched3"/>
+	<parameter name="T6_MAP" value="sched3"/>
+	<parameter name="T7_MAP" value="sched4"/>
+	<parameter name="T8_MAP" value="sched4"/>
+	
+	<!-- local_task scheduling -->
+	<!-- Alternative 1 : Following a similar style (by order)-->
+	<parameter name="STATIC_SCHED1">
+		<item value="T1" />
+		<item value="T2" />
+	</parameter>
+
+	<parameter name="STATIC_SCHED2">
+		<item value="T3" />
+		<item value="T4" />
+	</parameter>
+
+	<parameter name="STATIC_SCHED3">
+		<item value="T5" />
+		<item value="T6" />
+	</parameter>
+
+	<parameter name="STATIC_SCHED4">
+		<item value="T7" />
+		<item value="T8" />
+	</parameter>
+	
+		<parameter name="STATIC_SCHED5">
+	</parameter>
+		<parameter name="STATIC_SCHED6">
+	</parameter>
+	<!-- Alternative 2: by index TO BE SUPPORTED
+	<parameter name=” active_processors ” >
+		<item index =”1” value =”T1” />
+		<item index =”2” value =”T2” />
+	</parameter >
+	-->
+
+	<!-- Communication scheduling -->
+	<parameter name="STATIC_COMM_SCHED1">
+		<item value="E6"/>						  
+<!--												    
+		<item value="E9"/>
+					    -->
+		<item value="E8"/>	
+	</parameter>
+
+	<parameter name="STATIC_COMM_SCHED2">
+		<item value="E3"/>
+		<item value="E4"/>			
+	</parameter>
+
+	<parameter name="STATIC_COMM_SCHED3">
+		<item value="E7"/>
+		<item value="E10"/>		
+	</parameter>
+
+	<parameter name="STATIC_COMM_SCHED4">
+	</parameter>
+						
+	<!-- frequency assignment -->
+	<!--
+	<parameter name="PE1_FREQ" value="50"/>
+	<parameter name="PE2_FREQ" value="50"/>
+	<parameter name="PE3_FREQ" value="50"/>
+	<parameter name="PE4_FREQ" value="50"/>
+	<parameter name="PE5_FREQ" value="50"/>
+	<parameter name="PE6_FREQ" value="50"/>
+	-->
+	<!-- slot assignment -->
+	<parameter name="PE1_SLOTS" value="1"/>
+	<parameter name="PE2_SLOTS" value="1"/>
+	<parameter name="PE3_SLOTS" value="1"/>
+	<parameter name="PE4_SLOTS" value="0"/>
+	<parameter name="PE5_SLOTS" value="0"/>
+	<parameter name="PE6_SLOTS" value="0"/>
+	
+</simulator_input_interface>
