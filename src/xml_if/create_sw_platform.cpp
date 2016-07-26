@@ -506,17 +506,17 @@ void create_SW_platform(xmlDocPtr doc, std::vector<scheduler*> &RTOS_vec) {
 			  
 			  case STATIC_PRIORITIES:
 			  	RTOS_ptr->set_policy(STATIC_PRIORITIES);
-			  	/*
-			  	static_priorities_policy_t StaticPrioSchedulingPolicy;
+			  	
+			  	/*static_priorities_policy_t StaticPrioSchedulingPolicy;
 		  	
 			  	StaticPrioSchedulingPolicy = getStaticPrioSchedulingPolicy(curr_node);
-			  	
-			  	RTOS_ptr->set_static_priorities_policy(StaticPrioSchedulingPolicy);
-*/
-			    rpt_msg = "The \"static priorities\" policy configured for the RTOS instance \"";
+			  	*/
+			  	RTOS_ptr->set_static_priorities_policy(USER_PRIORITIES);
+
+			    /*rpt_msg = "The \"static priorities\" policy configured for the RTOS instance \"";
 				rpt_msg += (const char *)RTOSName;
 				rpt_msg += "\" is not currently supported.";
-				SC_REPORT_ERROR("KisTA-XML", rpt_msg.c_str());
+				SC_REPORT_ERROR("KisTA-XML", rpt_msg.c_str());*/
 				break;
 				
 			  case DYNAMIC_PRIORITIES:

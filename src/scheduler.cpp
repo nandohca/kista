@@ -252,7 +252,7 @@ namespace kista {
 			case STATIC_PRIORITIES:
 			    // returns the first tasks (in order of priority and which is in READY state
 			    // In case there is no task READY, it returns the most prioritary
-
+				cout<<"STATIC PRIORITIES DEBUG PRINT"<<std::endl;
 				// Iterator for the tasks list ordered by priorities
 				// static tasks_by_priority_t::iterator tbp_it;
 				unsigned int tbp_it;
@@ -271,10 +271,36 @@ namespace kista {
 							// the state signal as 
 					   )
 					   */
-					if( tasks_by_priority[tbp_it]->state_signal==READY)	
+					if( tasks_by_priority[tbp_it]->state_signal==READY && tasks_by_priority[tbp_it]->get_priority() <= 2)	
 					{ 
 						return_task_info = tasks_by_priority[tbp_it];
 						break;
+					}
+					else if (tasks_by_priority[tbp_it]->get_priority() > 2)
+					{
+						bool flag = false;
+						for(unsigned int tbp_it2=0; tbp_it2 != tasks_by_priority.size(); tbp_it++)
+						{
+							cout<<"STATIC PRIORITIES DEBUG PRINT > 2"<<std::endl;
+							return_task_info = it_dyn_sched->second;
+							if(return_task_info->state_signal.read() == READY) 
+							{	
+								// udpate next iterator (circular semantics)
+								it_dyn_sched++;
+								if(it_dyn_sched==tasks_assigned->end()) {
+									it_dyn_sched=tasks_assigned->begin();
+								} 
+								flag = true;
+								break;
+							} else {
+								it_dyn_sched++;
+								if(it_dyn_sched==tasks_assigned->end()) {
+									it_dyn_sched=tasks_assigned->begin();
+								} 
+							}
+						
+						}
+						if (flag) break;
 					}
 				}
 
