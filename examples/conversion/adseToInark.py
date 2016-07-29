@@ -2,7 +2,7 @@ import csv
 import xml.etree.ElementTree as ET
 import itertools
 import re
-
+import copy
 
 ########### this script uses design space xml AND the csv file. 
 def get_BE_tasks():
@@ -177,25 +177,42 @@ def main():
 	components = root.find('components')
 	if element is None:
 		print ("element not found")
-	a = ET.SubElement(components, 'component')
-	b = ET.SubElement(a, 'layer')
-	b.text = '2'
-	b = ET.SubElement(a, 'name')
-	b.text = 'task1'
-	
+		return
+	      
+	temp_sched = {}
+	for task in tasks:
+		a = ET.SubElement(components, 'component')
+		b = ET.SubElement(a, 'layer')
+		b.text = '2'
+		b = ET.SubElement(a, 'name')
+		b.text = task
+	for task in BE_tasks:
+		a = ET.SubElement(components, 'component')
+		b = ET.SubElement(a, 'layer')
+		b.text = '2'
+		b = ET.SubElement(a, 'name')
+		b.text = task
+
 	for row in data:
-		task_map = []
+		for i in range (0, len(schedulers)):
+			 temp_sched[i]=[]
 		for task in tasks:
+		  
 			value = row[associazione[task+'_MAP']]
-			print (task, value)
+			#print (task, value)
 			st = filter(None, re.split("[\-()]", value))
 			for index, i in enumerate(st):
 				if i == str(1):
-					task_map.append(index+1)
-		print (task_map)
+					temp_sched[index].append(task)
+
+		#print (temp_sched)
+		
+		
 		for value in final_configurations_map:
-			
-			temp_sched = {}
+			temptree = copy.deepcopy(paramsTree)
+			root = temptree.getroot()
+			edges = root.find('edges')
+			be_temp_sched = copy.deepcopy(temp_sched)
 			#t1:schedy
 			
 			#print(len(row))
@@ -205,6 +222,7 @@ def main():
 				for z in range (0, len (schedulers)):
 					x.append(0)
 				#print (aaaa,'value is: ', final_configurations_map[value][aaaa])
+				be_temp_sched[int (final_configurations_map[value][aaaa])-1].append(aaaa)
 			#print (row[0:splitting_column])
 				x[int(final_configurations_map[value][aaaa])-1] = 1
 				
@@ -216,6 +234,30 @@ def main():
 				#print ('({0})'.format('-'.join(str(y) for y in x)))
 			temp+=(row[splitting_column:])
 			#	print (temp)
+			### test da farsi qua ###
+			print(be_temp_sched)
+			print('*****')
+			### manca ancora la cd e il nome del file. ma siamo sulla buona strada
+			##controllo porta ha senso? basta fare che ogni sched ha abbastanza porte per tutti i task e non dovrebbe servire. parlane con gp
+			
+			for sched in be_temp_sched:
+				for index, task in enumerate(be_temp_sched[sched]):
+					a = ET.SubElement(edges, 'edge')
+					b = ET.SubElement(a, 'from')
+					c = ET.SubElement(b, 'name')
+					c.text = task
+					b = ET.SubElement(a, 'to')
+					c = ET.SubElement(b, 'name')
+					c.text ='sched_'+str(sched+1)
+					c = ET.SubElement(b, 'port')
+					c.text = str(index+1)
+			filename = row[splitting_column]+'_prova.xml'
+			temptree.write(filename)
+			
+			
+			
+			
+			
 			new_data.append(temp)
 			#print (len(temp), '###à####')
 	    
@@ -225,7 +267,7 @@ def main():
 	write.writerow(new_header)
 	for line in new_data:
 		write.writerow(line)
-	paramsTree.write("inark_out.xml")
+	#paramsTree.write("inark_out.xml")
 
 
 

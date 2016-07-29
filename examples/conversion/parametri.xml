@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulator_input_interface xmlns="http://www.multicube.eu/" version="1.5">
+  <parameter name="COMM_SCHED">
+    <item position="1" value="9"/>
+    <item position="2" value="1"/>
+    <item position="3" value="3"/>
+    <item position="4" value="4"/>
+    <item position="5" value="6"/>
+    <item position="6" value="8"/>
+    <item position="7" value="7"/>
+    <item position="8" value="10"/>
+    <item position="9" value="11"/>
+    <item position="10" value="2"/>
+    <item position="11" value="5"/>
+  </parameter>
+  <parameter name="N_EDGES" value="11"/>
+  <parameter name="N_PES" value="6"/>
+  <parameter name="N_SCHEDS" value="6"/>
+  <parameter name="N_SLOTS" value="20"/>
+  <parameter name="N_TASKS" value="8"/>
+  <parameter name="PE1_FREQ" value="50"/>
+  <parameter name="PE1_MAP" value="(1-0-0-0-0-0)"/>
+  <parameter name="PE1_MEM" value="512000000"/>
+  <parameter name="PE1_SLOTS" value="3"/>
+  <parameter name="PE2_FREQ" value="50"/>
+  <parameter name="PE2_MAP" value="(0-1-0-0-0-0)"/>
+  <parameter name="PE2_MEM" value="512000000"/>
+  <parameter name="PE2_SLOTS" value="2"/>
+  <parameter name="PE3_FREQ" value="50"/>
+  <parameter name="PE3_MAP" value="(0-0-1-0-0-0)"/>
+  <parameter name="PE3_MEM" value="512000000"/>
+  <parameter name="PE3_SLOTS" value="2"/>
+  <parameter name="PE4_FREQ" value="50"/>
+  <parameter name="PE4_MAP" value="(0-0-0-1-0-0)"/>
+  <parameter name="PE4_MEM" value="512000000"/>
+  <parameter name="PE4_SLOTS" value="0"/>
+  <parameter name="PE5_FREQ" value="50"/>
+  <parameter name="PE5_MAP" value="(0-0-0-0-1-0)"/>
+  <parameter name="PE5_MEM" value="512000000"/>
+  <parameter name="PE5_SLOTS" value="0"/>
+  <parameter name="PE6_FREQ" value="50"/>
+  <parameter name="PE6_MAP" value="(0-0-0-0-0-1)"/>
+  <parameter name="PE6_MEM" value="512000000"/>
+  <parameter name="PE6_SLOTS" value="0"/>
+  <parameter name="T1_MAP">
+    <item index="1" value="1"/>
+    <item index="2" value="0"/>
+    <item index="3" value="0"/>
+    <item index="4" value="0"/>
+    <item index="5" value="0"/>
+    <item index="6" value="0"/>
+  </parameter>
+  <parameter name="T2_MAP">
+    <item index="1" value="1"/>
+    <item index="2" value="0"/>
+    <item index="3" value="0"/>
+    <item index="4" value="0"/>
+    <item index="5" value="0"/>
+    <item index="6" value="0"/>
+  </parameter>
+  <parameter name="T3_MAP">
+    <item index="1" value="1"/>
+    <item index="2" value="0"/>
+    <item index="3" value="0"/>
+    <item index="4" value="0"/>
+    <item index="5" value="0"/>
+    <item index="6" value="0"/>
+  </parameter>
+  <parameter name="T4_MAP">
+    <item index="1" value="1"/>
+    <item index="2" value="0"/>
+    <item index="3" value="0"/>
+    <item index="4" value="0"/>
+    <item index="5" value="0"/>
+    <item index="6" value="0"/>
+  </parameter>
+  <parameter name="T5_MAP">
+    <item index="1" value="0"/>
+    <item index="2" value="1"/>
+    <item index="3" value="0"/>
+    <item index="4" value="0"/>
+    <item index="5" value="0"/>
+    <item index="6" value="0"/>
+  </parameter>
+  <parameter name="T6_MAP">
+    <item index="1" value="0"/>
+    <item index="2" value="1"/>
+    <item index="3" value="0"/>
+    <item index="4" value="0"/>
+    <item index="5" value="0"/>
+    <item index="6" value="0"/>
+  </parameter>
+  <parameter name="T7_MAP">
+    <item index="1" value="0"/>
+    <item index="2" value="0"/>
+    <item index="3" value="1"/>
+    <item index="4" value="0"/>
+    <item index="5" value="0"/>
+    <item index="6" value="0"/>
+  </parameter>
+  <parameter name="T8_MAP">
+    <item index="1" value="0"/>
+    <item index="2" value="0"/>
+    <item index="3" value="0"/>
+    <item index="4" value="1"/>
+    <item index="5" value="0"/>
+    <item index="6" value="0"/>
+  </parameter>
+    <parameter name="BE1_MAP">
+    <item index="1" value="0"/>
+    <item index="2" value="1"/>
+    <item index="3" value="0"/>
+    <item index="4" value="0"/>
+    <item index="5" value="0"/>
+    <item index="6" value="0"/>
+  </parameter>
+    <parameter name="BE2_MAP">
+    <item index="1" value="0"/>
+    <item index="2" value="0"/>
+    <item index="3" value="0"/>
+    <item index="4" value="1"/>
+    <item index="5" value="0"/>
+    <item index="6" value="0"/>
+  </parameter>
+  <parameter name="TASK_SCHED">
+    <item position="1" value="1"/>
+    <item position="2" value="3"/>
+    <item position="3" value="4"/>
+    <item position="4" value="2"/>
+    <item position="5" value="5"/>
+    <item position="6" value="6"/>
+    <item position="7" value="7"/>
+    <item position="8" value="8"/>
+  </parameter>
+</simulator_input_interface>
