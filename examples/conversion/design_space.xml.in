@@ -70,9 +70,9 @@
 		<parameter name="T7_MAP" type="on_off_mask" description="mapping of task 7 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
 		<parameter name="T8_MAP" type="on_off_mask" description="mapping of task 8 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
 
-		<parameter name="BE1_MAP" type="on_off_mask" description="mapping of task 8 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
-		<parameter name="BE2_MAP" type="on_off_mask" description="mapping of task 8 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
-		<parameter name="BE3_MAP" type="on_off_mask" description="mapping of task 8 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
+		<parameter name="BE1_MAP" type="on_off_mask" description="mapping of BE task 1 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
+		<parameter name="BE2_MAP" type="on_off_mask" description="mapping of BE task 2 to SCHEDs" on_set_size="1" dimension="@N_SCHEDS"/>
+		
 		
 		<parameter name="TASK_SCHED" type="permutation" description="global task schedule" dimension="@N_TASKS"/>
 

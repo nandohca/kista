@@ -1,9 +1,10 @@
 import csv
 import xml.etree.ElementTree as ET
 import itertools
+import re
 
 
-
+########### this script uses design space xml AND the csv file. 
 def get_BE_tasks():
   
 	ET.register_namespace('', "http://www.multicube.eu/")
@@ -22,6 +23,26 @@ def get_BE_tasks():
 
 	return BE_vect
 
+
+def get_tasks():
+  
+	ET.register_namespace('', "http://www.multicube.eu/")
+	paramsTree = ET.parse('design_space.xml.in')
+	root = paramsTree.getroot()
+	NS = '{http://www.multicube.eu/}'
+	BE_vect = []
+	pattern = re.compile('T[0-9]+_MAP')
+	print (pattern)
+	for child in root:
+		#print (child.tag, child.attrib)
+		for elem in child.findall(NS + 'parameter'):
+			print (elem.attrib.get('name'))
+			if(pattern.match(elem.attrib.get('name'))):
+				var = (elem.attrib.get('name').split('_')[0])
+				print (var)
+				BE_vect.append(var)
+
+	return BE_vect
 
 def get_scheds():
   
@@ -74,7 +95,8 @@ def main():
 	print(BE_tasks)
 	schedulers = get_scheds()
 	print (schedulers)
-	
+	tasks = get_tasks()
+	print (tasks)
 	
 
 
@@ -139,24 +161,63 @@ def main():
 	then if it is ok, the csv has to be modified adding and editing some columns.
 	the points to be modified are: adding BE mapping, N tasks, TASK_SCHED column (?) 
 	note that 1 row has to be attempted with all the final configuration map so the final line num of the csv is inizial line num * final_configurations_map - invalid configurations"""
-	matrice = "({0}-{1}-{2}-{3}-{4}-{5})"
+	print ('inizio test')
+	stringa = '(0-0-1-0-0-0-1)'
+	
+	st = filter(None, re.split("[\-()]", stringa))
+	
+	for index, i in enumerate(st):
+		if i == str(1):
+			print (index+1)
+	print ('fine test')
+
+
+	paramsTree = ET.parse('inark_plat.xml')
+	root = paramsTree.getroot()
+	components = root.find('components')
+	if element is None:
+		print ("element not found")
+	a = ET.SubElement(components, 'component')
+	b = ET.SubElement(a, 'layer')
+	b.text = '2'
+	b = ET.SubElement(a, 'name')
+	b.text = 'task1'
+	
 	for row in data:
+		task_map = []
+		for task in tasks:
+			value = row[associazione[task+'_MAP']]
+			print (task, value)
+			st = filter(None, re.split("[\-()]", value))
+			for index, i in enumerate(st):
+				if i == str(1):
+					task_map.append(index+1)
+		print (task_map)
 		for value in final_configurations_map:
-			print(len(row))
+			
+			temp_sched = {}
+			#t1:schedy
+			
+			#print(len(row))
 			temp = row[0:splitting_column]
 			for aaaa in final_configurations_map[value]:
 				x = []
-				for y in range (0, len (schedulers)):
+				for z in range (0, len (schedulers)):
 					x.append(0)
 				#print (aaaa,'value is: ', final_configurations_map[value][aaaa])
 			#print (row[0:splitting_column])
 				x[int(final_configurations_map[value][aaaa])-1] = 1
-				temp.append(matrice.format(*x)) #vanno messi uno per volta
 				
+				
+				
+				
+				
+				temp.append('({0})'.format('-'.join(str(y) for y in x))) #vanno messi uno per volta
+				#print ('({0})'.format('-'.join(str(y) for y in x)))
 			temp+=(row[splitting_column:])
 			#	print (temp)
 			new_data.append(temp)
-			print (len(temp), '###à####')
+			#print (len(temp), '###à####')
 	    
 
 	f2=open("esempio_out.csv", 'w')
@@ -164,7 +225,7 @@ def main():
 	write.writerow(new_header)
 	for line in new_data:
 		write.writerow(line)
-
+	paramsTree.write("inark_out.xml")
 
 
 

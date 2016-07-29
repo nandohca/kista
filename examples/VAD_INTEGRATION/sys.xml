@@ -136,7 +136,7 @@
 			<task_properties>
 				<WCET value="1" unit="ns"/>
 				<priority value="2"/>
-				<period value="9" unit="ms"/>
+				<period value="8670920" unit="ns"/>
 				<!-- To be supported!! -->
 			</task_properties>
 		</task>
@@ -146,7 +146,7 @@
 			<task_properties>
 				<WCET value="1" unit="ns"/>
 				<priority value="2"/>
-				<period value="9" unit="ms"/>
+				<period value="8670920" unit="ns"/>
 				<!-- To be supported!! -->
 			</task_properties>
 		</task>
@@ -156,7 +156,7 @@
 			<task_properties>
 				<WCET value="1" unit="ns"/>
 				<priority value="2"/>
-				<period value="9" unit="ms"/>
+				<period value="8670920" unit="ns"/>
 				<!-- To be supported!! -->
 			</task_properties>
 		</task>
@@ -166,7 +166,7 @@
 			<task_properties>
 				<WCET value="1" unit="ns"/>
 				<priority value="2"/>
-				<period value="9" unit="ms"/>
+				<period value="8670920" unit="ns"/>
 				<!-- To be supported!! -->
 			</task_properties>
 		</task>
@@ -176,7 +176,7 @@
 			<task_properties>
 				<WCET value="1" unit="ns"/>
 				<priority value="2"/>
-				<period value="9" unit="ms"/>
+				<period value="8670920" unit="ns"/>
 			</task_properties>
 		</task>
 		<task name="D6_IN">
@@ -184,7 +184,7 @@
 			<task_properties>
 				<WCET value="1" unit="ns"/>
 				<priority value="2"/>
-				<period value="9" unit="ms"/>
+				<period value="8670920" unit="ns"/>
 			</task_properties>
 		</task>
 			
@@ -392,8 +392,8 @@
 		<map_task source="T6" target="_T6_MAP" />
 		<map_task source="T7" target="_T7_MAP" />
 		<map_task source="T8" target="_T8_MAP" />
-		<map_task source="BE1" target="sched1" />
-		<map_task source="BE2" target="sched1" />
+		<map_task source="BE1" target="_BE1_MAP" />
+		<map_task source="BE2" target="_BE2_MAP" />
 		<map_task source="D1_IN" target="sched1" />
 		<map_task source="D2_IN" target="sched2" />
 		<map_task source="D3_IN" target="sched3" />
@@ -555,17 +555,17 @@
 					<HW_Connection instance="PE6" name="hw_conn_6" slots_number="_PE6_SLOTS"/>
 
 					<!-- TDMA bus specific parameteres -->
-					<slots_number value="6"/>
-					<slot_time value="166" unit="ns"/>
+					<slots_number value="20"/>
+					<slot_time value="500" unit="ns"/>
 					<!-- Used to state an effective bandwidth -->
-					<!-- 
-					<slot_payload value="44" unit="bit"/>
-					
+					 
+					<slot_payload value="64" unit="bit"/>
+					<!--
 					or equivalently
-					-->
+					
 					<slot_capacity     value="131" unit="bit"/>
 					<slot_payload_rate value="0.333333"/>
-					
+					-->
 					<!-- also valid
 					<payload value="" unit=""/>
 					-->
@@ -574,7 +574,7 @@
 					<!--
 					<cycle_time value="1" unit="s"/>
 					-->
-					<cycle_time value="1" unit="us"/>
+					<cycle_time value="10" unit="us"/>
 				</comm_res>
 
 			</HW_Architecture>

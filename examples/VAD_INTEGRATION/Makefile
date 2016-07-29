@@ -31,7 +31,7 @@ DEFINES += -D_D6_OUT=14
 # Ensure that kista-xml is in $PATH
 #   by setting PATH=$(PATH):$(KISTA_PATH)/bin
 
-EX_NAME = vad
+EX_NAME = sys
 
 # Library with the system functionality
 LIB_FUN_NAME=fun
