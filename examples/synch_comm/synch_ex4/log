@@ -1,0 +1,94 @@
+ ***************************************************************************** 
+ KisTA Library : 97
+ 
+ All rights reserved until further definition of the License. 
+ Author: F. Herrera 
+ Institution: KTH 
+ Department:   Electronic Systems 
+ Date: 2014 March 
+ Compilation date: Jul  6 2016 at 13:52:36
+ ***************************************************************************** 
+KisTA INFO: Global simulation time limit settled to 10 s
+
+Warning: KisTA: Source address cannot be resolved by the end of elaboration because no source (task) name was provided to the channel
+In file: /home/emanuele/Kista/kista/kista//include/link_t.hpp:240
+
+Warning: KisTA: Source address cannot be resolved by the end of elaboration because no source (task) name was provided to the channel
+In file: /home/emanuele/Kista/kista/kista//include/link_t.hpp:248
+
+Warning: KisTA:: Link my_fifo_buf not resolved.
+In file: /home/emanuele/Kista/kista/kista//include/link_t.hpp:163
+
+Warning: KisTA: Scheduler scheduler1 was not assigned to a PE. The scheduler was automatically mapped to an automatically created processing element scheduler1.PE_0, created without network interface.
+In file: scheduler.cpp:1313
+
+Info: KisTA: Channel my_fifo_buf: message size = 32 bits (inferred from data type)
+
+Warning: KisTA: No communication resource has been declared in the KisTA model.KisTA will not try to associate a resource and so a physical link to the logical link of the channel my_fifo_buf. System-level communications have no penalty.
+In file: /home/emanuele/Kista/kista/kista//include/synch_comm/fifo_buffer.hpp:1040
+Scheduler scheduler1: Taskset assigned:
+	task1, task2
+
+Info: KisTA: PE scheduler1.PE_0 executing Scheduler scheduler1 has no associated network interface. No preparation of (static) communication scheduling is done or required.
+-----------------------------------------
+"scheduler1" scheduler settings 
+Number of statically assigned tasks: 2
+- Dynamic Scheduler
+  - Static Priorities
+    - User Priorities
+- Preemptive
+- Time slicing:  disabled
+- Tick timer:  10 ms
+-----------------------------------------
+ ***********************************
+ Begin of execution in scheduler: scheduler1
+ ***********************************
+	task 1  starts some computation at t=0 s
+
+Info: (I702) default timescale unit used for tracing: 1 ps (scheduler1_trace.vcd)
+	task 1  send data at t=100 ms
+	task 1  starts some computation at t=100 ms
+	task 1  send data at t=200 ms
+	task 1  starts some computation at t=200 ms
+	task 1  send data at t=300 ms
+	task 1  starts some computation at t=300 ms
+	task 1  send data at t=400 ms
+	 Task "task1" consuming 1 J at 400 ms
+Task 2 waits for data at time 400 ms
+task 2 READ 0 at t=400 ms
+	 Task "task2" consuming 0 J at 400 ms
+	task 1  starts some computation at t=400 ms
+	task 1  send data at t=500 ms
+	 Task "task1" consuming 1.25 J at 500 ms
+task 2 ends some processing at t=700 ms
+Task 2 waits for data at time 700 ms
+task 2 READ 1 at t=700 ms
+	 Task "task2" consuming 0.5 J at 700 ms
+	task 1  starts some computation at t=700 ms
+	task 1  send data at t=800 ms
+	 Task "task1" consuming 1.5 J at 800 ms
+
+Info: /OSCI/SystemC: Simulation stopped by user.
+	 Task "task2" consuming 1 J at 1 s (last update at end of simulation) 
+*****************************************
+Simulation reports
+*****************************************
+Application related metrics:
+-----------------------------
+task1 task utilization : (after simulation): 60%
+task2 task utilization : (after simulation): 40%
+Task Set utilization :  (after simulation) 100%
+Fifo buffer channel my_fifo_buf throughput: 7.5 (bps)
+
+Warning: KisTA: Data transfer did not reached a stationary state, msg_size*n_transfer_events/last_lag will be reported
+
+In file: throughput_monitor.cpp:144
+Fifo buffer channel my_fifo_buf stationary throughput: 106.667 (bps)
+
+Platform related metrics:
+-------------------------
+scheduler1 (sim) number of schedulings: 6
+scheduler1 (sim) scheduler utilization: 0%
+scheduler1 (sim) platform utilization : 100%
+last simulation time: 1 s
+scheduler1 scheduler: No starvation detected. All tasks had chance to execute.

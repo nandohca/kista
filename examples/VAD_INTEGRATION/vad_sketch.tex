@@ -44,7 +44,7 @@ KisTA library compilation date: Jul 12 2016 at 10:35:47.
 
 
 
-Sketch Creation: Thu Jul 21 11:14:01 2016
+Sketch Creation: Wed Aug 31 14:28:27 2016
 
 
 Sketch options enabled:
@@ -111,38 +111,41 @@ draw system level connections, draw environment box, draw system box, scale = 1
 \draw (T9) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E17{\;}$}}}] to[out=240,in=120] (T1);
 \draw (T9) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E13{\;}$}}}] to[out=245,in=120] (T2);
 \draw (T9) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E12{\;}$}}}] to[out=250,in=120] (T3);
-\draw (T1) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$fifo2{\;}$}}}] to[out=30,in=145] (T2);
+\draw (T1) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$fifo2{\;}$}}}] to[out=30,in=145] (T3);
 \draw (T3) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E2{\;}$}}}] to[out=30,in=150] (T4);
 \draw (T3) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E1{\;}$}}}] to[out=35,in=150] (T5);
+\draw (T4) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$fifo4{\;}$}}}] to[out=210,in=325] (T2);
 \draw (T9) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E18{\;}$}}}] to[out=255,in=120] (T6);
-\draw (T4) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E3{\;}$}}}] to[out=30,in=145] (T5);
-\draw (T4) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E4{\;}$}}}] to[out=35,in=145] (T6);
+\draw (T4) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E3{\;}$}}}] to[out=35,in=145] (T5);
+\draw (T4) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E4{\;}$}}}] to[out=40,in=145] (T6);
 \draw (T2) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E8{\;}$}}}] to[out=30,in=150] (T7);
 \draw (T5) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E5{\;}$}}}] to[out=30,in=140] (T6);
 \draw (T6) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E10{\;}$}}}] to[out=30,in=145] (T7);
-\draw (T8) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E19{\;}$}}}] to[out=590483261,in=280] (T10);
-\draw (D4_IN) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$fifo10{\;}$}}}] to[out=30,in=140] (T7);
+\draw (T8) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E19{\;}$}}}] to[out=80,in=280] (T10);
+\draw (D3_IN) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$fifo9{\;}$}}}] to[out=30,in=140] (T7);
 \draw (T7) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E11{\;}$}}}] to[out=30,in=150] (T8);
+\draw (D4_IN) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$fifo11{\;}$}}}] to[out=30,in=145] (T8);
+\draw (T7) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$fifo10{\;}$}}}] to[out=215,in=330] (D3_OUT);
 \draw (T8) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$fifo12{\;}$}}}] to[out=215,in=330] (D4_OUT);
 \draw (D5_IN) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$fifo13{\;}$}}}] to[out=30,in=150] (D5_OUT);
 \draw (D6_IN) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$fifo14{\;}$}}}] to[out=30,in=150] (D6_OUT);
-\draw (BE1.south) [task_map_arrow] -- (sched1.north);
-\draw (BE2.south) [task_map_arrow] -- (sched1.north);
 \draw (D1_IN.south) [task_map_arrow] -- (sched1.north);
 \draw (D1_OUT.south) [task_map_arrow] -- (sched1.north);
 \draw (T1.south) [task_map_arrow] -- (sched1.north);
 \draw (T2.south) [task_map_arrow] -- (sched1.north);
+\draw (T3.south) [task_map_arrow] -- (sched1.north);
+\draw (T4.south) [task_map_arrow] -- (sched1.north);
+\draw (BE1.south) [task_map_arrow] -- (sched2.north);
 \draw (D2_IN.south) [task_map_arrow] -- (sched2.north);
 \draw (D2_OUT.south) [task_map_arrow] -- (sched2.north);
-\draw (T3.south) [task_map_arrow] -- (sched2.north);
-\draw (T4.south) [task_map_arrow] -- (sched2.north);
+\draw (T5.south) [task_map_arrow] -- (sched2.north);
+\draw (T6.south) [task_map_arrow] -- (sched2.north);
 \draw (D3_IN.south) [task_map_arrow] -- (sched3.north);
 \draw (D3_OUT.south) [task_map_arrow] -- (sched3.north);
-\draw (T5.south) [task_map_arrow] -- (sched3.north);
-\draw (T6.south) [task_map_arrow] -- (sched3.north);
+\draw (T7.south) [task_map_arrow] -- (sched3.north);
+\draw (BE2.south) [task_map_arrow] -- (sched4.north);
 \draw (D4_IN.south) [task_map_arrow] -- (sched4.north);
 \draw (D4_OUT.south) [task_map_arrow] -- (sched4.north);
-\draw (T7.south) [task_map_arrow] -- (sched4.north);
 \draw (T8.south) [task_map_arrow] -- (sched4.north);
 \draw (D5_IN.south) [task_map_arrow] -- (sched5.north);
 \draw (D5_OUT.south) [task_map_arrow] -- (sched5.north);

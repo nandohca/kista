@@ -1,0 +1,1350 @@
+kista-xml BE_tasks.xml --xml_system_configuration=./BE_tasks_params.xml --xml_system_metrics_definition=./BE_tasks_smd.xml --xml_system_metrics=BE_tasks_output.xml
+ ***************************************************************************** 
+ KisTA Library : 97
+ 
+ All rights reserved until further definition of the License. 
+ Author: F. Herrera 
+ Institution: KTH 
+ Department:   Electronic Systems 
+ Date: 2014 March 
+ Compilation date: Jul  6 2016 at 13:52:36
+ ***************************************************************************** 
+KisTA-XML verbose.
+KisTA verbose.
+Warning, NULL node set obtained from getNodeset
+
+Warning: KisTA-XML: No hook function for global parameters declaration from sources specified.
+In file: create_global_init.cpp:213
+kista-XML INFO: Scanning Parameters.
+Warning, NULL node set obtained from getNodeset
+Kista-XML INFO: No parameter configuration was read in the XML input.
+kista-XML INFO: Scanning Parameters.
+Parameter list:
+	T0_M=D1
+	T1_M=T1
+	T1_MAP=sched1
+	T2_M=T1
+	T2_MAP=sched1
+	T3_M=T2
+Warning, NULL node set obtained from getNodeset
+
+Warning: KisTA-XML: No Environment Task was read in the XML input.
+In file: create_environment.cpp:133
+
+Warning: KisTA-XML: No Environment tasks were read, environment will not be created.
+In file: create_environment.cpp:175
+
+Info: KisTA-XML: Environment built.
+
+Warning: KisTA-XML: One application description detected.
+In file: create_application.cpp:678
+
+Info: KisTA-XML: Creating Task instance T1.
+
+Warning: KisTA-XML: No value could be retrieved for property path of node function. Null value is returned.
+In file: kista_xml_utils.cpp:235
+
+Info: KisTA-XML: No path for object file which contains 't1' function' of Task 'T1' was provided. The file will be searched in the current directory.
+
+Warning: KisTA-XML: Read properties of task T1
+In file: create_application.cpp:335
+
+Info: KisTA-XML: Read WCET: 300 ms
+
+Info: KisTA-XML: Priority = 1.
+
+Info: KisTA-XML: Creating Task instance T4.
+
+Warning: KisTA-XML: No value could be retrieved for property path of node function. Null value is returned.
+In file: kista_xml_utils.cpp:235
+
+Info: KisTA-XML: No path for object file which contains 't4' function' of Task 'T4' was provided. The file will be searched in the current directory.
+
+Warning: KisTA-XML: Read properties of task T4
+In file: create_application.cpp:335
+
+Info: KisTA-XML: Read WCET: 50 ms
+
+Info: KisTA-XML: Priority = 3.
+
+Info: KisTA-XML: Creating Task instance T2.
+
+Warning: KisTA-XML: No value could be retrieved for property path of node function. Null value is returned.
+In file: kista_xml_utils.cpp:235
+
+Info: KisTA-XML: No path for object file which contains 't2' function' of Task 'T2' was provided. The file will be searched in the current directory.
+
+Warning: KisTA-XML: Read properties of task T2
+In file: create_application.cpp:335
+
+Info: KisTA-XML: Read WCET: 200 ms
+
+Info: KisTA-XML: Priority = 1.
+
+Info: KisTA-XML: Creating Task instance D1.
+
+Warning: KisTA-XML: No value could be retrieved for property path of node function. Null value is returned.
+In file: kista_xml_utils.cpp:235
+
+Info: KisTA-XML: No path for object file which contains 't3' function' of Task 'D1' was provided. The file will be searched in the current directory.
+
+Warning: KisTA-XML: Read properties of task D1
+In file: create_application.cpp:335
+
+Info: KisTA-XML: Read WCET: 100 ms
+
+Info: KisTA-XML: Priority = 2.
+
+Info: KisTA-XML: Read Period: 2 s
+
+Info: kisTA-XML: Number of System-Level (PIM/Application) communication and synchronization elements: 2
+
+Warning: KisTA-XML: No value could be retrieved for property io of node comm_synch. Null value is returned.
+In file: kista_xml_utils.cpp:235
+
+Warning: KisTA-XML: No init_function was found for Comm&&Synch 'fifo1'.
+In file: create_application.cpp:449
+
+Warning: KisTA-XML: No value could be retrieved for property token_size of node comm_synch. Null value is returned.
+In file: kista_xml_utils.cpp:235
+
+Info: KisTA-XML: Creating Communication instance: src= D1, dest= T1, comm_type= fifo_buffer, comm_data_type= ushort, name= fifo1, io= false.,
+
+Warning: KisTA-XML: No value could be retrieved for property io of node comm_synch. Null value is returned.
+In file: kista_xml_utils.cpp:235
+
+Warning: KisTA-XML: No init_function was found for Comm&&Synch 'fifo2'.
+In file: create_application.cpp:449
+
+Warning: KisTA-XML: No value could be retrieved for property token_size of node comm_synch. Null value is returned.
+In file: kista_xml_utils.cpp:235
+
+Info: KisTA-XML: Creating Communication instance: src= T1, dest= T2, comm_type= fifo_buffer, comm_data_type= ushort, name= fifo2, io= false.,
+
+Info: KisTA-XML: Application built.
+kista-XML INFO: Creating scheduler sched1 for RTOS instance sched1.
+
+Info: KisTA-XML: Scheduler "sched1": Settled preemptive triggering policy.
+
+Info: KisTA-XML: Scheduler "sched1": Time slice  disabled  for scheduler sched1
+
+Warning: KisTA-XML: RTOS sched1 has no communication scheduler.
+In file: create_sw_platform.cpp:609
+
+Info: KisTA-XML: SW Platform built.
+
+Info: KisTA-XML: Creating PE PE0
+
+Info: KisTA-XML: PE PE0 frequency = 2 (MHz). Setting clock period to 20 ns.
+kista-XML INFO: No CPI specified for PE.KisTA will assign CPI=1 by default.
+
+Info: KisTA-XML: PE PE0 CPI= 1.
+
+Info: KisTA-XML: PE PE0 does not have network interface.
+Warning, NULL node set obtained from getNodeset
+
+Warning: KisTA-XML: No Communication Resources where specified. KisTA will not consider communication penalties
+In file: create_hw_platform.cpp:968
+
+Info: KisTA-XML: HW Platform built.
+kista-XML INFO: Platform mapping...
+kista-XML INFO: Platform mapping (RTOS) sched1 -> (PE) PE0 .
+
+Info: KisTA-XML: Platform Mapping built.
+kista-XML INFO: Creating KisTA task set for RTOS sched1
+kista-XML INFO: Application mapping...
+kista-XML INFO: Application mapping (Task) T1 -> (RTOS) sched1 .
+kista-XML INFO: Application mapping (Task) T2 -> (RTOS) sched1 .
+kista-XML INFO: Application mapping (Task) D1 -> (RTOS) sched1 .
+kista-XML INFO: Application mapping (Task) T4 -> (RTOS) sched1 .
+kista-XML INFO: Allocate tasksets to RTOS instances...
+
+Info: KisTA-XML: System Created.
+
+Info: KisTA-XML: Start Environment Initializations.
+
+Info: KisTA-XML: Creating model without environment (neither environment tasks, nor I/O channels)
+Warning, NULL node set obtained from getNodeset
+
+Warning: KisTA-XML: No global init specified for the environment in the XML input.
+In file: create_global_init.cpp:155
+Warning, NULL node set obtained from getNodeset
+
+Warning: KisTA-XML: No global env specified for the environment in the XML input.
+In file: create_global_init.cpp:184
+
+Info: KisTA-XML: Enabling measurement of metric: rtos/sched1/number_of_context_switches ()
+
+Info: KisTA-XML: Enabling measurement of metric: rtos/sched1/number_of_schedulings ()
+
+Info: KisTA-XML: Enabling measurement of metric: rtos/sched1/plat_utilization ()
+
+Info: KisTA-XML: Enabling measurement of metric: rtos/sched1/sched_utilization ()
+
+Info: KisTA-XML: Enabling measurement of metric: rtos/sched1/tasks_utilization ()
+
+Info: KisTA-XML: Enabling measurement of metric: task/D1/utilization (%)
+
+Info: KisTA-XML: Enabling measurement of metric: task/T1/utilization (%)
+
+Info: KisTA-XML: Enabling measurement of metric: task/T2/utilization (%)
+
+Info: KisTA-XML: Enabling measurement of metric: task/T4/utilization (%)
+Warning, NULL node set obtained from getNodeset
+
+Warning: Kista-XML: No configuration of if settled, (default) available static analysis common and specific for the configured scheduling policy are applied. The option is enabled by default.
+In file: kista_xml_utils.cpp:575
+
+Info: KisTA: Common static schedulability analysis (full utilization) enabled.
+1 policy specific analyses enabled.
+Warning, NULL node set obtained from getNodeset
+
+Warning: Kista-XML: No configuration of if settled, (default) worst case communication times are used, otherwise, current communication times. The option is enabled by default.
+In file: kista_xml_utils.cpp:575
+
+Info: KisTA-XML: Setting Tracing of Utilizations for RTOS sched1
+Warning, NULL node set obtained from getNodeset
+
+Warning: Kista-XML: No configuration of draw system-level connection names when exporting a sketch of the KisTA model. The option is disabled by default.
+In file: kista_xml_utils.cpp:575
+Warning, NULL node set obtained from getNodeset
+
+Warning: Kista-XML: No configuration of draw box around environment tasks when exporting a sketch of the KisTA model. The option is disabled by default.
+In file: kista_xml_utils.cpp:575
+Warning, NULL node set obtained from getNodeset
+
+Warning: Kista-XML: No configuration of draw box around system elements when exporting a sketch of the KisTA model. The option is disabled by default.
+In file: kista_xml_utils.cpp:575
+Warning, NULL node set obtained from getNodeset
+
+Warning: Kista-XML: No configuration of draw box around application tasks when exporting a sketch of the KisTA model. The option is disabled by default.
+In file: kista_xml_utils.cpp:575
+Warning, NULL node set obtained from getNodeset
+
+Warning: Kista-XML: No configuration of draw box around platform elements when exporting a sketch of the KisTA model. The option is disabled by default.
+In file: kista_xml_utils.cpp:575
+Warning, NULL node set obtained from getNodeset
+
+Warning: Kista-XML: No configuration of draw only the image, without the text reporting how the image was generated. The option is disabled by default.
+In file: kista_xml_utils.cpp:575
+Warning, NULL node set obtained from getNodeset
+
+Warning: Kista-XML: No configuration of sketch scaledone. The default value is 1.0.
+In file: kista_xml_utils.cpp:639
+Warning, NULL node set obtained from getNodeset
+
+Warning: Kista-XML: No configuration of functional validation enabled. The option is disabled by default.
+In file: kista_xml_utils.cpp:575
+Warning, NULL node set obtained from getNodeset
+
+Warning: Kista-XML: No configuration of error fatality for exploration. The option is disabled by default.
+In file: kista_xml_utils.cpp:575
+Warning, NULL node set obtained from getNodeset
+
+Warning: Kista-XML: No configuration of energy power analysis enabled. The option is disabled by default.
+In file: kista_xml_utils.cpp:575
+kista-XML INFO: Anaylsis and Report configuration completed.
+Warning, NULL node set obtained from getNodeset
+
+Warning: KisTA-XML: No global init specified for the system in the XML input.
+In file: create_global_init.cpp:121
+
+Info: KisTA-XML: Global System Intialization completed.
+Warning, NULL node set obtained from getNodeset
+kista-XML Warning: Frequency specification with a non-recognized unit.
+kista-XML INFO: Configuring simulation time: 22400 ms
+
+Info: KisTA: Channel fifo1: message size = 16 bits (inferred from data type)
+
+Warning: KisTA: No communication resource has been declared in the KisTA model.KisTA will not try to associate a resource and so a physical link to the logical link of the channel fifo1. System-level communications have no penalty.
+In file: ../synch_comm/fifo_buffer.hpp:1040
+
+Info: KisTA: Channel fifo2: message size = 16 bits (inferred from data type)
+
+Warning: KisTA: No communication resource has been declared in the KisTA model.KisTA will not try to associate a resource and so a physical link to the logical link of the channel fifo2. System-level communications have no penalty.
+In file: ../synch_comm/fifo_buffer.hpp:1040
+Scheduler sched1: Taskset assigned:
+	D1, T1, T2, T4
+
+Warning: KisTA: More than one tasks assigned to the scheduler with the same priority
+In file: scheduler.cpp:1119
+2 tasks assigned to scheduler sched1 with priority 1
+Tasks are: T1, T2
+
+Info: KisTA: Passing common static analysis for scheduler sched1
+
+Warning: KisTA: Passing full utilization bound...SKIPPED.
+ The taskset is not periodic.
+In file: static_sched_analysis.cpp:125
+
+Info: KisTA: No static analysis available for the configured scheduling policy: (static priorities,user,PREEMPTIVE)
+
+Info: KisTA: PE PE0 executing Scheduler sched1 has no associated network interface. No preparation of (static) communication scheduling is done or required.
+-----------------------------------------
+"sched1" scheduler settings 
+Number of statically assigned tasks: 4
+- Dynamic Scheduler
+  - Static Priorities
+    - User Priorities
+- Preemptive
+- Time slicing:  disabled
+- Tick timer:  10 ms
+-----------------------------------------
+ ***********************************
+ Begin of execution in scheduler: sched1
+ ***********************************
+fanculo
+
+Info: KisTA: INTERNAL Channel "fifo1": Internal READ ACCESS at 0 s
+	 Task "T1" consuming 0 J at 0 s
+
+Info: KisTA: INTERNAL Channel "fifo2": Internal READ ACCESS at 0 s
+	 Task "T2" consuming 0 J at 0 s
+T3: send 1 1at time 0 s
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE ACCESS at 0 s
+
+Info: KisTA: Channel: fifo1 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE COMPLETION at 0 s
+T3: exec at time 0 s
+	 Task "D1" consuming 0 J at 0 s
+
+Info: KisTA: INTERNAL Channel "fifo1": READ COMPLETION at 0 s
+1: recv: 1 at time 0 s
+
+Info: (I702) default timescale unit used for tracing: 1 ps (sched1_trace.vcd)
+1: send: 2 at time 300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE ACCESS at 300 ms
+
+Info: KisTA: Channel: fifo2 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE COMPLETION at 300 ms
+	 Task "T1" consuming 0.75 J at 300 ms
+fanculo
+
+Info: KisTA: INTERNAL Channel "fifo1": Internal READ ACCESS at 300 ms
+	 Task "T1" consuming 0.75 J at 300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": READ COMPLETION at 300 ms
+T2: recv: 2 at time 300 ms
+	 Task "T2" consuming 0.5 J at 500 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": Internal READ ACCESS at 500 ms
+	 Task "T2" consuming 0.5 J at 500 ms
+	 Task "D1" consuming 0.25 J at 600 ms
+T4: exec. at time 600 ms
+	 Task "T4" consuming 0.125 J at 650 ms
+T4: exec. at time 650 ms
+	 Task "T4" consuming 0.25 J at 700 ms
+T4: exec. at time 700 ms
+	 Task "T4" consuming 0.375 J at 750 ms
+T4: exec. at time 750 ms
+	 Task "T4" consuming 0.5 J at 800 ms
+T4: exec. at time 800 ms
+	 Task "T4" consuming 0.625 J at 850 ms
+T4: exec. at time 850 ms
+	 Task "T4" consuming 0.75 J at 900 ms
+T4: exec. at time 900 ms
+	 Task "T4" consuming 0.875 J at 950 ms
+T4: exec. at time 950 ms
+	 Task "T4" consuming 1 J at 1 s
+T4: exec. at time 1 s
+	 Task "T4" consuming 1.125 J at 1050 ms
+T4: exec. at time 1050 ms
+	 Task "T4" consuming 1.25 J at 1100 ms
+T4: exec. at time 1100 ms
+	 Task "T4" consuming 1.375 J at 1150 ms
+T4: exec. at time 1150 ms
+	 Task "T4" consuming 1.5 J at 1200 ms
+T4: exec. at time 1200 ms
+	 Task "T4" consuming 1.625 J at 1250 ms
+T4: exec. at time 1250 ms
+	 Task "T4" consuming 1.75 J at 1300 ms
+T4: exec. at time 1300 ms
+	 Task "T4" consuming 1.875 J at 1350 ms
+T4: exec. at time 1350 ms
+	 Task "T4" consuming 2 J at 1400 ms
+T4: exec. at time 1400 ms
+	 Task "T4" consuming 2.125 J at 1450 ms
+T4: exec. at time 1450 ms
+	 Task "T4" consuming 2.25 J at 1500 ms
+T4: exec. at time 1500 ms
+	 Task "T4" consuming 2.375 J at 1550 ms
+T4: exec. at time 1550 ms
+	 Task "T4" consuming 2.5 J at 1600 ms
+T4: exec. at time 1600 ms
+	 Task "T4" consuming 2.625 J at 1650 ms
+T4: exec. at time 1650 ms
+	 Task "T4" consuming 2.75 J at 1700 ms
+T4: exec. at time 1700 ms
+	 Task "T4" consuming 2.875 J at 1750 ms
+T4: exec. at time 1750 ms
+	 Task "T4" consuming 3 J at 1800 ms
+T4: exec. at time 1800 ms
+	 Task "T4" consuming 3.125 J at 1850 ms
+T4: exec. at time 1850 ms
+	 Task "T4" consuming 3.25 J at 1900 ms
+T4: exec. at time 1900 ms
+	 Task "T4" consuming 3.375 J at 1950 ms
+T4: exec. at time 1950 ms
+	 Task "T4" consuming 3.5 J at 2 s
+T3: send 1 1at time 2 s
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE ACCESS at 2 s
+
+Info: KisTA: Channel: fifo1 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE COMPLETION at 2 s
+T3: exec at time 2 s
+	 Task "D1" consuming 0.25 J at 2 s
+
+Info: KisTA: INTERNAL Channel "fifo1": READ COMPLETION at 2 s
+1: recv: 1 at time 2 s
+1: send: 2 at time 2300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE ACCESS at 2300 ms
+
+Info: KisTA: Channel: fifo2 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE COMPLETION at 2300 ms
+	 Task "T1" consuming 1.5 J at 2300 ms
+fanculo
+
+Info: KisTA: INTERNAL Channel "fifo1": Internal READ ACCESS at 2300 ms
+	 Task "T1" consuming 1.5 J at 2300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": READ COMPLETION at 2300 ms
+T2: recv: 2 at time 2300 ms
+	 Task "T2" consuming 1 J at 2500 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": Internal READ ACCESS at 2500 ms
+	 Task "T2" consuming 1 J at 2500 ms
+	 Task "D1" consuming 0.5 J at 2600 ms
+T4: exec. at time 2600 ms
+	 Task "T4" consuming 3.625 J at 2650 ms
+T4: exec. at time 2650 ms
+	 Task "T4" consuming 3.75 J at 2700 ms
+T4: exec. at time 2700 ms
+	 Task "T4" consuming 3.875 J at 2750 ms
+T4: exec. at time 2750 ms
+	 Task "T4" consuming 4 J at 2800 ms
+T4: exec. at time 2800 ms
+	 Task "T4" consuming 4.125 J at 2850 ms
+T4: exec. at time 2850 ms
+	 Task "T4" consuming 4.25 J at 2900 ms
+T4: exec. at time 2900 ms
+	 Task "T4" consuming 4.375 J at 2950 ms
+T4: exec. at time 2950 ms
+	 Task "T4" consuming 4.5 J at 3 s
+T4: exec. at time 3 s
+	 Task "T4" consuming 4.625 J at 3050 ms
+T4: exec. at time 3050 ms
+	 Task "T4" consuming 4.75 J at 3100 ms
+T4: exec. at time 3100 ms
+	 Task "T4" consuming 4.875 J at 3150 ms
+T4: exec. at time 3150 ms
+	 Task "T4" consuming 5 J at 3200 ms
+T4: exec. at time 3200 ms
+	 Task "T4" consuming 5.125 J at 3250 ms
+T4: exec. at time 3250 ms
+	 Task "T4" consuming 5.25 J at 3300 ms
+T4: exec. at time 3300 ms
+	 Task "T4" consuming 5.375 J at 3350 ms
+T4: exec. at time 3350 ms
+	 Task "T4" consuming 5.5 J at 3400 ms
+T4: exec. at time 3400 ms
+	 Task "T4" consuming 5.625 J at 3450 ms
+T4: exec. at time 3450 ms
+	 Task "T4" consuming 5.75 J at 3500 ms
+T4: exec. at time 3500 ms
+	 Task "T4" consuming 5.875 J at 3550 ms
+T4: exec. at time 3550 ms
+	 Task "T4" consuming 6 J at 3600 ms
+T4: exec. at time 3600 ms
+	 Task "T4" consuming 6.125 J at 3650 ms
+T4: exec. at time 3650 ms
+	 Task "T4" consuming 6.25 J at 3700 ms
+T4: exec. at time 3700 ms
+	 Task "T4" consuming 6.375 J at 3750 ms
+T4: exec. at time 3750 ms
+	 Task "T4" consuming 6.5 J at 3800 ms
+T4: exec. at time 3800 ms
+	 Task "T4" consuming 6.625 J at 3850 ms
+T4: exec. at time 3850 ms
+	 Task "T4" consuming 6.75 J at 3900 ms
+T4: exec. at time 3900 ms
+	 Task "T4" consuming 6.875 J at 3950 ms
+T4: exec. at time 3950 ms
+	 Task "T4" consuming 7 J at 4 s
+T3: send 1 1at time 4 s
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE ACCESS at 4 s
+
+Info: KisTA: Channel: fifo1 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE COMPLETION at 4 s
+T3: exec at time 4 s
+	 Task "D1" consuming 0.5 J at 4 s
+
+Info: KisTA: INTERNAL Channel "fifo1": READ COMPLETION at 4 s
+1: recv: 1 at time 4 s
+1: send: 2 at time 4300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE ACCESS at 4300 ms
+
+Info: KisTA: Channel: fifo2 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE COMPLETION at 4300 ms
+	 Task "T1" consuming 2.25 J at 4300 ms
+fanculo
+
+Info: KisTA: INTERNAL Channel "fifo1": Internal READ ACCESS at 4300 ms
+	 Task "T1" consuming 2.25 J at 4300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": READ COMPLETION at 4300 ms
+T2: recv: 2 at time 4300 ms
+	 Task "T2" consuming 1.5 J at 4500 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": Internal READ ACCESS at 4500 ms
+	 Task "T2" consuming 1.5 J at 4500 ms
+	 Task "D1" consuming 0.75 J at 4600 ms
+T4: exec. at time 4600 ms
+	 Task "T4" consuming 7.125 J at 4650 ms
+T4: exec. at time 4650 ms
+	 Task "T4" consuming 7.25 J at 4700 ms
+T4: exec. at time 4700 ms
+	 Task "T4" consuming 7.375 J at 4750 ms
+T4: exec. at time 4750 ms
+	 Task "T4" consuming 7.5 J at 4800 ms
+T4: exec. at time 4800 ms
+	 Task "T4" consuming 7.625 J at 4850 ms
+T4: exec. at time 4850 ms
+	 Task "T4" consuming 7.75 J at 4900 ms
+T4: exec. at time 4900 ms
+	 Task "T4" consuming 7.875 J at 4950 ms
+T4: exec. at time 4950 ms
+	 Task "T4" consuming 8 J at 5 s
+T4: exec. at time 5 s
+	 Task "T4" consuming 8.125 J at 5050 ms
+T4: exec. at time 5050 ms
+	 Task "T4" consuming 8.25 J at 5100 ms
+T4: exec. at time 5100 ms
+	 Task "T4" consuming 8.375 J at 5150 ms
+T4: exec. at time 5150 ms
+	 Task "T4" consuming 8.5 J at 5200 ms
+T4: exec. at time 5200 ms
+	 Task "T4" consuming 8.625 J at 5250 ms
+T4: exec. at time 5250 ms
+	 Task "T4" consuming 8.75 J at 5300 ms
+T4: exec. at time 5300 ms
+	 Task "T4" consuming 8.875 J at 5350 ms
+T4: exec. at time 5350 ms
+	 Task "T4" consuming 9 J at 5400 ms
+T4: exec. at time 5400 ms
+	 Task "T4" consuming 9.125 J at 5450 ms
+T4: exec. at time 5450 ms
+	 Task "T4" consuming 9.25 J at 5500 ms
+T4: exec. at time 5500 ms
+	 Task "T4" consuming 9.375 J at 5550 ms
+T4: exec. at time 5550 ms
+	 Task "T4" consuming 9.5 J at 5600 ms
+T4: exec. at time 5600 ms
+	 Task "T4" consuming 9.625 J at 5650 ms
+T4: exec. at time 5650 ms
+	 Task "T4" consuming 9.75 J at 5700 ms
+T4: exec. at time 5700 ms
+	 Task "T4" consuming 9.875 J at 5750 ms
+T4: exec. at time 5750 ms
+	 Task "T4" consuming 10 J at 5800 ms
+T4: exec. at time 5800 ms
+	 Task "T4" consuming 10.125 J at 5850 ms
+T4: exec. at time 5850 ms
+	 Task "T4" consuming 10.25 J at 5900 ms
+T4: exec. at time 5900 ms
+	 Task "T4" consuming 10.375 J at 5950 ms
+T4: exec. at time 5950 ms
+	 Task "T4" consuming 10.5 J at 6 s
+T3: send 1 1at time 6 s
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE ACCESS at 6 s
+
+Info: KisTA: Channel: fifo1 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE COMPLETION at 6 s
+T3: exec at time 6 s
+	 Task "D1" consuming 0.75 J at 6 s
+
+Info: KisTA: INTERNAL Channel "fifo1": READ COMPLETION at 6 s
+1: recv: 1 at time 6 s
+1: send: 2 at time 6300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE ACCESS at 6300 ms
+
+Info: KisTA: Channel: fifo2 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE COMPLETION at 6300 ms
+	 Task "T1" consuming 3 J at 6300 ms
+fanculo
+
+Info: KisTA: INTERNAL Channel "fifo1": Internal READ ACCESS at 6300 ms
+	 Task "T1" consuming 3 J at 6300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": READ COMPLETION at 6300 ms
+T2: recv: 2 at time 6300 ms
+	 Task "T2" consuming 2 J at 6500 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": Internal READ ACCESS at 6500 ms
+	 Task "T2" consuming 2 J at 6500 ms
+	 Task "D1" consuming 1 J at 6600 ms
+T4: exec. at time 6600 ms
+	 Task "T4" consuming 10.625 J at 6650 ms
+T4: exec. at time 6650 ms
+	 Task "T4" consuming 10.75 J at 6700 ms
+T4: exec. at time 6700 ms
+	 Task "T4" consuming 10.875 J at 6750 ms
+T4: exec. at time 6750 ms
+	 Task "T4" consuming 11 J at 6800 ms
+T4: exec. at time 6800 ms
+	 Task "T4" consuming 11.125 J at 6850 ms
+T4: exec. at time 6850 ms
+	 Task "T4" consuming 11.25 J at 6900 ms
+T4: exec. at time 6900 ms
+	 Task "T4" consuming 11.375 J at 6950 ms
+T4: exec. at time 6950 ms
+	 Task "T4" consuming 11.5 J at 7 s
+T4: exec. at time 7 s
+	 Task "T4" consuming 11.625 J at 7050 ms
+T4: exec. at time 7050 ms
+	 Task "T4" consuming 11.75 J at 7100 ms
+T4: exec. at time 7100 ms
+	 Task "T4" consuming 11.875 J at 7150 ms
+T4: exec. at time 7150 ms
+	 Task "T4" consuming 12 J at 7200 ms
+T4: exec. at time 7200 ms
+	 Task "T4" consuming 12.125 J at 7250 ms
+T4: exec. at time 7250 ms
+	 Task "T4" consuming 12.25 J at 7300 ms
+T4: exec. at time 7300 ms
+	 Task "T4" consuming 12.375 J at 7350 ms
+T4: exec. at time 7350 ms
+	 Task "T4" consuming 12.5 J at 7400 ms
+T4: exec. at time 7400 ms
+	 Task "T4" consuming 12.625 J at 7450 ms
+T4: exec. at time 7450 ms
+	 Task "T4" consuming 12.75 J at 7500 ms
+T4: exec. at time 7500 ms
+	 Task "T4" consuming 12.875 J at 7550 ms
+T4: exec. at time 7550 ms
+	 Task "T4" consuming 13 J at 7600 ms
+T4: exec. at time 7600 ms
+	 Task "T4" consuming 13.125 J at 7650 ms
+T4: exec. at time 7650 ms
+	 Task "T4" consuming 13.25 J at 7700 ms
+T4: exec. at time 7700 ms
+	 Task "T4" consuming 13.375 J at 7750 ms
+T4: exec. at time 7750 ms
+	 Task "T4" consuming 13.5 J at 7800 ms
+T4: exec. at time 7800 ms
+	 Task "T4" consuming 13.625 J at 7850 ms
+T4: exec. at time 7850 ms
+	 Task "T4" consuming 13.75 J at 7900 ms
+T4: exec. at time 7900 ms
+	 Task "T4" consuming 13.875 J at 7950 ms
+T4: exec. at time 7950 ms
+	 Task "T4" consuming 14 J at 8 s
+T3: send 1 1at time 8 s
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE ACCESS at 8 s
+
+Info: KisTA: Channel: fifo1 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE COMPLETION at 8 s
+T3: exec at time 8 s
+	 Task "D1" consuming 1 J at 8 s
+
+Info: KisTA: INTERNAL Channel "fifo1": READ COMPLETION at 8 s
+1: recv: 1 at time 8 s
+1: send: 2 at time 8300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE ACCESS at 8300 ms
+
+Info: KisTA: Channel: fifo2 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE COMPLETION at 8300 ms
+	 Task "T1" consuming 3.75 J at 8300 ms
+fanculo
+
+Info: KisTA: INTERNAL Channel "fifo1": Internal READ ACCESS at 8300 ms
+	 Task "T1" consuming 3.75 J at 8300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": READ COMPLETION at 8300 ms
+T2: recv: 2 at time 8300 ms
+	 Task "T2" consuming 2.5 J at 8500 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": Internal READ ACCESS at 8500 ms
+	 Task "T2" consuming 2.5 J at 8500 ms
+	 Task "D1" consuming 1.25 J at 8600 ms
+T4: exec. at time 8600 ms
+	 Task "T4" consuming 14.125 J at 8650 ms
+T4: exec. at time 8650 ms
+	 Task "T4" consuming 14.25 J at 8700 ms
+T4: exec. at time 8700 ms
+	 Task "T4" consuming 14.375 J at 8750 ms
+T4: exec. at time 8750 ms
+	 Task "T4" consuming 14.5 J at 8800 ms
+T4: exec. at time 8800 ms
+	 Task "T4" consuming 14.625 J at 8850 ms
+T4: exec. at time 8850 ms
+	 Task "T4" consuming 14.75 J at 8900 ms
+T4: exec. at time 8900 ms
+	 Task "T4" consuming 14.875 J at 8950 ms
+T4: exec. at time 8950 ms
+	 Task "T4" consuming 15 J at 9 s
+T4: exec. at time 9 s
+	 Task "T4" consuming 15.125 J at 9050 ms
+T4: exec. at time 9050 ms
+	 Task "T4" consuming 15.25 J at 9100 ms
+T4: exec. at time 9100 ms
+	 Task "T4" consuming 15.375 J at 9150 ms
+T4: exec. at time 9150 ms
+	 Task "T4" consuming 15.5 J at 9200 ms
+T4: exec. at time 9200 ms
+	 Task "T4" consuming 15.625 J at 9250 ms
+T4: exec. at time 9250 ms
+	 Task "T4" consuming 15.75 J at 9300 ms
+T4: exec. at time 9300 ms
+	 Task "T4" consuming 15.875 J at 9350 ms
+T4: exec. at time 9350 ms
+	 Task "T4" consuming 16 J at 9400 ms
+T4: exec. at time 9400 ms
+	 Task "T4" consuming 16.125 J at 9450 ms
+T4: exec. at time 9450 ms
+	 Task "T4" consuming 16.25 J at 9500 ms
+T4: exec. at time 9500 ms
+	 Task "T4" consuming 16.375 J at 9550 ms
+T4: exec. at time 9550 ms
+	 Task "T4" consuming 16.5 J at 9600 ms
+T4: exec. at time 9600 ms
+	 Task "T4" consuming 16.625 J at 9650 ms
+T4: exec. at time 9650 ms
+	 Task "T4" consuming 16.75 J at 9700 ms
+T4: exec. at time 9700 ms
+	 Task "T4" consuming 16.875 J at 9750 ms
+T4: exec. at time 9750 ms
+	 Task "T4" consuming 17 J at 9800 ms
+T4: exec. at time 9800 ms
+	 Task "T4" consuming 17.125 J at 9850 ms
+T4: exec. at time 9850 ms
+	 Task "T4" consuming 17.25 J at 9900 ms
+T4: exec. at time 9900 ms
+	 Task "T4" consuming 17.375 J at 9950 ms
+T4: exec. at time 9950 ms
+	 Task "T4" consuming 17.5 J at 10 s
+T3: send 1 1at time 10 s
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE ACCESS at 10 s
+
+Info: KisTA: Channel: fifo1 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE COMPLETION at 10 s
+T3: exec at time 10 s
+	 Task "D1" consuming 1.25 J at 10 s
+
+Info: KisTA: INTERNAL Channel "fifo1": READ COMPLETION at 10 s
+1: recv: 1 at time 10 s
+1: send: 2 at time 10300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE ACCESS at 10300 ms
+
+Info: KisTA: Channel: fifo2 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE COMPLETION at 10300 ms
+	 Task "T1" consuming 4.5 J at 10300 ms
+fanculo
+
+Info: KisTA: INTERNAL Channel "fifo1": Internal READ ACCESS at 10300 ms
+	 Task "T1" consuming 4.5 J at 10300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": READ COMPLETION at 10300 ms
+T2: recv: 2 at time 10300 ms
+	 Task "T2" consuming 3 J at 10500 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": Internal READ ACCESS at 10500 ms
+	 Task "T2" consuming 3 J at 10500 ms
+	 Task "D1" consuming 1.5 J at 10600 ms
+T4: exec. at time 10600 ms
+	 Task "T4" consuming 17.625 J at 10650 ms
+T4: exec. at time 10650 ms
+	 Task "T4" consuming 17.75 J at 10700 ms
+T4: exec. at time 10700 ms
+	 Task "T4" consuming 17.875 J at 10750 ms
+T4: exec. at time 10750 ms
+	 Task "T4" consuming 18 J at 10800 ms
+T4: exec. at time 10800 ms
+	 Task "T4" consuming 18.125 J at 10850 ms
+T4: exec. at time 10850 ms
+	 Task "T4" consuming 18.25 J at 10900 ms
+T4: exec. at time 10900 ms
+	 Task "T4" consuming 18.375 J at 10950 ms
+T4: exec. at time 10950 ms
+	 Task "T4" consuming 18.5 J at 11 s
+T4: exec. at time 11 s
+	 Task "T4" consuming 18.625 J at 11050 ms
+T4: exec. at time 11050 ms
+	 Task "T4" consuming 18.75 J at 11100 ms
+T4: exec. at time 11100 ms
+	 Task "T4" consuming 18.875 J at 11150 ms
+T4: exec. at time 11150 ms
+	 Task "T4" consuming 19 J at 11200 ms
+T4: exec. at time 11200 ms
+	 Task "T4" consuming 19.125 J at 11250 ms
+T4: exec. at time 11250 ms
+	 Task "T4" consuming 19.25 J at 11300 ms
+T4: exec. at time 11300 ms
+	 Task "T4" consuming 19.375 J at 11350 ms
+T4: exec. at time 11350 ms
+	 Task "T4" consuming 19.5 J at 11400 ms
+T4: exec. at time 11400 ms
+	 Task "T4" consuming 19.625 J at 11450 ms
+T4: exec. at time 11450 ms
+	 Task "T4" consuming 19.75 J at 11500 ms
+T4: exec. at time 11500 ms
+	 Task "T4" consuming 19.875 J at 11550 ms
+T4: exec. at time 11550 ms
+	 Task "T4" consuming 20 J at 11600 ms
+T4: exec. at time 11600 ms
+	 Task "T4" consuming 20.125 J at 11650 ms
+T4: exec. at time 11650 ms
+	 Task "T4" consuming 20.25 J at 11700 ms
+T4: exec. at time 11700 ms
+	 Task "T4" consuming 20.375 J at 11750 ms
+T4: exec. at time 11750 ms
+	 Task "T4" consuming 20.5 J at 11800 ms
+T4: exec. at time 11800 ms
+	 Task "T4" consuming 20.625 J at 11850 ms
+T4: exec. at time 11850 ms
+	 Task "T4" consuming 20.75 J at 11900 ms
+T4: exec. at time 11900 ms
+	 Task "T4" consuming 20.875 J at 11950 ms
+T4: exec. at time 11950 ms
+	 Task "T4" consuming 21 J at 12 s
+T3: send 1 1at time 12 s
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE ACCESS at 12 s
+
+Info: KisTA: Channel: fifo1 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE COMPLETION at 12 s
+T3: exec at time 12 s
+	 Task "D1" consuming 1.5 J at 12 s
+
+Info: KisTA: INTERNAL Channel "fifo1": READ COMPLETION at 12 s
+1: recv: 1 at time 12 s
+1: send: 2 at time 12300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE ACCESS at 12300 ms
+
+Info: KisTA: Channel: fifo2 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE COMPLETION at 12300 ms
+	 Task "T1" consuming 5.25 J at 12300 ms
+fanculo
+
+Info: KisTA: INTERNAL Channel "fifo1": Internal READ ACCESS at 12300 ms
+	 Task "T1" consuming 5.25 J at 12300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": READ COMPLETION at 12300 ms
+T2: recv: 2 at time 12300 ms
+	 Task "T2" consuming 3.5 J at 12500 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": Internal READ ACCESS at 12500 ms
+	 Task "T2" consuming 3.5 J at 12500 ms
+	 Task "D1" consuming 1.75 J at 12600 ms
+T4: exec. at time 12600 ms
+	 Task "T4" consuming 21.125 J at 12650 ms
+T4: exec. at time 12650 ms
+	 Task "T4" consuming 21.25 J at 12700 ms
+T4: exec. at time 12700 ms
+	 Task "T4" consuming 21.375 J at 12750 ms
+T4: exec. at time 12750 ms
+	 Task "T4" consuming 21.5 J at 12800 ms
+T4: exec. at time 12800 ms
+	 Task "T4" consuming 21.625 J at 12850 ms
+T4: exec. at time 12850 ms
+	 Task "T4" consuming 21.75 J at 12900 ms
+T4: exec. at time 12900 ms
+	 Task "T4" consuming 21.875 J at 12950 ms
+T4: exec. at time 12950 ms
+	 Task "T4" consuming 22 J at 13 s
+T4: exec. at time 13 s
+	 Task "T4" consuming 22.125 J at 13050 ms
+T4: exec. at time 13050 ms
+	 Task "T4" consuming 22.25 J at 13100 ms
+T4: exec. at time 13100 ms
+	 Task "T4" consuming 22.375 J at 13150 ms
+T4: exec. at time 13150 ms
+	 Task "T4" consuming 22.5 J at 13200 ms
+T4: exec. at time 13200 ms
+	 Task "T4" consuming 22.625 J at 13250 ms
+T4: exec. at time 13250 ms
+	 Task "T4" consuming 22.75 J at 13300 ms
+T4: exec. at time 13300 ms
+	 Task "T4" consuming 22.875 J at 13350 ms
+T4: exec. at time 13350 ms
+	 Task "T4" consuming 23 J at 13400 ms
+T4: exec. at time 13400 ms
+	 Task "T4" consuming 23.125 J at 13450 ms
+T4: exec. at time 13450 ms
+	 Task "T4" consuming 23.25 J at 13500 ms
+T4: exec. at time 13500 ms
+	 Task "T4" consuming 23.375 J at 13550 ms
+T4: exec. at time 13550 ms
+	 Task "T4" consuming 23.5 J at 13600 ms
+T4: exec. at time 13600 ms
+	 Task "T4" consuming 23.625 J at 13650 ms
+T4: exec. at time 13650 ms
+	 Task "T4" consuming 23.75 J at 13700 ms
+T4: exec. at time 13700 ms
+	 Task "T4" consuming 23.875 J at 13750 ms
+T4: exec. at time 13750 ms
+	 Task "T4" consuming 24 J at 13800 ms
+T4: exec. at time 13800 ms
+	 Task "T4" consuming 24.125 J at 13850 ms
+T4: exec. at time 13850 ms
+	 Task "T4" consuming 24.25 J at 13900 ms
+T4: exec. at time 13900 ms
+	 Task "T4" consuming 24.375 J at 13950 ms
+T4: exec. at time 13950 ms
+	 Task "T4" consuming 24.5 J at 14 s
+T3: send 1 1at time 14 s
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE ACCESS at 14 s
+
+Info: KisTA: Channel: fifo1 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE COMPLETION at 14 s
+T3: exec at time 14 s
+	 Task "D1" consuming 1.75 J at 14 s
+
+Info: KisTA: INTERNAL Channel "fifo1": READ COMPLETION at 14 s
+1: recv: 1 at time 14 s
+1: send: 2 at time 14300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE ACCESS at 14300 ms
+
+Info: KisTA: Channel: fifo2 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE COMPLETION at 14300 ms
+	 Task "T1" consuming 6 J at 14300 ms
+fanculo
+
+Info: KisTA: INTERNAL Channel "fifo1": Internal READ ACCESS at 14300 ms
+	 Task "T1" consuming 6 J at 14300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": READ COMPLETION at 14300 ms
+T2: recv: 2 at time 14300 ms
+	 Task "T2" consuming 4 J at 14500 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": Internal READ ACCESS at 14500 ms
+	 Task "T2" consuming 4 J at 14500 ms
+	 Task "D1" consuming 2 J at 14600 ms
+T4: exec. at time 14600 ms
+	 Task "T4" consuming 24.625 J at 14650 ms
+T4: exec. at time 14650 ms
+	 Task "T4" consuming 24.75 J at 14700 ms
+T4: exec. at time 14700 ms
+	 Task "T4" consuming 24.875 J at 14750 ms
+T4: exec. at time 14750 ms
+	 Task "T4" consuming 25 J at 14800 ms
+T4: exec. at time 14800 ms
+	 Task "T4" consuming 25.125 J at 14850 ms
+T4: exec. at time 14850 ms
+	 Task "T4" consuming 25.25 J at 14900 ms
+T4: exec. at time 14900 ms
+	 Task "T4" consuming 25.375 J at 14950 ms
+T4: exec. at time 14950 ms
+	 Task "T4" consuming 25.5 J at 15 s
+T4: exec. at time 15 s
+	 Task "T4" consuming 25.625 J at 15050 ms
+T4: exec. at time 15050 ms
+	 Task "T4" consuming 25.75 J at 15100 ms
+T4: exec. at time 15100 ms
+	 Task "T4" consuming 25.875 J at 15150 ms
+T4: exec. at time 15150 ms
+	 Task "T4" consuming 26 J at 15200 ms
+T4: exec. at time 15200 ms
+	 Task "T4" consuming 26.125 J at 15250 ms
+T4: exec. at time 15250 ms
+	 Task "T4" consuming 26.25 J at 15300 ms
+T4: exec. at time 15300 ms
+	 Task "T4" consuming 26.375 J at 15350 ms
+T4: exec. at time 15350 ms
+	 Task "T4" consuming 26.5 J at 15400 ms
+T4: exec. at time 15400 ms
+	 Task "T4" consuming 26.625 J at 15450 ms
+T4: exec. at time 15450 ms
+	 Task "T4" consuming 26.75 J at 15500 ms
+T4: exec. at time 15500 ms
+	 Task "T4" consuming 26.875 J at 15550 ms
+T4: exec. at time 15550 ms
+	 Task "T4" consuming 27 J at 15600 ms
+T4: exec. at time 15600 ms
+	 Task "T4" consuming 27.125 J at 15650 ms
+T4: exec. at time 15650 ms
+	 Task "T4" consuming 27.25 J at 15700 ms
+T4: exec. at time 15700 ms
+	 Task "T4" consuming 27.375 J at 15750 ms
+T4: exec. at time 15750 ms
+	 Task "T4" consuming 27.5 J at 15800 ms
+T4: exec. at time 15800 ms
+	 Task "T4" consuming 27.625 J at 15850 ms
+T4: exec. at time 15850 ms
+	 Task "T4" consuming 27.75 J at 15900 ms
+T4: exec. at time 15900 ms
+	 Task "T4" consuming 27.875 J at 15950 ms
+T4: exec. at time 15950 ms
+	 Task "T4" consuming 28 J at 16 s
+T3: send 1 1at time 16 s
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE ACCESS at 16 s
+
+Info: KisTA: Channel: fifo1 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE COMPLETION at 16 s
+T3: exec at time 16 s
+	 Task "D1" consuming 2 J at 16 s
+
+Info: KisTA: INTERNAL Channel "fifo1": READ COMPLETION at 16 s
+1: recv: 1 at time 16 s
+1: send: 2 at time 16300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE ACCESS at 16300 ms
+
+Info: KisTA: Channel: fifo2 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE COMPLETION at 16300 ms
+	 Task "T1" consuming 6.75 J at 16300 ms
+fanculo
+
+Info: KisTA: INTERNAL Channel "fifo1": Internal READ ACCESS at 16300 ms
+	 Task "T1" consuming 6.75 J at 16300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": READ COMPLETION at 16300 ms
+T2: recv: 2 at time 16300 ms
+	 Task "T2" consuming 4.5 J at 16500 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": Internal READ ACCESS at 16500 ms
+	 Task "T2" consuming 4.5 J at 16500 ms
+	 Task "D1" consuming 2.25 J at 16600 ms
+T4: exec. at time 16600 ms
+	 Task "T4" consuming 28.125 J at 16650 ms
+T4: exec. at time 16650 ms
+	 Task "T4" consuming 28.25 J at 16700 ms
+T4: exec. at time 16700 ms
+	 Task "T4" consuming 28.375 J at 16750 ms
+T4: exec. at time 16750 ms
+	 Task "T4" consuming 28.5 J at 16800 ms
+T4: exec. at time 16800 ms
+	 Task "T4" consuming 28.625 J at 16850 ms
+T4: exec. at time 16850 ms
+	 Task "T4" consuming 28.75 J at 16900 ms
+T4: exec. at time 16900 ms
+	 Task "T4" consuming 28.875 J at 16950 ms
+T4: exec. at time 16950 ms
+	 Task "T4" consuming 29 J at 17 s
+T4: exec. at time 17 s
+	 Task "T4" consuming 29.125 J at 17050 ms
+T4: exec. at time 17050 ms
+	 Task "T4" consuming 29.25 J at 17100 ms
+T4: exec. at time 17100 ms
+	 Task "T4" consuming 29.375 J at 17150 ms
+T4: exec. at time 17150 ms
+	 Task "T4" consuming 29.5 J at 17200 ms
+T4: exec. at time 17200 ms
+	 Task "T4" consuming 29.625 J at 17250 ms
+T4: exec. at time 17250 ms
+	 Task "T4" consuming 29.75 J at 17300 ms
+T4: exec. at time 17300 ms
+	 Task "T4" consuming 29.875 J at 17350 ms
+T4: exec. at time 17350 ms
+	 Task "T4" consuming 30 J at 17400 ms
+T4: exec. at time 17400 ms
+	 Task "T4" consuming 30.125 J at 17450 ms
+T4: exec. at time 17450 ms
+	 Task "T4" consuming 30.25 J at 17500 ms
+T4: exec. at time 17500 ms
+	 Task "T4" consuming 30.375 J at 17550 ms
+T4: exec. at time 17550 ms
+	 Task "T4" consuming 30.5 J at 17600 ms
+T4: exec. at time 17600 ms
+	 Task "T4" consuming 30.625 J at 17650 ms
+T4: exec. at time 17650 ms
+	 Task "T4" consuming 30.75 J at 17700 ms
+T4: exec. at time 17700 ms
+	 Task "T4" consuming 30.875 J at 17750 ms
+T4: exec. at time 17750 ms
+	 Task "T4" consuming 31 J at 17800 ms
+T4: exec. at time 17800 ms
+	 Task "T4" consuming 31.125 J at 17850 ms
+T4: exec. at time 17850 ms
+	 Task "T4" consuming 31.25 J at 17900 ms
+T4: exec. at time 17900 ms
+	 Task "T4" consuming 31.375 J at 17950 ms
+T4: exec. at time 17950 ms
+	 Task "T4" consuming 31.5 J at 18 s
+T3: send 1 1at time 18 s
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE ACCESS at 18 s
+
+Info: KisTA: Channel: fifo1 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE COMPLETION at 18 s
+T3: exec at time 18 s
+	 Task "D1" consuming 2.25 J at 18 s
+
+Info: KisTA: INTERNAL Channel "fifo1": READ COMPLETION at 18 s
+1: recv: 1 at time 18 s
+1: send: 2 at time 18300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE ACCESS at 18300 ms
+
+Info: KisTA: Channel: fifo2 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE COMPLETION at 18300 ms
+	 Task "T1" consuming 7.5 J at 18300 ms
+fanculo
+
+Info: KisTA: INTERNAL Channel "fifo1": Internal READ ACCESS at 18300 ms
+	 Task "T1" consuming 7.5 J at 18300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": READ COMPLETION at 18300 ms
+T2: recv: 2 at time 18300 ms
+	 Task "T2" consuming 5 J at 18500 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": Internal READ ACCESS at 18500 ms
+	 Task "T2" consuming 5 J at 18500 ms
+	 Task "D1" consuming 2.5 J at 18600 ms
+T4: exec. at time 18600 ms
+	 Task "T4" consuming 31.625 J at 18650 ms
+T4: exec. at time 18650 ms
+	 Task "T4" consuming 31.75 J at 18700 ms
+T4: exec. at time 18700 ms
+	 Task "T4" consuming 31.875 J at 18750 ms
+T4: exec. at time 18750 ms
+	 Task "T4" consuming 32 J at 18800 ms
+T4: exec. at time 18800 ms
+	 Task "T4" consuming 32.125 J at 18850 ms
+T4: exec. at time 18850 ms
+	 Task "T4" consuming 32.25 J at 18900 ms
+T4: exec. at time 18900 ms
+	 Task "T4" consuming 32.375 J at 18950 ms
+T4: exec. at time 18950 ms
+	 Task "T4" consuming 32.5 J at 19 s
+T4: exec. at time 19 s
+	 Task "T4" consuming 32.625 J at 19050 ms
+T4: exec. at time 19050 ms
+	 Task "T4" consuming 32.75 J at 19100 ms
+T4: exec. at time 19100 ms
+	 Task "T4" consuming 32.875 J at 19150 ms
+T4: exec. at time 19150 ms
+	 Task "T4" consuming 33 J at 19200 ms
+T4: exec. at time 19200 ms
+	 Task "T4" consuming 33.125 J at 19250 ms
+T4: exec. at time 19250 ms
+	 Task "T4" consuming 33.25 J at 19300 ms
+T4: exec. at time 19300 ms
+	 Task "T4" consuming 33.375 J at 19350 ms
+T4: exec. at time 19350 ms
+	 Task "T4" consuming 33.5 J at 19400 ms
+T4: exec. at time 19400 ms
+	 Task "T4" consuming 33.625 J at 19450 ms
+T4: exec. at time 19450 ms
+	 Task "T4" consuming 33.75 J at 19500 ms
+T4: exec. at time 19500 ms
+	 Task "T4" consuming 33.875 J at 19550 ms
+T4: exec. at time 19550 ms
+	 Task "T4" consuming 34 J at 19600 ms
+T4: exec. at time 19600 ms
+	 Task "T4" consuming 34.125 J at 19650 ms
+T4: exec. at time 19650 ms
+	 Task "T4" consuming 34.25 J at 19700 ms
+T4: exec. at time 19700 ms
+	 Task "T4" consuming 34.375 J at 19750 ms
+T4: exec. at time 19750 ms
+	 Task "T4" consuming 34.5 J at 19800 ms
+T4: exec. at time 19800 ms
+	 Task "T4" consuming 34.625 J at 19850 ms
+T4: exec. at time 19850 ms
+	 Task "T4" consuming 34.75 J at 19900 ms
+T4: exec. at time 19900 ms
+	 Task "T4" consuming 34.875 J at 19950 ms
+T4: exec. at time 19950 ms
+	 Task "T4" consuming 35 J at 20 s
+T3: send 1 1at time 20 s
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE ACCESS at 20 s
+
+Info: KisTA: Channel: fifo1 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE COMPLETION at 20 s
+T3: exec at time 20 s
+	 Task "D1" consuming 2.5 J at 20 s
+
+Info: KisTA: INTERNAL Channel "fifo1": READ COMPLETION at 20 s
+1: recv: 1 at time 20 s
+1: send: 2 at time 20300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE ACCESS at 20300 ms
+
+Info: KisTA: Channel: fifo2 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE COMPLETION at 20300 ms
+	 Task "T1" consuming 8.25 J at 20300 ms
+fanculo
+
+Info: KisTA: INTERNAL Channel "fifo1": Internal READ ACCESS at 20300 ms
+	 Task "T1" consuming 8.25 J at 20300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": READ COMPLETION at 20300 ms
+T2: recv: 2 at time 20300 ms
+	 Task "T2" consuming 5.5 J at 20500 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": Internal READ ACCESS at 20500 ms
+	 Task "T2" consuming 5.5 J at 20500 ms
+	 Task "D1" consuming 2.75 J at 20600 ms
+T4: exec. at time 20600 ms
+	 Task "T4" consuming 35.125 J at 20650 ms
+T4: exec. at time 20650 ms
+	 Task "T4" consuming 35.25 J at 20700 ms
+T4: exec. at time 20700 ms
+	 Task "T4" consuming 35.375 J at 20750 ms
+T4: exec. at time 20750 ms
+	 Task "T4" consuming 35.5 J at 20800 ms
+T4: exec. at time 20800 ms
+	 Task "T4" consuming 35.625 J at 20850 ms
+T4: exec. at time 20850 ms
+	 Task "T4" consuming 35.75 J at 20900 ms
+T4: exec. at time 20900 ms
+	 Task "T4" consuming 35.875 J at 20950 ms
+T4: exec. at time 20950 ms
+	 Task "T4" consuming 36 J at 21 s
+T4: exec. at time 21 s
+	 Task "T4" consuming 36.125 J at 21050 ms
+T4: exec. at time 21050 ms
+	 Task "T4" consuming 36.25 J at 21100 ms
+T4: exec. at time 21100 ms
+	 Task "T4" consuming 36.375 J at 21150 ms
+T4: exec. at time 21150 ms
+	 Task "T4" consuming 36.5 J at 21200 ms
+T4: exec. at time 21200 ms
+	 Task "T4" consuming 36.625 J at 21250 ms
+T4: exec. at time 21250 ms
+	 Task "T4" consuming 36.75 J at 21300 ms
+T4: exec. at time 21300 ms
+	 Task "T4" consuming 36.875 J at 21350 ms
+T4: exec. at time 21350 ms
+	 Task "T4" consuming 37 J at 21400 ms
+T4: exec. at time 21400 ms
+	 Task "T4" consuming 37.125 J at 21450 ms
+T4: exec. at time 21450 ms
+	 Task "T4" consuming 37.25 J at 21500 ms
+T4: exec. at time 21500 ms
+	 Task "T4" consuming 37.375 J at 21550 ms
+T4: exec. at time 21550 ms
+	 Task "T4" consuming 37.5 J at 21600 ms
+T4: exec. at time 21600 ms
+	 Task "T4" consuming 37.625 J at 21650 ms
+T4: exec. at time 21650 ms
+	 Task "T4" consuming 37.75 J at 21700 ms
+T4: exec. at time 21700 ms
+	 Task "T4" consuming 37.875 J at 21750 ms
+T4: exec. at time 21750 ms
+	 Task "T4" consuming 38 J at 21800 ms
+T4: exec. at time 21800 ms
+	 Task "T4" consuming 38.125 J at 21850 ms
+T4: exec. at time 21850 ms
+	 Task "T4" consuming 38.25 J at 21900 ms
+T4: exec. at time 21900 ms
+	 Task "T4" consuming 38.375 J at 21950 ms
+T4: exec. at time 21950 ms
+	 Task "T4" consuming 38.5 J at 22 s
+T3: send 1 1at time 22 s
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE ACCESS at 22 s
+
+Info: KisTA: Channel: fifo1 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo1": WRITE COMPLETION at 22 s
+T3: exec at time 22 s
+	 Task "D1" consuming 2.75 J at 22 s
+
+Info: KisTA: INTERNAL Channel "fifo1": READ COMPLETION at 22 s
+1: recv: 1 at time 22 s
+1: send: 2 at time 22300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE ACCESS at 22300 ms
+
+Info: KisTA: Channel: fifo2 WRITE access (msg. size : 16 bits)
+	Associated physical link not resolved. No delay will be associated to the transaction.
+
+Info: KisTA: INTERNAL Channel "fifo2": WRITE COMPLETION at 22300 ms
+	 Task "T1" consuming 9 J at 22300 ms
+fanculo
+
+Info: KisTA: INTERNAL Channel "fifo1": Internal READ ACCESS at 22300 ms
+	 Task "T1" consuming 9 J at 22300 ms
+
+Info: KisTA: INTERNAL Channel "fifo2": READ COMPLETION at 22300 ms
+T2: recv: 2 at time 22300 ms
+
+Info: /OSCI/SystemC: Simulation stopped by user.
+	 Task "T2" consuming 5.75 J at 22400 ms (last update at end of simulation) 
+
+Info: KisTA-XML: 
+
+
+Info: KisTA-XML: 
+
+
+Info: KisTA-XML: Reporting metric: rtos/sched1/number_of_context_switches ()
+
+Info: KisTA-XML: Reporting metric: rtos/sched1/number_of_schedulings ()
+
+Info: KisTA-XML: Reporting metric: rtos/sched1/plat_utilization ()
+
+Info: KisTA-XML: Reporting metric: rtos/sched1/sched_utilization ()
+
+Info: KisTA-XML: Reporting metric: rtos/sched1/tasks_utilization ()
+
+Info: KisTA-XML: Reporting metric: task/D1/utilization (%)
+
+Info: KisTA-XML: Reporting metric: task/T1/utilization (%)
+
+Info: KisTA-XML: Reporting metric: task/T2/utilization (%)
+
+Info: KisTA-XML: Reporting metric: task/T4/utilization (%)

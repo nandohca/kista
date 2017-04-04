@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<simulator_input_interface xmlns="http://www.multicube.eu/" version="1.4">
+ 	
+	  <parameter name="T1_MAP" value="sched1" />
+	  <parameter name="T2_MAP" value="sched1" />
+	
+	  <parameter name="T0_M" value="D1" /><parameter name="T1_M" value="T1" /><parameter name="T2_M" value="T1" /><parameter name="T3_M" value="T2" /></simulator_input_interface>

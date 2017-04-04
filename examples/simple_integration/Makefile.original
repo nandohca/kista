@@ -1,0 +1,106 @@
+
+# Ensure that kista-xml is in $PATH
+#   by setting PATH=$(PATH):$(KISTA_PATH)/bin
+
+EX_NAME = sys
+
+# Library with the system tasks functions
+LIB_TASKS_FUN = tasks_func
+
+export LIB_FUN_NAME
+
+# Enable the following variable definition for enable code annotation
+# In case it is not enabled, KisTA will use directly the WCET
+#DEFINES = -D_USE_AUTOMATIC_CODE_ANNOTATION
+
+# For compiling all the source files of the folder
+#INSTR_SRCS = $(wildcard ./fun/*.cpp)
+
+# For compiling only the selected source files
+
+TASK_SRCS += T1_fun.cpp
+TASK_SRCS += T2_fun.cpp
+TASK_SRCS += T3_fun.cpp
+TASK_SRCS += dummies.cpp
+
+TASK_OBJS = $(TASK_SRCS:.cpp=.o)
+
+#SO_FILES = $(foreach DYN_LIB,$(DYN_LIBRARIES),$(wildcard $(DYN_LIB).so))
+
+SD_FILE= $(EX_NAME).xml
+SC_FILE= $(EX_NAME)_params.xml
+SM_FILE= $(EX_NAME)_output.xml
+SMD_FILE= $(EX_NAME)_smd.xml
+
+CFLAGS = -fPIC  -Wall -Wno-deprecated -Wno-return-type -Wno-char-subscripts -pthread -g -O0 -std=c++0x  -DSC_INCLUDE_DYNAMIC_PROCESSES
+# NOTICE: fPIC for position independent code, required for .so
+
+## not needed for debianized package
+SYSDIR = -I$(SYSTEMC)/include
+
+#INCDIR = -I. -I.. -I$(SFF)
+## not needed for debianized package
+INCDIR = -I. -I.. $(SYSDIR) -I$(KISTA)/include
+##INCDIR = -I. -I.. $(SYSDIR) -I$(KISTA)/src -I$(ADD_INCLUDE_DIRS)
+
+#LIBDIR = -L. -L..
+## not needed for debianized package
+LIBDIR = -L. -L.. -L$(SYSTEMC)/lib-$(TARGET_ARCH)
+
+#all: $(INSTR_OBJS) $(TASK_OBJS) $(DYN_LIBRARY).so
+
+
+
+EXDIR = $(shell pwd)
+
+
+all: lib$(LIB_TASKS_FUN).so run sketch
+
+libs:lib$(LIB_TASKS_FUN).so 
+	@echo Environment tasks and System tasks function libraries generated in root directory:
+	@ls -l $(LIB_TASKS_FUN).so 
+	
+lib$(LIB_TASKS_FUN).so: lib$(LIB_FUN_NAME).a $(TASK_OBJS)
+	@echo Packaging system tasks functions into the dynamic library: $(LIB_TASKS_FUN).so
+	@g++ -shared -L. -Wl,-soname,$(LIB_TASKS_FUN).so -o $(LIB_TASKS_FUN).so -Wl,-whole-archive -l$(LIB_FUN_NAME) -Wl,-no-whole-archive *.o
+# NOTICE: The use of -Wl,-whole-archive and -Wl,-no-whole-archive to delimit the
+#         static libraries which want to be appended to the .so library
+#
+# I tried the following rule, but by some reason it does not work
+#	@echo Packaging system tasks functions into the dynamic library: $@ 
+#@g++ -shared -L. -Wl,-soname,$@ -o $@ -Wl,-whole-archive -l$(LIB_FUN_NAME) -Wl,-no-whole-archive *.o
+#
+#
+%.o: %.cpp
+	@echo Compiling System task function $< in root directory
+	@g++ -Wall $(DEFINES) $(CFLAGS) $(INCDIR) -c -o $@ $<
+
+lib$(LIB_FUN_NAME).a:
+	@echo Compiling instrumented functionality $(INSTR_OBJS) in $(FUN_DIR)
+	@make -C $(FUN_DIR)
+
+
+run: lib$(LIB_TASKS_FUN).so 
+	kista-xml $(SD_FILE)\
+ --xml_system_configuration=./$(SC_FILE)\
+ --xml_system_metrics=./$(SM_FILE)\
+ --xml_system_metrics_definition=./$(SMD_FILE)
+
+
+sketch:
+	pdflatex $(EX_NAME)_sketch.tex
+
+clean:
+	rm -f *.o
+	rm -f *.a
+	rm -f *.aux
+	rm -f *.log
+	rm -f *.tex
+
+ultraclean:clean
+	make -C $(FUN_DIR) ultraclean
+	make -C $(ENV_DIR) ultraclean
+	rm -f *.so
+	rm -f $(EX_NAME)_output.xml
+	rm -f *.pdf
+	rm -f *.vcd

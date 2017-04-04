@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<simulator_output_interface version="1.4" xmlns="http://www.multicube.eu/">
+	<error kind="fatal" reason="validation failed"/>
+</simulator_output_interface>

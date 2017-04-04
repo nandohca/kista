@@ -1,0 +1,65 @@
+$comment
+File created by KisTA library.
+ Author: F.Herrera
+ Institution: KTH
+ Date: 2013
+	All rights reserved by the authors, till further definition of the license.
+$end
+
+$comment
+Tracing options used include to trace Task State signals,  Scheduler signals 
+$end
+
+$date
+     Jul 11, 2016       14:47:48
+$end
+
+$version
+ SystemC 2.3.1-Accellera --- Mar 29 2016 16:10:40
+$end
+
+$timescale
+     1 ps
+$end
+
+$scope module SystemC $end
+$var wire    8  aaaaa  scheduler1 [7:0]  $end
+$var wire    8  aaaab  task1 [7:0]  $end
+$var wire    8  aaaac  task2 [7:0]  $end
+$upscope $end
+$enddefinitions  $end
+
+$comment
+All initial values are dumped below at time 0 sec = 0 timescale units.
+$end
+
+$dumpvars
+b1001001 aaaaa
+b1000101 aaaab
+b1011000 aaaac
+$end
+
+#100000000000
+b1010010 aaaab
+b1000101 aaaac
+
+#300000000000
+b1000101 aaaab
+b1011000 aaaac
+
+#400000000000
+b1010010 aaaab
+b1000101 aaaac
+
+#600000000000
+b1000101 aaaab
+b1011000 aaaac
+
+#700000000000
+b1010010 aaaab
+b1000101 aaaac
+
+#900000000000
+b1000101 aaaab
+b1011000 aaaac
+

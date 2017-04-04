@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulator_output_interface xmlns="http://www.multicube.eu/" version="1.4">
+  <error reason="Error: KisTA: Validation of FUNCTIONALITY FAILED.&#10;In file: utils.cpp:192" kind="non-fatal"/>
+</simulator_output_interface>

@@ -19,6 +19,7 @@ all: $(OBJS)
 	make -C ./annotation_plugin
 	make -C ./load_analysis
 	make -C ./energy_power
+	make -C ./xml_if
 	cp -f *.o $(BUILDIR)
 	
 %.o : %.cpp

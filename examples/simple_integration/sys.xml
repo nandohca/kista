@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<system>
+
+	<application name="A1">
+		<task name="T1">
+			<function name="T1_fun" file="tasks_func.so"/>
+			<task_properties>
+				<WCET value="42180" unit="ns"/>
+				<priority value="1"/>
+			</task_properties>
+		</task>
+
+		<!-- A-DSE Task name = EnergComp -->
+		<task name="T2">
+			<function name="T2_fun" file="tasks_func.so"/>
+			<task_properties>
+				<WCET value="43540" unit="ns"/>
+				<priority value="1"/>
+			</task_properties>
+		</task>
+
+		<!-- A-DSE Task name = ACFavg -->
+		<task name="T3">
+			<function name="T3_fun" file="tasks_func.so"/>
+			<task_properties>
+				<WCET value="80120" unit="ns"/>
+				<priority value="1"/>
+			</task_properties>
+		</task>
+
+		<task name="D1_IN">
+			<function name="d1in" file="tasks_func.so"/>
+			<task_properties>
+				<WCET value="1" unit="ns"/>
+				<priority value="2"/>
+				<period value="8670920" unit="ns"/>
+				<!-- To be supported!! -->
+			</task_properties>
+		</task>
+		
+		<task name="D2_IN">
+			<function name="d2in" file="tasks_func.so"/>
+			<task_properties>
+				<WCET value="1" unit="ns"/>
+				<priority value="2"/>
+				<period value="8670920" unit="ns"/>
+				<!-- To be supported!! -->
+			</task_properties>
+		</task>
+		
+		
+		
+			
+		<task name="D1_OUT">
+			<function name="d1out" file="tasks_func.so"/>
+			<task_properties>
+				<WCET value="1" unit="ns"/>
+				<priority value="2"/>
+			</task_properties>
+		</task>
+		
+		<task name="D2_OUT">
+			<function name="d2out" file="tasks_func.so"/>
+			<task_properties>
+				<WCET value="1" unit="ns"/>
+				<priority value="2"/>
+				<!-- To be supported!! -->
+			</task_properties>
+		</task>
+		
+		
+		
+		<task name="BE1">
+			<function name="be1" file="tasks_func.so"/>
+			<task_properties>
+				<WCET value="10" unit="ms"/>
+				<priority value="3"/>
+			</task_properties>
+		</task>
+		<task name="BE2">
+			<function name="be2" file="tasks_func.so"/>
+			<task_properties>
+				<WCET value="10" unit="ms"/>
+				<priority value="3"/>
+			</task_properties>
+		</task>
+		
+		
+		
+		
+		<comm_synch name="fifo1" src="_T0_M" dest="_T1_M" comm_type="fifo_buffer" comm_data_type="ushort"/>
+		<comm_synch name="fifo2" src="_T2_M" dest="_T3_M" comm_type="fifo_buffer" comm_data_type="ushort"/>
+		<comm_synch name="fifo3" src="_T4_M" dest="_T5_M" comm_type="fifo_buffer" comm_data_type="ushort"/>
+		<comm_synch name="fifo4" src="_T6_M" dest="_T7_M" comm_type="fifo_buffer" comm_data_type="ushort"/>
+		<comm_synch name="fifo5" src="_T8_M" dest="_T9_M" comm_type="fifo_buffer" comm_data_type="ushort"/>
+	</application>
+
+
+	<application_mapping>
+		<map_task source="T1" target="_T1_MAP" />
+		<map_task source="T2" target="_T2_MAP" />
+		<map_task source="T3" target="_T3_MAP" />
+		<map_task source="BE1" target="_BE1_MAP" />
+		<map_task source="BE2" target="_BE2_MAP" />
+		<map_task source="D1_IN" target="sched1" />
+		<map_task source="D2_IN" target="sched2" />
+		
+		<map_task source="D1_OUT" target="sched1" />
+		<map_task source="D2_OUT" target="sched2" />
+		
+	</application_mapping>
+
+
+	<platform>
+
+		<platform_mapping>
+			<map_rtos source="sched1" target="PE1"/>
+			<map_rtos source="sched2" target="PE2"/>
+			<map_rtos source="sched3" target="PE3"/>
+		</platform_mapping>
+
+
+		<SW_platform>
+
+			<rtos name="sched1">
+				<task_scheduler>
+					<scheduler_policy policy="static_priorities" triggering="preemptive" time_slice="no">
+						 <!--dispatching value="EarliestDeadlineFirst" /  dovrei mettere user defined. ma xml if non legge impone user defined. -->
+				  </scheduler_policy>
+				</task_scheduler>
+				
+			    <comm_scheduler>
+					<scheduler_policy policy="static_priorities" triggering="preemptive" time_slice="no">
+						 <!--dispatching value="EarliestDeadlineFirst" /  dovrei mettere user defined. ma xml if non legge impone user defined. -->
+				  </scheduler_policy>
+			    </comm_scheduler>
+
+			</rtos>
+
+			<rtos name="sched2">
+				<task_scheduler>
+					<scheduler_policy policy="static_priorities" triggering="preemptive" time_slice="no">
+						 <!--dispatching value="EarliestDeadlineFirst" /  dovrei mettere user defined. ma xml if non legge impone user defined. -->
+				  </scheduler_policy>
+				</task_scheduler>
+
+			    <comm_scheduler>
+					<scheduler_policy policy="static_priorities" triggering="preemptive" time_slice="no">
+						 <!--dispatching value="EarliestDeadlineFirst" /  dovrei mettere user defined. ma xml if non legge impone user defined. -->
+				  </scheduler_policy>
+			    </comm_scheduler>				
+			</rtos>
+
+			<rtos name="sched3">
+				<task_scheduler>
+					<scheduler_policy policy="cycle_executive" triggering="preemptive" time_slice="yes">
+						 <!--dispatching value="EarliestDeadlineFirst" /  dovrei mettere user defined. ma xml if non legge impone user defined. -->
+				  </scheduler_policy>
+				</task_scheduler>
+
+			    <comm_scheduler>
+					<scheduler_policy policy="cycle_executive" triggering="preemptive" time_slice="yes">
+						 <!--dispatching value="EarliestDeadlineFirst" /  dovrei mettere user defined. ma xml if non legge impone user defined. -->
+				  </scheduler_policy>
+			    </comm_scheduler>
+			</rtos>
+
+	
+		</SW_platform>
+
+
+		<HW_platform>
+
+			<HW_Architecture name="arch1">
+
+				<PE name="PE1" type="arm9">
+					<freq value="50" unit="MHz" />
+					<netif value="true"/>
+				</PE>
+
+				<PE name="PE2" type="arm9">
+					<freq value="50" unit="MHz" />
+					<netif value="true"/>
+				</PE>
+
+				<PE name="PE3" type="arm9">
+					<freq value="100" unit="MHz" />
+					<netif value="true"/>
+				</PE>
+
+
+
+				<comm_res name="tdma1" type="tdma_bus">
+					<!-- Filled by KisTA simulator wrapper -->
+					<HW_Connection instance="PE1" name="hw_conn_1" slots_number="_PE1_SLOTS"/>
+					<HW_Connection instance="PE2" name="hw_conn_2" slots_number="_PE2_SLOTS"/>
+					<HW_Connection instance="PE3" name="hw_conn_3" slots_number="_PE3_SLOTS"/>
+
+					<!-- TDMA bus specific parameteres -->
+					<slots_number value="20"/>
+					<slot_time value="500" unit="ns"/>
+					<!-- Used to state an effective bandwidth -->
+					 
+					<slot_payload value="64" unit="bit"/>
+					<!--
+					or equivalently
+					
+					<slot_capacity     value="131" unit="bit"/>
+					<slot_payload_rate value="0.333333"/>
+					-->
+					<!-- also valid
+					<payload value="" unit=""/>
+					-->
+					
+					<!-- cycle time can be omitted -->
+					<!--
+					<cycle_time value="1" unit="s"/>
+					-->
+					<cycle_time value="10" unit="us"/>
+				</comm_res>
+
+			</HW_Architecture>
+
+		</HW_platform>
+
+	</platform>
+
+
+  
+	<kista_configuration>
+		<!-- good convergence for normalized throughput estimation, not that good for utilizations
+		<simulation_time value="100" unit="ms"/>
+		-->
+		<!-- aceptable convergence for utilizations -->
+		<simulation_time value="1" unit="s"/>
+		 
+		 
+		<!-- good convergence for utilizations: error < 0.01% 
+		<simulation_time value="100" unit="s"/>
+		 	-->	 
+		<verbose value="true"/>
+		<xml_front_end_verbose value="true"/>
+		<export_sketch value="true">
+			<file_name value="vad_sketch"/>
+			<draw_sys_level_conn_names value="true"/>
+			<highlight_environment value="true"/>
+			<highlight_system value="true"/>
+			<highlight_application value="true"/>
+			<highlight_platform value="true"/>
+			<!--
+			<only_image value="true"/>
+			<set_scale value="1.25"/>
+			-->
+		</export_sketch>
+
+		<!-- In order to enable functional validation -->
+		<functional_validation value="true"/>
+		
+		<analysis>
+			<trace_rtos name="sched1" file="rtos1_trace"/>	
+			<trace_rtos name="sched2" file="rtos2_trace"/>
+			<trace_rtos name="sched3" file="rtos3_trace"/>
+			<trace_all/>
+
+			<!-- TiKZ trace  -->
+			<!-- "file" states the name of the tikz trace file, plus .tex -->
+			<tikz_trace enabled="true" name="tikz_trace">
+				<!-- all the next configuration parameters of the tikz trace are optional and have default values -->
+				<!-- control of time axis information -->
+				<start_time value="9" unit="ms" />
+				<max_number_of_time_stamps value="5"/>
+				<time_stamps_max_separation value="3"/>
+				<!-- control of time axis information -->
+				<cluster value="true" compact="true"/>
+				<base_lines_separation value="1"/>
+						<!-- base lines separation, 1 (default),2,... no effect for compact format -->
+						
+				<!-- control of information in the draw -->
+				<!-- 
+				<no_text_in_traces value="true"/>
+				<do_not_show_unactive_boxes value="true"/>	
+				-->
+				
+				<!-- -->
+				<do_not_show_schedulers value="false"/>	
+				
+				<!-- control of picture format -->
+				<set_scale value="0.75"/>
+				<set_landscape value="true"/>
+				
+				<!-- <only_image value="true"/>
+				-->
+				
+			</tikz_trace>
+
+		</analysis>
+		
+	</kista_configuration>
+
+</system>

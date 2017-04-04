@@ -1,0 +1,67 @@
+<?xml version="1.0" ?>
+<simulator_input_interface version="1.4" xmlns="http://www.multicube.eu/">
+	<parameter name="PE1_FREQ" value="50"/>
+	<parameter name="PE1_MEM" value="512000000"/>
+	<parameter name="PE1_SLOTS" value="3"/>
+	<parameter name="PE2_FREQ" value="50"/>
+	<parameter name="PE2_MEM" value="512000000"/>
+	<parameter name="PE2_SLOTS" value="2"/>
+	<parameter name="PE3_FREQ" value="50"/>
+	<parameter name="PE3_MEM" value="512000000"/>
+	<parameter name="PE3_SLOTS" value="2"/>
+	<parameter name="PE4_FREQ" value="50"/>
+	<parameter name="PE4_MEM" value="512000000"/>
+	<parameter name="PE4_SLOTS" value="0"/>
+	<parameter name="PE5_FREQ" value="50"/>
+	<parameter name="PE5_MEM" value="512000000"/>
+	<parameter name="PE5_SLOTS" value="0"/>
+	<parameter name="PE6_FREQ" value="50"/>
+	<parameter name="PE6_MEM" value="512000000"/>
+	<parameter name="PE6_SLOTS" value="0"/>
+	<parameter name="T1_MAP" value="sched1"/>
+	<parameter name="T2_MAP" value="sched1"/>
+	<parameter name="T3_MAP" value="sched1"/>
+	<parameter name="T4_MAP" value="sched1"/>
+	<parameter name="T5_MAP" value="sched2"/>
+	<parameter name="T6_MAP" value="sched2"/>
+	<parameter name="T7_MAP" value="sched3"/>
+	<parameter name="T8_MAP" value="sched4"/>
+	<parameter name="BE1_MAP" value="sched2"/>
+	<parameter name="BE2_MAP" value="sched4"/>
+	<parameter name="STATIC_SCHED1">
+		<item value="T1"/>
+		<item value="T3"/>
+		<item value="T4"/>
+		<item value="T2"/>
+	</parameter>
+	<parameter name="STATIC_SCHED2">
+		<item value="T5"/>
+		<item value="T6"/>
+	</parameter>
+	<parameter name="STATIC_SCHED3">
+		<item value="T7"/>
+	</parameter>
+	<parameter name="STATIC_SCHED4">
+		<item value="T8"/>
+	</parameter>
+	<parameter name="STATIC_SCHED5"/>
+	<parameter name="STATIC_SCHED6"/>
+	<parameter name="STATIC_COMM_SCHED1">
+		<item value="E9"/>
+		<item value="E1"/>
+		<item value="E3"/>
+		<item value="E4"/>
+		<item value="E6"/>
+		<item value="E8"/>
+	</parameter>
+	<parameter name="STATIC_COMM_SCHED2">
+		<item value="E7"/>
+		<item value="E10"/>
+	</parameter>
+	<parameter name="STATIC_COMM_SCHED3">
+		<item value="E11"/>
+	</parameter>
+	<parameter name="STATIC_COMM_SCHED4"/>
+	<parameter name="STATIC_COMM_SCHED5"/>
+	<parameter name="STATIC_COMM_SCHED6"/>
+</simulator_input_interface>

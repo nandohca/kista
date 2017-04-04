@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <simulator_output_interface xmlns="http://www.multicube.eu/" version="1.4">
-  <system_metric name="comm_synch/E19/normalized_write_stationary_throughput" value="1.153280e-07" unit="GHz"/>
-  <system_metric name="comm_synch/E19/normalized_write_throughput" value="1.152360e-07" unit="GHz"/>
-  <system_metric name="comm_synch/E19/read_period" value="8670922.000000" unit="ns"/>
-  <system_metric name="comm_synch/E19/write_period" value="8670922.000000" unit="ns"/>
-  <system_metric name="comm_synch/E5/normalized_read_stationary_throughput" value="1.153280e-07" unit="GHz"/>
-  <system_metric name="comm_synch/E5/normalized_write_stationary_throughput" value="1.153280e-07" unit="GHz"/>
-  <system_metric name="rtos/sched1/tasks_utilization" value="1.000000"/>
-  <system_metric name="rtos/sched2/tasks_utilization" value="0.168841"/>
-  <system_metric name="rtos/sched3/tasks_utilization" value="0.999202"/>
-  <system_metric name="rtos/sched4/tasks_utilization" value="9.225310e-04"/>
+  <system_metric name="comm_synch/E19/normalized_write_stationary_throughput" value="2.134927e-05" unit="GHz"/>
+  <system_metric name="comm_synch/E19/normalized_write_throughput" value="1.108301e-07" unit="GHz"/>
+  <system_metric name="comm_synch/E19/read_period" value="46840.000000" unit="ns"/>
+  <system_metric name="comm_synch/E19/write_period" value="46840.000000" unit="ns"/>
+  <system_metric name="comm_synch/E5/normalized_read_stationary_throughput" value="2.134927e-05" unit="GHz"/>
+  <system_metric name="comm_synch/E5/normalized_write_stationary_throughput" value="1.159544e-07" unit="GHz"/>
+  <system_metric name="rtos/sched1/tasks_utilization" value="0.174113"/>
+  <system_metric name="rtos/sched2/tasks_utilization" value="1.000000"/>
+  <system_metric name="rtos/sched3/tasks_utilization" value="4.343840e-04"/>
+  <system_metric name="rtos/sched4/tasks_utilization" value="1.000000"/>
   <system_metric name="rtos/sched5/tasks_utilization" value="2.320000e-07"/>
   <system_metric name="rtos/sched6/tasks_utilization" value="2.320000e-07"/>
 </simulator_output_interface>

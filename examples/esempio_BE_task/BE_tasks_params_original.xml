@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Example sample7.xml for XML front-end of the KisTA library -->
+<simulator_input_interface xmlns="http://www.multicube.eu/" version="1.4">
+ 	<!--
+	<parameter name="SCHED_POLICY" value="EarliestDeadlineFirst" />
+	-->
+	  <parameter name="T1_MAP" value="sched1"/>
+	  <parameter name="T2_MAP" value="sched1"/>
+	
+	  <parameter name="STATIC_SCHED1">
+                <item value="T1"/>
+                <item value="T2"/>
+	  </parameter>
+
+</simulator_input_interface>

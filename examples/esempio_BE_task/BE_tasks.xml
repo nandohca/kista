@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Example brt1.xml for XML front-end of the KisTA library -->
+
+<!--	Example to reproduce the basic real time example (which -->
+<!--	used the C++ KisTA API), but using the XML API          -->
+
+<system>
+
+  <application name="A1">
+	 
+	<task name="T1">
+		
+		<function name="t1" file="task_funcs.so">	
+		<!--
+		<function name="t1_fun" file="task_funcs.so" path="./">
+		-->
+		</function>
+
+	</task>
+	<task name="T4">
+		
+		<function name="t4" file="task_funcs.so">	
+		<!--
+		<function name="t1_fun" file="task_funcs.so" path="./">
+		-->
+		</function>
+
+	</task>
+	<task name="T2">
+			<function name="t2" file="task_funcs.so"/>
+	</task>
+
+	<task name="D1">
+			<function name="t3" file="task_funcs.so"/>
+	</task>
+
+	<task_properties task_name="T1">
+			<WCET value="300" unit="ms" />	
+			<priority value="1"/>
+			<!--period value="400" unit="ms" /-->	
+	</task_properties>
+	
+	<task_properties task_name="T2">
+			<WCET value="200" unit="ms" />
+			<priority value="1"/>
+			<!--period value="600" unit="ms" /-->	
+	</task_properties>
+	
+	<task_properties task_name="D1">
+			<WCET value="100" unit="ms" />
+			<!--deadline value="400" unit="ms"/-->
+			<period value="2000" unit="ms" />	
+			<priority value="2"/>
+	</task_properties>
+	
+	<task_properties task_name="T4">
+			<WCET value="50" unit="ms" />	
+			<priority value="3"/>
+			<!--period value="400" unit="ms" /-->	
+	</task_properties>
+	
+	
+	<comm_synch name="fifo1" src="_T0_M" dest="_T1_M" comm_type="fifo_buffer" comm_data_type="ushort"/>
+	<comm_synch name="fifo2" src="_T2_M" dest="_T3_M" comm_type="fifo_buffer" comm_data_type="ushort"/>
+  </application>
+
+  <application_mapping>
+	  <!-- No task migration style (a task to 1 processing element -->
+	<map_task source="T1" target="_T1_MAP" />
+	<map_task source="T2" target="_T2_MAP" />
+	<map_task source="D1" target="sched1" />
+	<map_task source="T4" target="sched1" />
+  </application_mapping>
+
+  <platform>
+
+	  <SW_platform>
+		  <rtos name="sched1">
+			  <!--tasks scheduling -->
+			  <task_scheduler>
+				  <!-- Possible configuration values:
+				       (Default value in case the property is not present in brackets)
+				        policy : (static_scheduling), random_scheduling, pseudorandom_scheduling, cycle_executive, static_priorities, dynamic_priorities 
+				        triggering : (non_preemptive), preemptive, cooperative, unknown
+				        time_slice : (no), yes
+SHORTCUTS: 
+***********
+In shorcuts, "policy" value is equivalent to a combination of attributes, including the "triggering" and "time_slice" attribute, whose settings are overriden
+						policy="round_robin" IS EQUIVALENT TO policy="cycle_executive" & triggering="preemptive" & time_slice="yes"
+						policy="RMS" IS EQUIVALENT TO policy="static_priorities" & dispatch="RateMonotonic" & triggering="preemptive" & time_slice="no"
+						policy="DMS" IS EQUIVALENT TO policy="static_priorities" & dispatch="DeadlineMonotonic" & triggering="preemptive" & time_slice="no"
+						policy="EDF" IS EQUIVALENT TO policy="dynamic_priorities" & dispatch="EarliestDeadlineFirst" & triggering="preemptive" & time_slice="no"
+						
+				  -->
+
+				  <!-- Short way to model a EDF scheduler 
+				  <scheduler_policy  policy="EDF"/>
+				  -->
+				  <!-- Equivalent to: 
+				  <scheduler_policy policy="dynamic_priorities" triggering="non_preemptive" time_slice="no">
+						 <dispatching value="EarliestDeadlineFirst" />
+				  </scheduler_policy>
+				  -->
+				  
+				  <!-- Equivalent to example BRT5 which used the C/C++ API: -->
+				  <scheduler_policy policy="static_priorities" triggering="preemptive" time_slice="no">
+						 <!--dispatching value="EarliestDeadlineFirst" /  dovrei mettere user defined. ma xml if non legge impone user defined. -->
+				  </scheduler_policy>
+
+				  
+			  </task_scheduler>
+			  <!--
+			  <tick_timer value="10" unit="ms"/>
+				-->  
+		  </rtos>
+	  </SW_platform>
+		  
+	  <platform_mapping>
+		  <map_rtos source="sched1" target="PE0"/>
+	  </platform_mapping>
+		  
+	  <HW_platform>
+			  
+		  <HW_Architecture name="arch1">
+				
+			<!-- Currently, KisTA supports a predefined set of elements, PE and comm_res, and so
+					 a compact style to describe the architecture -->
+			<!--
+			<PE name="PE0"/>		
+			-->			
+			<PE name="PE0" type="arm9">		
+				<freq value="50" unit="MHz" />
+				<netif value="false"/>
+			</PE>
+						
+		  </HW_Architecture>
+    	
+	  </HW_platform> 
+
+  </platform>
+  
+ <!-- parameters section is ignored (and thus, this parameter setting overriden,
+      if the user provides a parameter file (sc_path_name) -->
+<!--  <parameters>
+	  <parameter name="SCHED_POLICY" value="RMS"/>
+  </parameters>
+  -->
+  
+  <kista_configuration>
+	<simulation_time value="22.4" unit="s"/>
+	<verbose value="true"/>
+	<xml_front_end_verbose value="true"/>
+	<export_sketch value="true">
+		<file_name value="brt5_sketch"/>
+	</export_sketch>
+	<analysis>
+		<trace_rtos name="sched1" file="sched1_trace"/>
+	</analysis>	
+  </kista_configuration>
+  
+</system>

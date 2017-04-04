@@ -72,6 +72,7 @@
 	  <system_metric name="rtos/sched4/tasks_utilization" type="float" />
 	  <system_metric name="rtos/sched5/tasks_utilization" type="float" />
       <system_metric name="rtos/sched6/tasks_utilization" type="float" />
+       <system_metric name="task/T1/utilization" type="float" />
 	  
 	  
 	  <!-- other metrics (as an example of some supported metrics) -->

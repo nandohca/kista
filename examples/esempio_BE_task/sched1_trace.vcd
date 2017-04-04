@@ -1,0 +1,236 @@
+$comment
+File created by KisTA library.
+ Author: F.Herrera
+ Institution: KTH
+ Date: 2013
+	All rights reserved by the authors, till further definition of the license.
+$end
+
+$comment
+Tracing options used include to trace Task State signals,  Scheduler signals 
+$end
+
+$date
+     Sep 14, 2016       13:45:24
+$end
+
+$version
+ SystemC 2.3.1-Accellera --- Mar 29 2016 16:10:40
+$end
+
+$timescale
+     1 ps
+$end
+
+$scope module SystemC $end
+$var wire    8  aaaaa  sched1 [7:0]  $end
+$var wire    8  aaaab  D1 [7:0]  $end
+$var wire    8  aaaac  T1 [7:0]  $end
+$var wire    8  aaaad  T2 [7:0]  $end
+$var wire    8  aaaae  T4 [7:0]  $end
+$upscope $end
+$enddefinitions  $end
+
+$comment
+All initial values are dumped below at time 0 sec = 0 timescale units.
+$end
+
+$dumpvars
+b1001001 aaaaa
+b1010010 aaaab
+b1000101 aaaac
+b1011000 aaaad
+b1010010 aaaae
+$end
+
+#300000000000
+b1011000 aaaac
+b1000101 aaaad
+
+#500000000000
+b1000101 aaaab
+b1011000 aaaad
+
+#600000000000
+b1001001 aaaab
+b1000101 aaaae
+
+#2000000000000
+b1010010 aaaab
+b1000101 aaaac
+b1010010 aaaae
+
+#2300000000000
+b1011000 aaaac
+b1000101 aaaad
+
+#2500000000000
+b1000101 aaaab
+b1011000 aaaad
+
+#2600000000000
+b1001001 aaaab
+b1000101 aaaae
+
+#4000000000000
+b1010010 aaaab
+b1000101 aaaac
+b1010010 aaaae
+
+#4300000000000
+b1011000 aaaac
+b1000101 aaaad
+
+#4500000000000
+b1000101 aaaab
+b1011000 aaaad
+
+#4600000000000
+b1001001 aaaab
+b1000101 aaaae
+
+#6000000000000
+b1010010 aaaab
+b1000101 aaaac
+b1010010 aaaae
+
+#6300000000000
+b1011000 aaaac
+b1000101 aaaad
+
+#6500000000000
+b1000101 aaaab
+b1011000 aaaad
+
+#6600000000000
+b1001001 aaaab
+b1000101 aaaae
+
+#8000000000000
+b1010010 aaaab
+b1000101 aaaac
+b1010010 aaaae
+
+#8300000000000
+b1011000 aaaac
+b1000101 aaaad
+
+#8500000000000
+b1000101 aaaab
+b1011000 aaaad
+
+#8600000000000
+b1001001 aaaab
+b1000101 aaaae
+
+#10000000000000
+b1010010 aaaab
+b1000101 aaaac
+b1010010 aaaae
+
+#10300000000000
+b1011000 aaaac
+b1000101 aaaad
+
+#10500000000000
+b1000101 aaaab
+b1011000 aaaad
+
+#10600000000000
+b1001001 aaaab
+b1000101 aaaae
+
+#12000000000000
+b1010010 aaaab
+b1000101 aaaac
+b1010010 aaaae
+
+#12300000000000
+b1011000 aaaac
+b1000101 aaaad
+
+#12500000000000
+b1000101 aaaab
+b1011000 aaaad
+
+#12600000000000
+b1001001 aaaab
+b1000101 aaaae
+
+#14000000000000
+b1010010 aaaab
+b1000101 aaaac
+b1010010 aaaae
+
+#14300000000000
+b1011000 aaaac
+b1000101 aaaad
+
+#14500000000000
+b1000101 aaaab
+b1011000 aaaad
+
+#14600000000000
+b1001001 aaaab
+b1000101 aaaae
+
+#16000000000000
+b1010010 aaaab
+b1000101 aaaac
+b1010010 aaaae
+
+#16300000000000
+b1011000 aaaac
+b1000101 aaaad
+
+#16500000000000
+b1000101 aaaab
+b1011000 aaaad
+
+#16600000000000
+b1001001 aaaab
+b1000101 aaaae
+
+#18000000000000
+b1010010 aaaab
+b1000101 aaaac
+b1010010 aaaae
+
+#18300000000000
+b1011000 aaaac
+b1000101 aaaad
+
+#18500000000000
+b1000101 aaaab
+b1011000 aaaad
+
+#18600000000000
+b1001001 aaaab
+b1000101 aaaae
+
+#20000000000000
+b1010010 aaaab
+b1000101 aaaac
+b1010010 aaaae
+
+#20300000000000
+b1011000 aaaac
+b1000101 aaaad
+
+#20500000000000
+b1000101 aaaab
+b1011000 aaaad
+
+#20600000000000
+b1001001 aaaab
+b1000101 aaaae
+
+#22000000000000
+b1010010 aaaab
+b1000101 aaaac
+b1010010 aaaae
+
+#22300000000000
+b1011000 aaaac
+b1000101 aaaad
+

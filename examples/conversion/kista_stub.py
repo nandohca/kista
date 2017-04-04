@@ -296,7 +296,6 @@ def main(sd_file_name, sc_file_name, sm_file_name, xsd_file_name):
 		% (xsd_file_name, sc_file_name)) == 0)
 	if not validation:
 		# report error
-		print ('non passa la validazione')
 		simulator_error("validation failed", sm_file_name)
 	else:
 		# read KisTA application and platform model
@@ -312,6 +311,8 @@ def main(sd_file_name, sc_file_name, sm_file_name, xsd_file_name):
 		gen_kista_sc(kista_sc, 'sys_params.xml')
 		# run KisTA simulator with input confguration
 		#		os.system("../../scripts/kista/run_kista.sh "+sm_file_name)
+		
+		###qua vanno inserite le modifiche. togliere run_kista che va lanciato dal global script. oppure inserire integraz.py
 		curr_path_kista_wrapper = os.path.dirname(os.path.abspath(__file__))
 		os.system(curr_path_kista_wrapper+"/run_kista.sh "+sm_file_name)
 		

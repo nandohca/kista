@@ -1,10 +1,10 @@
 <root>
 	<components>
 		<component>
-			<name>sched_3</name>
+			<name>sched_1</name>
 			<layer>3</layer>
-			<x_pos>-413</x_pos>
-			<y_pos>-98</y_pos>
+			<x_pos>-743</x_pos>
+			<y_pos>-101</y_pos>
 				<priority_handling>2</priority_handling>
 				<slots>
 					<slot>
@@ -19,42 +19,18 @@
 					<slot>
 						<id>4</id>
 					</slot>
+					<slot>
+						<id>5</id>
+					</slot>
+					<slot>
+						<id>6</id>
+					</slot>
 				</slots>
-		</component>
-		<component>
-			<name>PE_6</name>
-			<layer>4</layer>
-			<x_pos>72</x_pos>
-			<y_pos>-7</y_pos>
-				<priority_handling>0</priority_handling>
-				<type>0</type>
-				<ports>
-					<port>
-						<isMaster>0</isMaster>
-						<associatedPort>0</associatedPort>
-						<id>1</id>
-					</port>
-				</ports>
-		</component>
-		<component>
-			<name>PE_3</name>
-			<layer>4</layer>
-			<x_pos>-407</x_pos>
-			<y_pos>-15</y_pos>
-				<priority_handling>0</priority_handling>
-				<type>0</type>
-				<ports>
-					<port>
-						<isMaster>0</isMaster>
-						<associatedPort>0</associatedPort>
-						<id>1</id>
-					</port>
-				</ports>
 		</component>
 		<component>
 			<name>sched_2</name>
 			<layer>3</layer>
-			<x_pos>-590</x_pos>
+			<x_pos>-589</x_pos>
 			<y_pos>-96</y_pos>
 				<priority_handling>2</priority_handling>
 				<slots>
@@ -69,6 +45,53 @@
 					</slot>
 					<slot>
 						<id>4</id>
+					</slot>
+					<slot>
+						<id>5</id>
+					</slot>
+					<slot>
+						<id>6</id>
+					</slot>
+				</slots>
+		</component>
+		<component>
+			<name>PE_1</name>
+			<layer>4</layer>
+			<x_pos>-739</x_pos>
+			<y_pos>-6</y_pos>
+				<priority_handling>0</priority_handling>
+				<type>0</type>
+				<ports>
+					<port>
+						<isMaster>0</isMaster>
+						<id>1</id>
+					</port>
+				</ports>
+		</component>
+		<component>
+			<name>sched_5</name>
+			<layer>3</layer>
+			<x_pos>-83</x_pos>
+			<y_pos>-93</y_pos>
+				<priority_handling>2</priority_handling>
+				<slots>
+					<slot>
+						<id>1</id>
+					</slot>
+					<slot>
+						<id>2</id>
+					</slot>
+					<slot>
+						<id>3</id>
+					</slot>
+					<slot>
+						<id>4</id>
+					</slot>
+					<slot>
+						<id>5</id>
+					</slot>
+					<slot>
+						<id>6</id>
 					</slot>
 				</slots>
 		</component>
@@ -91,80 +114,38 @@
 					<slot>
 						<id>4</id>
 					</slot>
-				</slots>
-		</component>
-		<component>
-			<name>sched_5</name>
-			<layer>3</layer>
-			<x_pos>-82</x_pos>
-			<y_pos>-94</y_pos>
-				<priority_handling>2</priority_handling>
-				<slots>
 					<slot>
-						<id>1</id>
-					</slot>
-					<slot>
-						<id>2</id>
-					</slot>
-					<slot>
-						<id>3</id>
-					</slot>
-					<slot>
-						<id>4</id>
-					</slot>
-				</slots>
-		</component>
-		<component>
-			<name>TDMA_BUS</name>
-			<layer>4</layer>
-			<x_pos>-441</x_pos>
-			<y_pos>111</y_pos>
-				<priority_handling>2</priority_handling>
-				<type>1</type>
-				<ports>
-					<port>
-						<isMaster>1</isMaster>
-						<associatedPort>0</associatedPort>
-						<id>1</id>
-					</port>
-					<port>
-						<isMaster>1</isMaster>
-						<associatedPort>0</associatedPort>
-						<id>2</id>
-					</port>
-					<port>
-						<isMaster>1</isMaster>
-						<associatedPort>0</associatedPort>
-						<id>3</id>
-					</port>
-					<port>
-						<isMaster>1</isMaster>
-						<associatedPort>0</associatedPort>
-						<id>4</id>
-					</port>
-					<port>
-						<isMaster>1</isMaster>
-						<associatedPort>0</associatedPort>
 						<id>5</id>
-					</port>
-					<port>
-						<isMaster>1</isMaster>
-						<associatedPort>0</associatedPort>
+					</slot>
+					<slot>
 						<id>6</id>
-					</port>
-				</ports>
+					</slot>
+				</slots>
 		</component>
 		<component>
-			<name>PE_5</name>
+			<name>PE_4</name>
 			<layer>4</layer>
-			<x_pos>-80</x_pos>
-			<y_pos>-8</y_pos>
+			<x_pos>-260</x_pos>
+			<y_pos>-19</y_pos>
 				<priority_handling>0</priority_handling>
 				<type>0</type>
 				<ports>
 					<port>
 						<isMaster>0</isMaster>
-						<associatedPort>0</associatedPort>
+						<id>1</id>
+					</port>
+				</ports>
+		</component>
+		<component>
+			<name>PE_6</name>
+			<layer>4</layer>
+			<x_pos>72</x_pos>
+			<y_pos>-7</y_pos>
+				<priority_handling>0</priority_handling>
+				<type>0</type>
+				<ports>
+					<port>
+						<isMaster>0</isMaster>
 						<id>1</id>
 					</port>
 				</ports>
@@ -179,43 +160,29 @@
 				<ports>
 					<port>
 						<isMaster>0</isMaster>
-						<associatedPort>0</associatedPort>
 						<id>1</id>
 					</port>
 				</ports>
 		</component>
 		<component>
-			<name>sched_1</name>
-			<layer>3</layer>
-			<x_pos>-743</x_pos>
-			<y_pos>-101</y_pos>
-				<priority_handling>2</priority_handling>
-				<slots>
-					<slot>
+			<name>PE_5</name>
+			<layer>4</layer>
+			<x_pos>-81</x_pos>
+			<y_pos>-8</y_pos>
+				<priority_handling>0</priority_handling>
+				<type>0</type>
+				<ports>
+					<port>
+						<isMaster>0</isMaster>
 						<id>1</id>
-					</slot>
-					<slot>
-						<id>2</id>
-					</slot>
-					<slot>
-						<id>3</id>
-					</slot>
-					<slot>
-						<id>4</id>
-					</slot>
-				</slots>
-		</component>
-		<component>
-			<name>task</name>
-			<layer>2</layer>
-			<x_pos>-351</x_pos>
-			<y_pos>-208</y_pos>
+					</port>
+				</ports>
 		</component>
 		<component>
 			<name>sched_4</name>
 			<layer>3</layer>
-			<x_pos>-253</x_pos>
-			<y_pos>-99</y_pos>
+			<x_pos>-254</x_pos>
+			<y_pos>-98</y_pos>
 				<priority_handling>2</priority_handling>
 				<slots>
 					<slot>
@@ -229,6 +196,12 @@
 					</slot>
 					<slot>
 						<id>4</id>
+					</slot>
+					<slot>
+						<id>5</id>
+					</slot>
+					<slot>
+						<id>6</id>
 					</slot>
 				</slots>
 		</component>
@@ -239,37 +212,76 @@
 			<y_pos>271</y_pos>
 		</component>
 		<component>
-			<name>dummy_func</name>
-			<layer>1</layer>
-			<x_pos>-351</x_pos>
-			<y_pos>-299</y_pos>
-		</component>
-		<component>
-			<name>PE_1</name>
+			<name>TDMA_BUS</name>
 			<layer>4</layer>
-			<x_pos>-739</x_pos>
-			<y_pos>-6</y_pos>
-				<priority_handling>0</priority_handling>
-				<type>0</type>
+			<x_pos>-441</x_pos>
+			<y_pos>111</y_pos>
+				<priority_handling>2</priority_handling>
+				<type>1</type>
 				<ports>
 					<port>
-						<isMaster>0</isMaster>
-						<associatedPort>0</associatedPort>
+						<isMaster>1</isMaster>
 						<id>1</id>
+					</port>
+					<port>
+						<isMaster>1</isMaster>
+						<id>2</id>
+					</port>
+					<port>
+						<isMaster>1</isMaster>
+						<id>3</id>
+					</port>
+					<port>
+						<isMaster>1</isMaster>
+						<id>4</id>
+					</port>
+					<port>
+						<isMaster>1</isMaster>
+						<id>5</id>
+					</port>
+					<port>
+						<isMaster>1</isMaster>
+						<id>6</id>
 					</port>
 				</ports>
 		</component>
 		<component>
-			<name>PE_4</name>
+			<name>sched_3</name>
+			<layer>3</layer>
+			<x_pos>-412</x_pos>
+			<y_pos>-98</y_pos>
+				<priority_handling>2</priority_handling>
+				<slots>
+					<slot>
+						<id>1</id>
+					</slot>
+					<slot>
+						<id>2</id>
+					</slot>
+					<slot>
+						<id>3</id>
+					</slot>
+					<slot>
+						<id>4</id>
+					</slot>
+					<slot>
+						<id>5</id>
+					</slot>
+					<slot>
+						<id>6</id>
+					</slot>
+				</slots>
+		</component>
+		<component>
+			<name>PE_3</name>
 			<layer>4</layer>
-			<x_pos>-259</x_pos>
-			<y_pos>-19</y_pos>
+			<x_pos>-407</x_pos>
+			<y_pos>-15</y_pos>
 				<priority_handling>0</priority_handling>
 				<type>0</type>
 				<ports>
 					<port>
 						<isMaster>0</isMaster>
-						<associatedPort>0</associatedPort>
 						<id>1</id>
 					</port>
 				</ports>
@@ -278,30 +290,10 @@
 	<edges>
 		<edge>
 			<from>
-			<name>PE_2</name>
+			<name>sched_4</name>
 			</from>
 			<to>
-			<name>dummy_plat</name>
-			</to>
-		</edge>
-		<edge>
-			<from>
 			<name>PE_4</name>
-			<port>1</port>
-			</from>
-			<to>
-			<name>TDMA_BUS</name>
-			<port>4</port>
-			</to>
-		</edge>
-		<edge>
-			<from>
-			<name>PE_6</name>
-			<port>1</port>
-			</from>
-			<to>
-			<name>TDMA_BUS</name>
-			<port>6</port>
 			</to>
 		</edge>
 		<edge>
@@ -317,98 +309,6 @@
 		<edge>
 			<from>
 			<name>PE_2</name>
-			<port>1</port>
-			</from>
-			<to>
-			<name>TDMA_BUS</name>
-			<port>2</port>
-			</to>
-		</edge>
-		<edge>
-			<from>
-			<name>PE_3</name>
-			</from>
-			<to>
-			<name>dummy_plat</name>
-			</to>
-		</edge>
-		<edge>
-			<from>
-			<name>PE_5</name>
-			</from>
-			<to>
-			<name>dummy_plat</name>
-			</to>
-		</edge>
-		<edge>
-			<from>
-			<name>sched_6</name>
-			</from>
-			<to>
-			<name>PE_6</name>
-			</to>
-		</edge>
-		<edge>
-			<from>
-			<name>PE_1</name>
-			<port>1</port>
-			</from>
-			<to>
-			<name>TDMA_BUS</name>
-			<port>1</port>
-			</to>
-		</edge>
-		<edge>
-			<from>
-			<name>PE_6</name>
-			</from>
-			<to>
-			<name>dummy_plat</name>
-			</to>
-		</edge>
-		<edge>
-			<from>
-			<name>sched_1</name>
-			</from>
-			<to>
-			<name>PE_1</name>
-			</to>
-		</edge>
-		<edge>
-			<from>
-			<name>sched_5</name>
-			</from>
-			<to>
-			<name>PE_5</name>
-			</to>
-		</edge>
-		<edge>
-			<from>
-			<name>TDMA_BUS</name>
-			</from>
-			<to>
-			<name>dummy_plat</name>
-			</to>
-		</edge>
-		<edge>
-			<from>
-			<name>sched_4</name>
-			</from>
-			<to>
-			<name>PE_4</name>
-			</to>
-		</edge>
-		<edge>
-			<from>
-			<name>PE_1</name>
-			</from>
-			<to>
-			<name>dummy_plat</name>
-			</to>
-		</edge>
-		<edge>
-			<from>
-			<name>PE_4</name>
 			</from>
 			<to>
 			<name>dummy_plat</name>
@@ -426,10 +326,82 @@
 		</edge>
 		<edge>
 			<from>
-			<name>sched_2</name>
+			<name>PE_2</name>
+			<port>1</port>
 			</from>
 			<to>
-			<name>PE_2</name>
+			<name>TDMA_BUS</name>
+			<port>2</port>
+			</to>
+		</edge>
+		<edge>
+			<from>
+			<name>sched_1</name>
+			</from>
+			<to>
+			<name>PE_1</name>
+			</to>
+		</edge>
+		<edge>
+			<from>
+			<name>PE_4</name>
+			<port>1</port>
+			</from>
+			<to>
+			<name>TDMA_BUS</name>
+			<port>4</port>
+			</to>
+		</edge>
+		<edge>
+			<from>
+			<name>PE_5</name>
+			</from>
+			<to>
+			<name>dummy_plat</name>
+			</to>
+		</edge>
+		<edge>
+			<from>
+			<name>PE_6</name>
+			<port>1</port>
+			</from>
+			<to>
+			<name>TDMA_BUS</name>
+			<port>6</port>
+			</to>
+		</edge>
+		<edge>
+			<from>
+			<name>PE_6</name>
+			</from>
+			<to>
+			<name>dummy_plat</name>
+			</to>
+		</edge>
+		<edge>
+			<from>
+			<name>sched_5</name>
+			</from>
+			<to>
+			<name>PE_5</name>
+			</to>
+		</edge>
+		<edge>
+			<from>
+			<name>PE_1</name>
+			<port>1</port>
+			</from>
+			<to>
+			<name>TDMA_BUS</name>
+			<port>1</port>
+			</to>
+		</edge>
+		<edge>
+			<from>
+			<name>sched_6</name>
+			</from>
+			<to>
+			<name>PE_6</name>
 			</to>
 		</edge>
 		<edge>
@@ -438,6 +410,46 @@
 			</from>
 			<to>
 			<name>PE_3</name>
+			</to>
+		</edge>
+		<edge>
+			<from>
+			<name>PE_4</name>
+			</from>
+			<to>
+			<name>dummy_plat</name>
+			</to>
+		</edge>
+		<edge>
+			<from>
+			<name>sched_2</name>
+			</from>
+			<to>
+			<name>PE_2</name>
+			</to>
+		</edge>
+		<edge>
+			<from>
+			<name>PE_3</name>
+			</from>
+			<to>
+			<name>dummy_plat</name>
+			</to>
+		</edge>
+		<edge>
+			<from>
+			<name>TDMA_BUS</name>
+			</from>
+			<to>
+			<name>dummy_plat</name>
+			</to>
+		</edge>
+		<edge>
+			<from>
+			<name>PE_1</name>
+			</from>
+			<to>
+			<name>dummy_plat</name>
 			</to>
 		</edge>
 	</edges>

@@ -1,0 +1,143 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage[margin=15mm]{geometry}
+\usetikzlibrary{shapes,arrows,fit,calc,positioning}
+\usetikzlibrary{decorations.text}
+\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{backgrounds}
+\makeatletter
+\tikzset{
+  through point/.style={
+    to path={%
+      \pgfextra{%
+        \tikz@scan@one@point\pgfutil@firstofone(\tikztostart)\relax
+        \pgfmathsetmacro{\pt@sx}{\pgf@x * 0.03514598035}%
+        \pgfmathsetmacro{\pt@sy}{\pgf@y * 0.03514598035}%
+        \tikz@scan@one@point\pgfutil@firstofone#1\relax
+        \pgfmathsetmacro{\pt@ax}{\pgf@x * 0.03514598035 - \pt@sx}%
+        \pgfmathsetmacro{\pt@ay}{\pgf@y * 0.03514598035 - \pt@sy}%
+        \tikz@scan@one@point\pgfutil@firstofone(\tikztotarget)\relax
+        \pgfmathsetmacro{\pt@ex}{\pgf@x * 0.03514598035 - \pt@sx}%
+        \pgfmathsetmacro{\pt@ey}{\pgf@y * 0.03514598035 - \pt@sy}%
+        \pgfmathsetmacro{\pt@len}{\pt@ex * \pt@ex + \pt@ey * \pt@ey}%
+        \pgfmathsetmacro{\pt@t}{(\pt@ax * \pt@ex + \pt@ay *           \pt@ey)/\pt@len}%
+        \pgfmathsetmacro{\pt@t}{(\pt@t > .5 ? 1 - \pt@t : \pt@t)}%
+        \pgfmathsetmacro{\pt@h}{(\pt@ax * \pt@ey - \pt@ay *           \pt@ex)/\pt@len}%
+        \pgfmathsetmacro{\pt@y}{\pt@h/(3 * \pt@t * (1 - \pt@t))}%
+      }
+      (\tikztostart) .. controls +(\pt@t * \pt@ex + \pt@y * \pt@ey, \pt@t * \pt@ey - \pt@y * \pt@ex) and +(-\pt@t * \pt@ex + \pt@y * \pt@ey, -\pt@t * \pt@ey - \pt@y * \pt@ex) .. (\tikztotarget)
+    }
+  }
+}
+\makeatother
+\begin{document}
+File created by KisTA library
+
+Author: F.Herrera
+
+Institution: KTH (2012-2014, Jul), Univ. of Cantabria (from 2014, Sept.)
+
+Rights reserved by the authors in the terms defined by the KisTA license.
+
+KisTA library compilation date: Jul  6 2016 at 13:52:32.
+
+
+
+Sketch Creation: Tue Jul 12 15:32:07 2016
+
+
+Sketch options enabled:
+draw system level connections, draw environment box, draw system box, scale = 1
+\hfill
+
+
+\tikzstyle{task_style}=[circle, thick, draw=orange!80, fill=orange!25]
+\tikzstyle{logic_link_style} = [->, >=latex', shorten >=1pt]
+\tikzstyle{fifo_buffer_style} = [->, >=latex', shorten >=1pt, thick]
+\tikzstyle{task_map_arrow} = [dashed, ->, draw=orange!80, fill=orange!80, >=latex', shorten >=1pt, thick]
+\tikzstyle{sched_style} = [rectangle, draw=red!80, fill=red!20, rounded corners, thick]
+\tikzstyle{sched_map_arrow} = [dashed, ->, draw=red!80, fill=red!80, >=latex', shorten >=1pt, thick]
+\tikzstyle{pe_style} = [rectangle, draw=blue!50, fill=blue!20, thick]
+\tikzstyle{phy_commres_style} = [cloud, draw=blue!50, fill=blue!10, thick]
+\tikzstyle{tdma_bus_style} = [rectangle, draw=blue!50, fill=blue!10, thick]
+\tikzstyle{platform_conn_style} = [blue!50, >=latex', shorten >=1pt]
+\tikzstyle{mem_style} = [rectangle, draw=blue!50,  fill=blue!5, thick]
+\tikzstyle{env_box_st} = [draw=green, fill=green!10, very thick, rectangle, rounded corners, inner sep=10pt, inner ysep=10pt]
+\tikzstyle{sys_box_st} = [draw=black, fill=black!10, very thick, rectangle, rounded corners, inner sep=10pt, inner ysep=10pt]
+% Use the scale factor for changing the size of the figure and better export to png
+% You can set if from KisTA with set_scale method, or by editing this .tex file
+\begin{tikzpicture}[scale=1, transform shape]
+\node (T10) [task_style] {$T10$};
+\node (T9) [task_style, right=of T10] {$T9$};
+\node (T1) [task_style, below=of T10] {$T1$};
+\node (T2) [task_style, right=of T1] {$T2$};
+\node (T3) [task_style, right=of T2] {$T3$};
+\node (T4) [task_style, right=of T3] {$T4$};
+\node (T5) [task_style, right=of T4] {$T5$};
+\node (T6) [task_style, right=of T5] {$T6$};
+\node (T7) [task_style, right=of T6] {$T7$};
+\node (T8) [task_style, right=of T7] {$T8$};
+\node (sched1) [sched_style, below=of T1] {$sched1$};
+\node (sched2) [sched_style, right=of sched1] {$sched2$};
+\node (sched3) [sched_style, right=of sched2] {$sched3$};
+\node (sched4) [sched_style, right=of sched3] {$sched4$};
+\node (sched5) [sched_style, right=of sched4] {$sched5$};
+\node (sched6) [sched_style, right=of sched5] {$sched6$};
+
+\node (PE1) [pe_style, below=of sched1] {$PE1$};
+\node (PE2) [pe_style, right=of PE1] {$PE2$};
+\node (PE3) [pe_style, right=of PE2] {$PE3$};
+\node (PE4) [pe_style, right=of PE3] {$PE4$};
+\node (PE5) [pe_style, right=of PE4] {$PE5$};
+\node (PE6) [pe_style, right=of PE5] {$PE6$};
+
+\node (tdma1) [tdma_bus_style, below=of PE1] {$tdma1$};
+
+\draw (T9) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E17{\;}$}}}] to[out=240,in=120] (T1);
+\draw (T9) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E13{\;}$}}}] to[out=245,in=120] (T2);
+\draw (T9) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E12{\;}$}}}] to[out=250,in=120] (T3);
+\draw (T3) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E2{\;}$}}}] to[out=30,in=150] (T4);
+\draw (T3) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E1{\;}$}}}] to[out=35,in=150] (T5);
+\draw (T9) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E18{\;}$}}}] to[out=255,in=120] (T6);
+\draw (T4) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E3{\;}$}}}] to[out=30,in=145] (T5);
+\draw (T4) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E4{\;}$}}}] to[out=35,in=145] (T6);
+\draw (T2) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E8{\;}$}}}] to[out=30,in=150] (T7);
+\draw (T5) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E5{\;}$}}}] to[out=30,in=140] (T6);
+\draw (T6) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E10{\;}$}}}] to[out=30,in=145] (T7);
+\draw (T8) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E19{\;}$}}}] to[out=80,in=280] (T10);
+\draw (T7) [fifo_buffer_style, postaction={decorate,decoration={text along path,text align=center,text={$E11{\;}$}}}] to[out=30,in=150] (T8);
+\draw (T1.south) [task_map_arrow] -- (sched1.north);
+\draw (T2.south) [task_map_arrow] -- (sched1.north);
+\draw (T3.south) [task_map_arrow] -- (sched2.north);
+\draw (T4.south) [task_map_arrow] -- (sched2.north);
+\draw (T5.south) [task_map_arrow] -- (sched3.north);
+\draw (T6.south) [task_map_arrow] -- (sched3.north);
+\draw (T7.south) [task_map_arrow] -- (sched4.north);
+\draw (T8.south) [task_map_arrow] -- (sched4.north);
+
+\draw (sched1.south) [sched_map_arrow] -- (PE1.north);
+\draw (sched2.south) [sched_map_arrow] -- (PE2.north);
+\draw (sched3.south) [sched_map_arrow] -- (PE3.north);
+\draw (sched4.south) [sched_map_arrow] -- (PE4.north);
+\draw (sched5.south) [sched_map_arrow] -- (PE5.north);
+\draw (sched6.south) [sched_map_arrow] -- (PE6.north);
+
+\draw (PE1.south) [platform_conn_style] -- (tdma1.north);
+\draw (PE2.south) [platform_conn_style] -- (tdma1.north);
+\draw (PE3.south) [platform_conn_style] -- (tdma1.north);
+\draw (PE4.south) [platform_conn_style] -- (tdma1.north);
+\draw (PE5.south) [platform_conn_style] -- (tdma1.north);
+\draw (PE6.south) [platform_conn_style] -- (tdma1.north);
+\begin{scope}[on background layer]
+\node[env_box_st,fit = (T10)(T9)] (env_box) {};
+\end{scope}
+\node [right=of env_box] {$Environment$};
+\begin{scope}[on background layer]
+\node[sys_box_st,fit = (T1)(T2)(T3)(T4)(T5)(T6)(T7)(T8)(sched1)(sched2)(sched3)(sched4)(sched5)(sched6)(PE1)(PE2)(PE3)(PE4)(PE5)(PE6)(tdma1)] (sys_box) {};
+\end{scope}
+\node [right=of sys_box] {$System$};
+ 
+\end{tikzpicture}
+\end{document}
+

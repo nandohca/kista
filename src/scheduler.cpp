@@ -261,7 +261,7 @@ namespace kista {
 				return_task_info = tasks_by_priority[0];
 									
 				for(tbp_it=0; tbp_it != tasks_by_priority.size(); tbp_it++) {
-					
+					cout<<"STATIC PRIORITIES DEBUG PRINT task number: "<<tbp_it << " on an array of: " <<tasks_by_priority.size()<<std::endl;
 					/* if( (tasks_by_priority[tbp_it]->state_signal==READY) ||
 					    (tasks_by_priority[tbp_it]->state_signal==EXECUTING)
 							// in principle, any task is not waiting for communicaiton of period should be ready.

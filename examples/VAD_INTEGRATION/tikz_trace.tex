@@ -20,15 +20,15 @@ Style=Clustered, Compact; Baselines sep.=1; Max. t span=3; Scale:=0.750000; Land
 \begin{tikzpicture}[scale=0.750000]
 % Draw time axis
 % --------------
-\draw [-latex](-0.5,0) coordinate(LEFTX)-- (0,0) coordinate (ORIG) -- (9,0) coordinate(RIGHTX) node[above]{$t$};
+\draw [-latex](-0.5,0) coordinate(LEFTX)-- (0,0) coordinate (ORIG) -- (7,0) coordinate(RIGHTX) node[above]{$t$};
 
 % Draw time axis divisions
 % ------------------------
 \draw[] (0,0.2) -- (0,-0.2)  node[below]{$t_{0}$};
 \draw[] (1,0.2) -- (1,-0.2)  node[below]{$t_{1}$};
-\draw[] (2,0.2) -- (2,-0.2)  node[below]{$t_{2}$};
+\draw[] (4,0.2) -- (4,-0.2)  node[below]{$t_{2}$};
 \draw[] (5,0.2) -- (5,-0.2)  node[below]{$t_{3}$};
-\draw[] (8,0.2) -- (8,-0.2)  node[below]{$t_{4}$};
+\draw[] (6,0.2) -- (6,-0.2)  node[below]{$t_{4}$};
 
 % Draw y axis
 % --------------
@@ -62,109 +62,89 @@ Style=Clustered, Compact; Baselines sep.=1; Max. t span=3; Scale:=0.750000; Land
 
 % Set event coordinates   
 % ------------------------
-\path (sched6e0) ++ (1,0) coordinate(sched6e1) ++ (1,0) coordinate(sched6e2) ++ (6,0) coordinate(sched6e4);
-\path (sched5e0) ++ (1,0) coordinate(sched5e1) ++ (1,0) coordinate(sched5e2) ++ (6,0) coordinate(sched5e4);
-\path (sched4e0) ++ (1,0) coordinate(sched4e1) ++ (7,0) coordinate(sched4e4);
-\path (sched3e0) ++ (8,0) coordinate(sched3e4);
-\path (sched2e0) ++ (1,0) coordinate(sched2e1) ++ (7,0) coordinate(sched2e4);
-\path (sched1e0) ++ (1,0) coordinate(sched1e1) ++ (4,0) coordinate(sched1e3) ++ (3,0) coordinate(sched1e4);
+\path (sched6e0) ++ (6,0) coordinate(sched6e4);
+\path (sched5e0) ++ (6,0) coordinate(sched5e4);
+\path (sched4e0) ++ (1,0) coordinate(sched4e1) ++ (5,0) coordinate(sched4e4);
+\path (sched3e0) ++ (6,0) coordinate(sched3e4);
+\path (sched2e0) ++ (4,0) coordinate(sched2e2) ++ (2,0) coordinate(sched2e4);
+\path (sched1e0) ++ (5,0) coordinate(sched1e3) ++ (1,0) coordinate(sched1e4);
 
 % Draw scheduler activity (relying on event coordinates) 
 % -------------------------------------------------------
 \begin{scope}[shift={(sched6e0)}]
-\draw[] (0,0) rectangle (1,0.7);
-\draw[] (0,0) node[rectangle, above right] {T1};
-\end{scope}
-\begin{scope}[shift={(sched6e1)}]
-\draw[] (0,0) rectangle (1,0.7);
-\draw[] (0,0) node[rectangle, above right] {T1};
-\end{scope}
-\begin{scope}[shift={(sched6e2)}]
 \draw[fill=black!30] (0,0) rectangle (6,0.7);
 \draw[] (0,0) node[rectangle, above right] {X};
 \end{scope}
 \begin{scope}[shift={(sched5e0)}]
-\draw[] (0,0) rectangle (1,0.7);
-\draw[] (0,0) node[rectangle, above right] {T1};
-\end{scope}
-\begin{scope}[shift={(sched5e1)}]
-\draw[] (0,0) rectangle (1,0.7);
-\draw[] (0,0) node[rectangle, above right] {T1};
-\end{scope}
-\begin{scope}[shift={(sched5e2)}]
 \draw[fill=black!30] (0,0) rectangle (6,0.7);
 \draw[] (0,0) node[rectangle, above right] {X};
 \end{scope}
 \begin{scope}[shift={(sched4e0)}]
 \draw[] (0,0) rectangle (1,0.7);
-\draw[] (0,0) node[rectangle, above right] {T1};
+\draw[] (0,0) node[rectangle, above right] {T2};
 \end{scope}
 \begin{scope}[shift={(sched4e1)}]
-\draw[fill=black!30] (0,0) rectangle (7,0.7);
-\draw[] (0,0) node[rectangle, above right] {X};
+\draw[] (0,0) rectangle (5,0.7);
+\draw[] (0,0) node[rectangle, above right] {T2};
 \end{scope}
 \begin{scope}[shift={(sched3e0)}]
-\draw[] (0,0) rectangle (8,0.7);
-\draw[] (0,0) node[rectangle, above right] {T4};
+\draw[fill=black!30] (0,0) rectangle (6,0.7);
+\draw[] (0,0) node[rectangle, above right] {X};
 \end{scope}
 \begin{scope}[shift={(sched2e0)}]
-\draw[] (0,0) rectangle (1,0.7);
-\draw[] (0,0) node[rectangle, above right] {T9};
+\draw[] (0,0) rectangle (4,0.7);
+\draw[] (0,0) node[rectangle, above right] {T4};
 \end{scope}
-\begin{scope}[shift={(sched2e1)}]
-\draw[] (0,0) rectangle (7,0.7);
-\draw[] (0,0) node[rectangle, above right] {T2};
+\begin{scope}[shift={(sched2e2)}]
+\draw[] (0,0) rectangle (2,0.7);
+\draw[] (0,0) node[rectangle, above right] {T5};
 \end{scope}
 \begin{scope}[shift={(sched1e0)}]
-\draw[] (0,0) rectangle (1,0.7);
-\draw[] (0,0) node[rectangle, above right] {T8};
-\end{scope}
-\begin{scope}[shift={(sched1e1)}]
-\draw[] (0,0) rectangle (4,0.7);
-\draw[] (0,0) node[rectangle, above right] {T0};
+\draw[fill=black!30] (0,0) rectangle (5,0.7);
+\draw[] (0,0) node[rectangle, above right] {X};
 \end{scope}
 \begin{scope}[shift={(sched1e3)}]
-\draw[] (0,0) rectangle (3,0.7);
-\draw[] (0,0) node[rectangle, above right] {T2};
+\draw[] (0,0) rectangle (1,0.7);
+\draw[] (0,0) node[rectangle, above right] {T1};
 \end{scope}
 \end{tikzpicture}
 
 % Show Automatic Task Alias names 
 % --------------------------------
 \textbf{Task alias list (alias=task name):}\\
+T7=T8 , 
 T6=T7 , 
-T5=T6 , 
 T1=T2 , 
+T19=D6_OUT , 
+T13=D6_IN , 
+T18=D5_OUT , 
 T4=T5 , 
 T3=T4 , 
-T0=T1 , 
-T19=D6_OUT , 
-T18=D5_OUT , 
-T2=T3 , 
 T12=D5_IN , 
-T20=BE1 , 
 T15=D2_OUT , 
-T7=T8 , 
-T21=BE2 , 
-T17=D4_OUT , 
-T8=D1_IN , 
-T13=D6_IN , 
-T14=D1_OUT , 
+T5=T6 , 
 T9=D2_IN , 
+T8=D1_IN , 
+T20=BE1 , 
+T14=D1_OUT , 
+T0=T1 , 
 T10=D3_IN , 
+T17=D4_OUT , 
 T16=D3_OUT , 
+T2=T3 , 
+T21=BE2 , 
 T11=D4_IN\\
 
 % Show Time stamp values
 % ---------------------
 \textbf{Time Stamp values:}\\
-$t_{0} = 9 ms; t_{1} = 9000001 ns; t_{2} = 9000002 ns; t_{3} = 9042181 ns; t_{4} = 9080121 ns;  \\
+$t_{0} = 9 ms; t_{1} = 9000002 ns; t_{2} = 9487871 ns; t_{3} = 9507621 ns; t_{4} = 9517371 ns;  \\
 $
 
 % Show Time span values
 % ---------------------
 \textbf{Time Span values:}\\
-$t_{1} - t_{0} = 1 ns; t_{2} - t_{1} = 1 ns; t_{3} - t_{2} = 42179 ns; t_{4} - t_{3} = 37940 ns;  \\
+$t_{1} - t_{0} = 2 ns; t_{2} - t_{1} = 487869 ns; t_{3} - t_{2} = 19750 ns; t_{4} - t_{3} = 9750 ns;  \\
 $
 
 \end{document}

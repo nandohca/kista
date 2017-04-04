@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simulator_output_interface xmlns="http://www.multicube.eu/" version="1.4">
+  <system_metric name="rtos/sched1/number_of_context_switches" value="59"/>
+  <system_metric name="rtos/sched1/number_of_schedulings" value="380"/>
+  <system_metric name="rtos/sched1/plat_utilization" value="1.000000"/>
+  <system_metric name="rtos/sched1/sched_utilization" value="0.000000"/>
+  <system_metric name="rtos/sched1/tasks_utilization" value="1.000000"/>
+  <system_metric name="task/D1/utilization" value="0.049107"/>
+  <system_metric name="task/T1/utilization" value="0.160714"/>
+  <system_metric name="task/T2/utilization" value="0.102679"/>
+  <system_metric name="task/T4/utilization" value="0.687500"/>
+</simulator_output_interface>
